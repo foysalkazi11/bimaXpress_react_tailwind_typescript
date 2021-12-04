@@ -60,7 +60,7 @@ const sideBarMenu = [
       <FaStethoscope className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />
     ),
 
-    pageLink: "#",
+    pageLink: "/doctor",
   },
   {
     name: "Empanelled Companies",

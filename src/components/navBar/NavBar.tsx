@@ -4,7 +4,7 @@ import userImage from "../../assets/images/user.jpg";
 
 const NavBar = () => {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between bg-primary px-4 py-3  border-b border-gray-500">
       <p className="text-lg text-fontColor ">Hello, Josh Steve</p>
       <div className="flex items-center">
         <BiLink className="mr-3 text-fontColor text-lg" />
