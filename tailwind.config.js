@@ -1,0 +1,30 @@
+module.exports = {
+  purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
+  darkMode: false, // or 'media' or 'class'
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          lightest: "#808080",
+          lighter: "#343434",
+          light: "#2A2A2A",
+          DEFAULT: "#2B2B2B",
+          dark: "#101010",
+        },
+        fontColor: {
+          light: "#E3E3E3",
+          gray: "#C8C8C8",
+          darkGray: "#707070",
+          DEFAULT: "#FFFFFF",
+        },
+      },
+      fontFamily: {
+        myFont: ["Poppins"],
+      },
+    },
+  },
+  variants: {
+    extend: {},
+  },
+  plugins: [],
+};
