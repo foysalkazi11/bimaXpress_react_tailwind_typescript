@@ -1,14 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./AnalystCreate.module.css";
 import { BiLeftArrowAlt } from "react-icons/bi";
-import { RiDeleteBinLine } from "react-icons/ri";
+// import { RiDeleteBinLine } from "react-icons/ri";
 import Input from "../../theme/input/Input";
 import FormButton from "../../theme/button/FormButton";
 import { Link } from "react-router-dom";
 
 const AnalystCreate = () => {
-  const [isEdit, setIsEdit] = useState(true);
-
   const [analystInfo, setAnalystInfo] = useState({
     heading: "",
     name: "",
@@ -76,7 +74,7 @@ const AnalystCreate = () => {
                 name="name"
                 value={analystInfo?.name}
                 label="Name"
-                isEdit={isEdit}
+                isEdit={true}
               />
             </div>
             <div className="col-span-2 lg:col-span-1 pb-6">
@@ -85,7 +83,7 @@ const AnalystCreate = () => {
                 name="emailAddress"
                 value={analystInfo?.emailAddress}
                 label="Email Address"
-                isEdit={isEdit}
+                isEdit={true}
                 type="email"
               />
             </div>
@@ -95,7 +93,7 @@ const AnalystCreate = () => {
                 name="employeeId"
                 value={analystInfo?.employeeId}
                 label="Employee ID"
-                isEdit={isEdit}
+                isEdit={true}
               />
             </div>
             <div className="col-span-2 lg:col-span-1 pb-6">
@@ -104,7 +102,7 @@ const AnalystCreate = () => {
                 name="phone"
                 value={analystInfo?.phone}
                 label="Phone"
-                isEdit={isEdit}
+                isEdit={true}
               />
             </div>
 
@@ -114,7 +112,7 @@ const AnalystCreate = () => {
                 name="createPassword"
                 value={analystInfo?.createPassword}
                 label="Change Password"
-                isEdit={isEdit}
+                isEdit={true}
               />
             </div>
           </div>
