@@ -11,6 +11,10 @@ module.exports = {
           DEFAULT: "#2B2B2B",
           dark: "#101010",
         },
+        secondary: {
+          DEFAULT: "#535353",
+        },
+
         fontColor: {
           light: "#E3E3E3",
           gray: "#C8C8C8",
