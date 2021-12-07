@@ -13,6 +13,7 @@ type InputProps = {
   placeHolder?: string | undefined;
   isPassword?: boolean;
   showInput?: boolean;
+  labelStyle?: object;
 };
 
 const Input = ({
@@ -27,6 +28,7 @@ const Input = ({
   placeHolder = "",
   isPassword = false,
   showInput = false,
+  labelStyle = {},
 }: InputProps) => {
   if (!isEdit) {
     return (
@@ -43,7 +45,9 @@ const Input = ({
   return (
     <>
       {label ? (
-        <p className="pb-4 text-sm text-fontColor-light">{label}</p>
+        <p className="pb-4 text-sm text-fontColor-light" style={labelStyle}>
+          {label}
+        </p>
       ) : null}
       <input
         className={`outline-none rounded-lg border border-fontColor-light px-4 py-1 w-full text-base text-fontColor-light bg-transparent font-thin placeholder-fontColor-light`}

@@ -6,7 +6,7 @@ const ExistingPlans = () => {
   return (
     <div className="flex flex-col py-5 px-8 border-t-2 border-fontColor-gray">
       <h2 className="text-3xl font-semibold  text-fontColor">
-        Renew or Add up to Esisting plans
+        Renew or Add up to Existing plans
       </h2>
       <div className="mt-2">
         <h4 className="text-xl font-semibold text-fontColor">
