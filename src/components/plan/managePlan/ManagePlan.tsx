@@ -13,10 +13,10 @@ const ManagePlan = () => {
           Choose to Renew your plans or upgrade to get more benefits
         </p>
         <div className="mt-4">
-          <PlanSelectButton outlined={true} text="Renew" />
+          <PlanSelectButton outlined={true} text="Add On" />
         </div>
         <div className="mt-4">
-          <PlanSelectButton text="Upgrade" />
+          <PlanSelectButton text="Change Subscription" />
         </div>
       </div>
     </div>

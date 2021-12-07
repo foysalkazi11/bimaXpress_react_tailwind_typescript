@@ -9,6 +9,7 @@ import AnalystUpdate from "./components/analyst/analystUpdateContainer/AnalystUp
 import Doctor from "./components/doctor/Doctor";
 import DoctorCreate from "./components/doctor/doctorCreate/DoctorCreate";
 import DoctorUpdate from "./components/doctor/doctorUpdateContainer/DoctorUpdateContainer";
+import NewCase from "./components/newCase/NewCase";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/doctor" element={<Doctor />} />
           <Route path="/doctor/create" element={<DoctorCreate />} />
           <Route path="/doctor/update" element={<DoctorUpdate />} />
+          <Route path="/newCase" element={<NewCase />} />
         </Routes>
       </Layout>
     </Router>
