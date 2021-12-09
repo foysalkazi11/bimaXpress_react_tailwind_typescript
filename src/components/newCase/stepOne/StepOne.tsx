@@ -5,7 +5,6 @@ import NewCaseSelect from "../../theme/select/newCaseSelect/NewCaseSelect";
 type StepOneProps = {
   newCaseData: any;
   setNewCaseData: any;
-  updateNewCaseData: (name: string, value: string) => void;
   nextStep: () => void;
 };
 
@@ -34,18 +33,18 @@ const TPA = [
   },
 ];
 
-const StepOne = ({
-  newCaseData,
-  setNewCaseData,
-  updateNewCaseData,
-  nextStep,
-}: StepOneProps) => {
+const StepOne = ({ newCaseData, setNewCaseData, nextStep }: StepOneProps) => {
+  const { detailsOfTPA } = newCaseData;
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    updateNewCaseData(name, value);
+    setNewCaseData((pre: any) => ({
+      ...pre,
+      detailsOfTPA: { ...pre?.detailsOfTPA, [name]: value },
+    }));
   };
+
   return (
     <div className="h-full relative">
       <div className="grid grid-cols-2 gap-8 ">
@@ -56,7 +55,7 @@ const StepOne = ({
             handleChange={handleChange}
             defaultOption="Select Insurance Company"
             label="Insurance Company"
-            value={newCaseData?.insuranceCompany || ""}
+            value={detailsOfTPA?.insuranceCompany || ""}
           />
         </div>
         <div className="col-span-1">
@@ -66,7 +65,7 @@ const StepOne = ({
             handleChange={handleChange}
             defaultOption="Select TPA"
             label="Third Party Administrator (TPA)"
-            value={newCaseData?.TPA || ""}
+            value={detailsOfTPA?.TPA || ""}
           />
         </div>
       </div>

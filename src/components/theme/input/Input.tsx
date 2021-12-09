@@ -50,7 +50,7 @@ const Input = ({
         </p>
       ) : null}
       <input
-        className={`outline-none rounded-lg border border-fontColor-light px-4 py-1 w-full text-base text-fontColor-light bg-transparent font-thin placeholder-fontColor-light`}
+        className={`outline-none rounded-lg border border-fontColor-light px-4 py-1 w-full text-base text-fontColor-light bg-transparent font-thin placeholder-primary-lightest `}
         value={value}
         name={name}
         onChange={(e) => handleChange(e)}

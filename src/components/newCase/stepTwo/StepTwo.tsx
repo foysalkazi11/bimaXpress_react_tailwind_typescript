@@ -6,21 +6,30 @@ import NewCaseSelect from "../../theme/select/newCaseSelect/NewCaseSelect";
 
 type StepTwoProps = {
   newCaseData: any;
+  setNewCaseData: any;
   updateNewCaseData: (name: string, value: string) => void;
   nextStep: () => void;
 };
 
 const StepTwo = ({
   newCaseData,
+  setNewCaseData,
   nextStep,
   updateNewCaseData,
 }: StepTwoProps) => {
+  const { patientDetails } = newCaseData;
+
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | any>
   ) => {
     const { name, value } = e.target;
-    updateNewCaseData(name, value);
+
+    setNewCaseData((pre: any) => ({
+      ...pre,
+      patientDetails: { ...pre?.patientDetails, [name]: value },
+    }));
   };
+
   return (
     <div className="h-full relative">
       <div className="grid grid-cols-2 gap-x-12 gap-y-6 ">
@@ -28,7 +37,7 @@ const StepTwo = ({
           <Input
             handleChange={handleChange}
             name="patientName"
-            value={newCaseData?.patientName || ""}
+            value={patientDetails?.patientName || ""}
             label="Patient name"
             labelStyle={{ paddingBottom: "12px" }}
           />
@@ -37,7 +46,7 @@ const StepTwo = ({
           <Input
             handleChange={handleChange}
             name="policyNumber"
-            value={newCaseData?.policyNumber || ""}
+            value={patientDetails?.policyNumber || ""}
             label="Policy number"
             labelStyle={{ paddingBottom: "12px" }}
           />
@@ -51,6 +60,7 @@ const StepTwo = ({
                 name="gender"
                 value="male"
                 radioLabel="Male"
+                fieldName={patientDetails?.gender || ""}
               />
             </div>
             <div className="mr-8">
@@ -59,6 +69,7 @@ const StepTwo = ({
                 name="gender"
                 value="female"
                 radioLabel="Female"
+                fieldName={patientDetails?.gender || ""}
               />
             </div>
             <div className="mr-8">
@@ -67,6 +78,7 @@ const StepTwo = ({
                 name="gender"
                 value="transgender"
                 radioLabel="Transgender"
+                fieldName={patientDetails?.gender || ""}
               />
             </div>
           </div>
@@ -75,16 +87,17 @@ const StepTwo = ({
           <Input
             handleChange={handleChange}
             name="employeeId"
-            value={newCaseData?.employeeId || ""}
+            value={patientDetails?.employeeId || ""}
             label="Employee ID"
             labelStyle={{ paddingBottom: "12px" }}
           />
         </div>
+
         <div className="col-span-1">
           <Input
             handleChange={handleChange}
             name="occupation"
-            value={newCaseData?.occupation || ""}
+            value={patientDetails?.occupation || ""}
             label="Occupation"
             labelStyle={{ paddingBottom: "12px" }}
           />
@@ -100,6 +113,7 @@ const StepTwo = ({
                 name="previousHealthInsurance"
                 value="yes"
                 radioLabel="Yes"
+                fieldName={patientDetails?.previousHealthInsurance || ""}
               />
             </div>
             <div className="mr-8">
@@ -108,6 +122,7 @@ const StepTwo = ({
                 name="previousHealthInsurance"
                 value="no"
                 radioLabel="No"
+                fieldName={patientDetails?.previousHealthInsurance || ""}
               />
             </div>
           </div>
@@ -117,7 +132,7 @@ const StepTwo = ({
           <Input
             handleChange={handleChange}
             name="contractNumber"
-            value={newCaseData?.contractNumber || ""}
+            value={patientDetails?.contractNumber || ""}
             label="Contract number"
             labelStyle={{ paddingBottom: "12px" }}
           />
@@ -134,6 +149,7 @@ const StepTwo = ({
                 name="familyPhysician"
                 value="yes"
                 radioLabel="Yes"
+                fieldName={patientDetails?.familyPhysician || ""}
               />
             </div>
             <div className="mr-8">
@@ -142,6 +158,7 @@ const StepTwo = ({
                 name="familyPhysician"
                 value="no"
                 radioLabel="No"
+                fieldName={patientDetails?.familyPhysician || ""}
               />
             </div>
           </div>
@@ -151,7 +168,7 @@ const StepTwo = ({
           <Input
             handleChange={handleChange}
             name="relativeContractNumber"
-            value={newCaseData?.relativeContractNumber || ""}
+            value={patientDetails?.relativeContractNumber || ""}
             label="Relative contract number"
             labelStyle={{ paddingBottom: "12px" }}
           />
@@ -165,7 +182,7 @@ const StepTwo = ({
                 handleChange={handleChange}
                 defaultOption="Select city"
                 label="City"
-                value={newCaseData?.city || ""}
+                value={patientDetails?.city || ""}
               />
             </div>
             <div className="col-span-1">
@@ -175,7 +192,7 @@ const StepTwo = ({
                 handleChange={handleChange}
                 defaultOption="Select state"
                 label="State"
-                value={newCaseData?.state || ""}
+                value={patientDetails?.state || ""}
               />
             </div>
           </div>
@@ -185,7 +202,7 @@ const StepTwo = ({
           <Input
             handleChange={handleChange}
             name="insuredCardNumber"
-            value={newCaseData?.insuredCardNumber || ""}
+            value={patientDetails?.insuredCardNumber || ""}
             label="Insured card number"
             labelStyle={{ paddingBottom: "12px" }}
           />
@@ -196,7 +213,7 @@ const StepTwo = ({
               <Input
                 handleChange={handleChange}
                 name="postalCode"
-                value={newCaseData?.postalCode || ""}
+                value={patientDetails?.postalCode || ""}
                 label="Postal code"
                 labelStyle={{ paddingBottom: "12px" }}
               />
