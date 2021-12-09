@@ -1,36 +1,36 @@
 import React from "react";
-import styles from "./InputRadio.module.css";
-type InputRadioProps = {
+import styles from "./InputCheckbox.module.css";
+
+type InputCheckboxProps = {
   name: string | undefined;
   value: string | number;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   label?: string;
-  radioLabel?: string;
-  fieldName: string | number;
+  checkboxLabel?: string;
+  fieldName: any;
 };
 
-const InputRadio = ({
+const InputCheckbox = ({
   handleChange,
   name,
   value,
-  label = "",
-  radioLabel = "",
+  checkboxLabel,
+  label,
   fieldName,
-}: InputRadioProps) => {
+}: InputCheckboxProps) => {
   return (
     <div className="flex flex-col">
       {label ? (
         <p className="pb-3 text-sm text-fontColor-light">{label}</p>
       ) : null}
-
-      <label className={styles.radioContainer}>
-        {radioLabel}
+      <label className={styles.container}>
+        {checkboxLabel}
         <input
-          type="radio"
+          type="checkbox"
           name={name}
           value={value}
-          checked={value === fieldName}
           onChange={handleChange}
+          checked={fieldName?.includes(value)}
         />
         <span className={styles.checkmark}></span>
       </label>
@@ -38,4 +38,4 @@ const InputRadio = ({
   );
 };
 
-export default InputRadio;
+export default InputCheckbox;

@@ -1,10 +1,17 @@
 import React, { useState } from "react";
 import ProgessBar from "./progessBar/ProgessBar";
+import StepFour from "./stepFour/StepFour";
 import StepOne from "./stepOne/StepOne";
+import StepThree from "./stepThree/StepThree";
 import StepTwo from "./stepTwo/StepTwo";
 
 const NewCase = () => {
-  const [newCaseData, setNewCaseData] = useState({});
+  const [newCaseData, setNewCaseData] = useState({
+    detailsOfTPA: {},
+    patientDetails: {},
+    diagnosisDetails: {},
+    admissionDetails: {},
+  });
 
   const [steps, setSteps] = useState(0);
 
@@ -36,7 +43,6 @@ const NewCase = () => {
           <StepOne
             newCaseData={newCaseData}
             setNewCaseData={setNewCaseData}
-            updateNewCaseData={updateNewCaseData}
             nextStep={nextStep}
           />
         );
@@ -44,7 +50,24 @@ const NewCase = () => {
         return (
           <StepTwo
             newCaseData={newCaseData}
+            setNewCaseData={setNewCaseData}
             updateNewCaseData={updateNewCaseData}
+            nextStep={nextStep}
+          />
+        );
+      case 3:
+        return (
+          <StepThree
+            newCaseData={newCaseData}
+            setNewCaseData={setNewCaseData}
+            nextStep={nextStep}
+          />
+        );
+      case 4:
+        return (
+          <StepFour
+            newCaseData={newCaseData}
+            setNewCaseData={setNewCaseData}
             nextStep={nextStep}
           />
         );
@@ -54,7 +77,6 @@ const NewCase = () => {
           <StepOne
             newCaseData={newCaseData}
             setNewCaseData={setNewCaseData}
-            updateNewCaseData={updateNewCaseData}
             nextStep={nextStep}
           />
         );
