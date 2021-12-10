@@ -88,7 +88,7 @@ const NewCase = () => {
       <div className="p-6">
         <ProgessBar steps={steps} prevStep={prevStep} />{" "}
       </div>
-      <div className="p-8 flex flex-col border-t border-fontColor-darkGray">
+      <div className="flex flex-col border-t border-fontColor-darkGray">
         {renderUI()}
       </div>
     </div>

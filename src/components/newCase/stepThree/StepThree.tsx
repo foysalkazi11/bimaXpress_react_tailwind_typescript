@@ -68,7 +68,7 @@ const StepThree = ({
   }, [newCaseData]);
 
   return (
-    <div>
+    <div className="p-8">
       <div className="grid grid-cols-2 gap-x-12 gap-y-6 ">
         <div className="col-span-1">
           <Input

@@ -20,7 +20,7 @@ const InputContained = ({
   name,
   label,
   max = "",
-  min = "",
+  min = "0",
   step = "",
   style,
   type = "number",
