@@ -1,5 +1,6 @@
 import React, { forwardRef } from "react";
 import { BsEyeSlash, BsEye } from "react-icons/bs";
+import styles from "./Input.module.css";
 
 type InputProps = {
   value: string | number;
@@ -50,7 +51,7 @@ const Input = ({
         </p>
       ) : null}
       <input
-        className={`outline-none rounded-lg border border-fontColor-light px-4 py-1 w-full text-base text-fontColor-light bg-transparent font-thin placeholder-primary-lightest `}
+        className={`outline-none rounded-lg border border-fontColor-light px-4 py-1 w-full text-base text-fontColor-light bg-transparent font-thin placeholder-primary-lightest ${styles.input}`}
         value={value}
         name={name}
         onChange={(e) => handleChange(e)}

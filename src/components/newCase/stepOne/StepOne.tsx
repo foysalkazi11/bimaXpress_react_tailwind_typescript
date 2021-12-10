@@ -46,7 +46,7 @@ const StepOne = ({ newCaseData, setNewCaseData, nextStep }: StepOneProps) => {
   };
 
   return (
-    <div className="h-full relative">
+    <div className="h-full relative m-8">
       <div className="grid grid-cols-2 gap-8 ">
         <div className="col-span-1">
           <NewCaseSelect
