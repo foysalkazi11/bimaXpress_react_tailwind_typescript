@@ -1,5 +1,6 @@
 import React from "react";
 import Input from "../../theme/input/Input";
+// import InputContained from "../../theme/inputContained/InputContained";
 import InputRadio from "../../theme/inputRadio/InputRadio";
 import NextButton from "../../theme/nextButton/NextButton";
 import NewCaseSelect from "../../theme/select/newCaseSelect/NewCaseSelect";
@@ -9,6 +10,9 @@ type StepTwoProps = {
   setNewCaseData: any;
   updateNewCaseData: (name: string, value: string) => void;
   nextStep: () => void;
+  yearList: { label: string; value: string }[];
+  months: { label: string; value: string }[];
+  days: { label: string; value: string }[];
 };
 
 const StepTwo = ({
@@ -16,6 +20,9 @@ const StepTwo = ({
   setNewCaseData,
   nextStep,
   updateNewCaseData,
+  days,
+  months,
+  yearList,
 }: StepTwoProps) => {
   const { patientDetails } = newCaseData;
 
@@ -30,10 +37,39 @@ const StepTwo = ({
     }));
   };
 
+  const handleDateOfBirth = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | any> | any,
+    key: string
+  ) => {
+    const { name, value } = e.target;
+    let day = patientDetails?.[name]?.slice(0, 2);
+    let month = patientDetails?.[name]?.slice(3, 5);
+    let year = patientDetails?.[name]?.slice(6);
+    if (key === "day") {
+      day = value;
+    } else if (key === "month") {
+      month = value;
+    } else {
+      year = value;
+    }
+
+    setNewCaseData((pre: any) => ({
+      ...pre,
+      patientDetails: {
+        ...pre?.patientDetails,
+        [name]: `${day || "00"}/${month || "00"}/${year}`,
+      },
+    }));
+  };
+
+  React.useEffect(() => {
+    console.log(newCaseData);
+  }, [newCaseData]);
+
   return (
     <div className="h-full relative">
-      <div className="flex justify-between ">
-        <div className=" flex-1 p-6 pb-0">
+      <div className="flex justify-between border-b border-fontColor-darkGray">
+        <div className=" flex-1 p-6 pb-12">
           <div>
             <Input
               handleChange={handleChange}
@@ -73,6 +109,42 @@ const StepTwo = ({
                   value="transgender"
                   radioLabel="Transgender"
                   fieldName={patientDetails?.gender || ""}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 ">
+            <p className="pb-4 text-sm text-fontColor-light">Date of birth</p>
+            <div className="flex items-center">
+              <div className="pr-4">
+                <NewCaseSelect
+                  options={days}
+                  name="DOB"
+                  handleChange={(e) => handleDateOfBirth(e, "day")}
+                  defaultOption="Day"
+                  value={patientDetails?.DOB?.slice(0, 2) || ""}
+                  style={{ maxWidth: "100px" }}
+                />
+              </div>
+              <div className="pr-4">
+                <NewCaseSelect
+                  options={months}
+                  name="DOB"
+                  handleChange={(e) => handleDateOfBirth(e, "month")}
+                  defaultOption="Month"
+                  value={patientDetails?.DOB?.slice(3, 5) || ""}
+                  style={{ maxWidth: "150px" }}
+                />
+              </div>
+              <div className="pr-8">
+                <NewCaseSelect
+                  options={yearList}
+                  name="DOB"
+                  handleChange={(e) => handleDateOfBirth(e, "year")}
+                  defaultOption="Year"
+                  value={patientDetails?.DOB?.slice(6) || ""}
+                  style={{ maxWidth: "120px" }}
                 />
               </div>
             </div>
@@ -240,7 +312,7 @@ const StepTwo = ({
         </div>
       </div>
 
-      <div className="mt-18 flex items-end justify-end p-8">
+      <div className="mt-18 flex items-end justify-end p-6">
         <NextButton handleClick={nextStep} />
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import InputContained from "../../theme/inputContained/InputContained";
 import InputDate from "../../theme/inputDate/InputDate";
 import InputRadio from "../../theme/inputRadio/InputRadio";
@@ -10,20 +10,6 @@ const roomType = [
   { label: "Single room", value: "singleRoom" },
   { label: "Double room", value: "doubleRoom" },
   { label: "Semi double room", value: "semiDoubleRoom" },
-];
-const months = [
-  { label: "January", value: "01" },
-  { label: "February", value: "02" },
-  { label: "March", value: "03" },
-  { label: "April", value: "04" },
-  { label: "May", value: "05" },
-  { label: "June", value: "06" },
-  { label: "July", value: "07" },
-  { label: "August", value: "08" },
-  { label: "September", value: "09" },
-  { label: "October", value: "10" },
-  { label: "November", value: "12" },
-  { label: "December", value: "12" },
 ];
 
 const inputStyle = {
@@ -37,13 +23,18 @@ type StepFourProps = {
   newCaseData: any;
   setNewCaseData: any;
   nextStep: () => void;
+  yearList: { label: string; value: string }[];
+  months: { label: string; value: string }[];
 };
 
-const StepFour = ({ newCaseData, nextStep, setNewCaseData }: StepFourProps) => {
+const StepFour = ({
+  newCaseData,
+  nextStep,
+  setNewCaseData,
+  months,
+  yearList,
+}: StepFourProps) => {
   const { admissionDetails } = newCaseData;
-  const [yearList, setYearList] = useState<{ label: string; value: string }[]>(
-    []
-  );
 
   const handleDate = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | any> | any,
@@ -77,18 +68,6 @@ const StepFour = ({ newCaseData, nextStep, setNewCaseData }: StepFourProps) => {
       admissionDetails: { ...pre?.admissionDetails, [name]: value },
     }));
   };
-
-  useEffect(() => {
-    let arr = [];
-    for (let i = 2000; i <= 2500; i++) {
-      arr.push({ label: `${i}`, value: `${i}` });
-    }
-    setYearList(arr);
-  }, []);
-
-  useEffect(() => {
-    console.log(newCaseData);
-  }, [newCaseData]);
 
   return (
     <div className="pb-8">

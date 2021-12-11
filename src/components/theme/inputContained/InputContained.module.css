@@ -9,10 +9,7 @@
   padding: 8px;
 }
 
-/* .inputContained::-webkit-inner-spin-button,
+.inputContained::-webkit-inner-spin-button,
 .inputContained::-webkit-outer-spin-button {
   opacity: 1;
-  width: 14px;
-  height: 30px;
-  background: black !important;
-} */
+}
