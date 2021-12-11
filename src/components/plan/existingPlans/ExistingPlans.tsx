@@ -1,10 +1,14 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import SinglePlan from "../../theme/plan/SinglePlan";
 import styles from "./ExistingPlan.module.css";
 
-const ExistingPlans = () => {
+type ExistingPlansProps = {
+  setRender: Dispatch<SetStateAction<string>>;
+};
+
+const ExistingPlans = ({ setRender }: ExistingPlansProps) => {
   return (
-    <div className="flex flex-col py-5 px-8 border-t-2 border-fontColor-gray">
+    <div className="flex flex-col py-5 px-8">
       <h2 className="text-3xl font-semibold  text-fontColor">
         Renew or Add up to Existing plans
       </h2>
