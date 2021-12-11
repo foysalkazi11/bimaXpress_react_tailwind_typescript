@@ -1,8 +1,11 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import styles from "./ManagePlan.module.css";
 import PlanSelectButton from "../../theme/button/PlanSelectButton";
+type ManagePlanProps = {
+  setRender: Dispatch<SetStateAction<string>>;
+};
 
-const ManagePlan = () => {
+const ManagePlan = ({ setRender }: ManagePlanProps) => {
   return (
     <div>
       <div className="pb-5">
@@ -13,10 +16,17 @@ const ManagePlan = () => {
           Choose to Renew your plans or upgrade to get more benefits
         </p>
         <div className="mt-4">
-          <PlanSelectButton outlined={true} text="Add On" />
+          <PlanSelectButton
+            outlined={true}
+            text="Add On"
+            handleClick={() => setRender("addOn")}
+          />
         </div>
         <div className="mt-4">
-          <PlanSelectButton text="Change Subscription" />
+          <PlanSelectButton
+            text="Change Subscription"
+            handleClick={() => setRender("subscription")}
+          />
         </div>
       </div>
     </div>
