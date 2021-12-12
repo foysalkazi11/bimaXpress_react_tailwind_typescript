@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import { useTable, useFilters } from "react-table";
+import React, { useState, useEffect } from "react";
+import { useTable, useGlobalFilter, usePagination, Row } from "react-table";
 import { BsEye } from "react-icons/bs";
 import styles from "./Analysts.module.css";
 import FormButton from "../theme/button/FormButton";
 import TableSearch from "../theme/table/tableSearchInput/TableSearchInput";
 import TableSearchButton from "../theme/table/tableSearchButton/TableSearchButton";
 import { Link } from "react-router-dom";
+import PaginationButton from "../theme/PaginationButton/PaginationButton";
 
 interface ColumnDetails {
   [key: string]: any;
@@ -70,6 +71,39 @@ const Analyst = () => {
           </Link>
         ),
       },
+      {
+        name: "Kumar",
+        EmployeeId: "A2568021",
+        emailAddress: "kumar@gmail.com",
+        mobile: "+91 0214254",
+        action: (
+          <Link to="/analyst/update">
+            <BsEye className="text-lg" />
+          </Link>
+        ),
+      },
+      {
+        name: "Selvam Rahaman",
+        EmployeeId: "HAH621",
+        emailAddress: "selvamrahaman2021@gmail.com",
+        mobile: "+91 024142574",
+        action: (
+          <Link to="/analyst/update">
+            <BsEye className="text-lg" />
+          </Link>
+        ),
+      },
+      {
+        name: "Prakash Nandi",
+        EmployeeId: "AH20gh281",
+        emailAddress: "Prakashnandi2021@gmail.com",
+        mobile: "+91 024142754",
+        action: (
+          <Link to="/analyst/update">
+            <BsEye className="text-lg" />
+          </Link>
+        ),
+      },
     ],
     []
   );
@@ -100,8 +134,30 @@ const Analyst = () => {
     []
   );
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable({ columns, data }, useFilters);
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    //@ts-ignore
+    page,
+    prepareRow,
+    //@ts-ignore
+    setGlobalFilter,
+    // @ts-ignore
+    nextPage,
+    // @ts-ignore
+    previousPage,
+    // @ts-ignore
+    canNextPage,
+    // @ts-ignore
+    canPreviousPage,
+    // @ts-ignore
+    setPageSize,
+  } = useTable({ columns, data }, useGlobalFilter, usePagination);
+
+  useEffect(() => {
+    setPageSize(5);
+  }, [setPageSize]);
 
   return (
     <div className="py-6 px-10 w-full flex flex-col">
@@ -119,7 +175,7 @@ const Analyst = () => {
           </div>
           <div className="mt-6 ">
             <TableSearchButton
-            // handleClick={() => state("name", inputValue)}
+              handleClick={() => setGlobalFilter(inputValue)}
             />
           </div>
         </div>
@@ -144,7 +200,7 @@ const Analyst = () => {
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
+          {page.map((row: Row<ColumnDetails>) => {
             prepareRow(row);
             return (
               <tr {...row.getRowProps()}>
@@ -163,6 +219,26 @@ const Analyst = () => {
           })}
         </tbody>
       </table>
+      <div className="flex items-center justify-between pt-7">
+        <p className="text-sm text-fontColor text-semibold">
+          Results:{" "}
+          <span className="text-sm text-fontColor pl-1">{page?.length}</span>{" "}
+        </p>
+        <div className="flex">
+          <div className="pr-2">
+            <PaginationButton
+              leftIcon={true}
+              handleClick={() => previousPage()}
+              disability={!canPreviousPage}
+            />
+          </div>
+          <PaginationButton
+            rightIcon={true}
+            handleClick={() => nextPage()}
+            disability={!canNextPage}
+          />
+        </div>
+      </div>
     </div>
   );
 };
