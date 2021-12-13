@@ -48,14 +48,14 @@ const menuList = [
   },
 
   {
-    name: "Approved",
-    icon: approved,
-    amount: 50,
-  },
-  {
     name: "Discharge Approved",
     icon: dischargedApproved,
     amount: 20,
+  },
+  {
+    name: "Settle",
+    icon: approved,
+    amount: 50,
   },
 ];
 
