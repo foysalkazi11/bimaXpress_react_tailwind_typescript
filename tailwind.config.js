@@ -14,6 +14,7 @@ module.exports = {
         secondary: {
           light: "#5A5A5A",
           DEFAULT: "#535353",
+          dark: "#FFFFFF17",
         },
 
         fontColor: {

@@ -76,7 +76,7 @@ const sideBarMenu = [
       <AiOutlineShoppingCart className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />
     ),
 
-    pageLink: "#",
+    pageLink: "/order",
   },
 ];
 
