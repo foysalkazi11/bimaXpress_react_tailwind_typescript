@@ -11,6 +11,7 @@ import DoctorCreate from "./components/doctor/doctorCreate/DoctorCreate";
 import DoctorUpdate from "./components/doctor/doctorUpdateContainer/DoctorUpdateContainer";
 import NewCase from "./components/newCase/NewCase";
 import Order from "./components/order/Order";
+import Drafts from "./components/drafts/Drafts";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/doctor/update" element={<DoctorUpdate />} />
           <Route path="/newCase" element={<NewCase />} />
           <Route path="/order" element={<Order />} />
+          <Route path="/drafts" element={<Drafts />} />
         </Routes>
       </Layout>
     </Router>

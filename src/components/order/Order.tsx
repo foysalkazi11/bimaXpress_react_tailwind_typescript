@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import BookOrder from "./bookOrder/BookOrder";
+import OrderHistory from "./orderHistory/OrderHistory";
+import TrackOrder from "./trackOrders/TrackOrder";
 
 const tabs = ["Book order", "Track orders", "Order history"];
 
@@ -10,9 +12,13 @@ const Order = () => {
     switch (activeTab) {
       case 0:
         return <BookOrder />;
+      case 1:
+        return <TrackOrder />;
+      case 2:
+        return <OrderHistory />;
 
       default:
-        return <BookOrder />;
+        return <OrderHistory />;
     }
   };
   return (

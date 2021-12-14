@@ -9,13 +9,13 @@ type StepOneProps = {
 };
 
 const insuranceCompany = [
-  { label: "Health India Insurance", value: "Health India Insurance" },
-  { label: "Reliance General Insurance", value: "Reliance General Insurance" },
-  { label: "Futura General Insurance", value: "Futura General Insurance" },
-  { label: "Medsave Health Insurance", value: "Medsave Health Insurance" },
+  { label: "Health India Insurance", value: "health_india_insurance" },
+  { label: "Reliance General Insurance", value: "reliance_general_nsurance" },
+  { label: "Futura General Insurance", value: "futura_general_insurance" },
+  { label: "Medsave Health Insurance", value: "medsave_health_insurance" },
   {
     label: "Bajaj Allianz Life Insurance",
-    value: "Bajaj Allianz Life Insurance",
+    value: "bajaj_allianz_life_insurance",
   },
 ];
 const TPA = [
