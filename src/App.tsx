@@ -12,6 +12,9 @@ import DoctorUpdate from "./components/doctor/doctorUpdateContainer/DoctorUpdate
 import NewCase from "./components/newCase/NewCase";
 import Order from "./components/order/Order";
 import Drafts from "./components/drafts/Drafts";
+import EmpanelledCompanies from "./components/empanelled/EmpanelledCompanies";
+import CreateCompany from "./components/empanelled/createCompany/CreateCompany";
+import UpdateCompanies from "./components/empanelled/updateCompanies/UpdateCompanies";
 
 function App() {
   return (
@@ -30,6 +33,18 @@ function App() {
           <Route path="/newCase" element={<NewCase />} />
           <Route path="/order" element={<Order />} />
           <Route path="/drafts" element={<Drafts />} />
+          <Route
+            path="/empanelledCompanies"
+            element={<EmpanelledCompanies />}
+          />
+          <Route
+            path="/empanelledCompanies/create"
+            element={<CreateCompany />}
+          />
+          <Route
+            path="/empanelledCompanies/update"
+            element={<UpdateCompanies />}
+          />
         </Routes>
       </Layout>
     </Router>
