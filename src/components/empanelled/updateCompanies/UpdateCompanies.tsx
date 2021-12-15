@@ -6,6 +6,7 @@ import FormButton from "../../theme/button/FormButton";
 import BajajLogo from "../../../assets/images/Bajaj-Logo.png";
 import InputDate from "../../theme/inputDate/InputDate";
 import left_arrow from "../../../assets/icon/left_arrow.svg";
+import { Link } from "react-router-dom";
 
 const UpdateCompanies = () => {
   const [isEdit, setIsEdit] = useState(false);
@@ -39,11 +40,7 @@ const UpdateCompanies = () => {
         </div>
       </div>
       <div className="flex justify-center">
-        <div
-          className={`w-full h-full mx-4  z-10  ${styles.inputContainer} ${
-            isEdit ? " " : styles.adjustMargin
-          }`}
-        >
+        <div className={`w-full h-full mx-4  z-10  ${styles.inputContainer} `}>
           {isEdit ? (
             <div className="flex items-center justify-between">
               <div
@@ -55,7 +52,14 @@ const UpdateCompanies = () => {
               </div>
               <div className={styles.uploadLogo}>Upload Logo</div>
             </div>
-          ) : null}
+          ) : (
+            <div className="w-10 h-10 flex justify-center items-center rounded-full mb-4 bg-secondary-light opacity-95 cursor-pointer ">
+              {" "}
+              <Link to="/empanelledCompanies">
+                <img src={left_arrow} alt="icon" />
+              </Link>
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-x-8  mb-4 bg-primary-lighter px-8 py-4 rounded-xl opacity-95">
             {/* <div className="col-span-2 lg:col-span-1 pb-6">
