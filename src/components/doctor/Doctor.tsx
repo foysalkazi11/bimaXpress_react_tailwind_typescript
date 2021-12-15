@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useTable, useGlobalFilter, usePagination, Row } from "react-table";
+import { useTable, useGlobalFilter, usePagination } from "react-table";
 import { BsEye } from "react-icons/bs";
-import styles from "./Doctor.module.css";
 import FormButton from "../theme/button/FormButton";
 import TableSearch from "../theme/table/tableSearchInput/TableSearchInput";
 import TableSearchButton from "../theme/table/tableSearchButton/TableSearchButton";
 import { Link } from "react-router-dom";
-import PaginationButton from "../theme/PaginationButton/PaginationButton";
+import ReactTable from "../theme/reactTable/ReactTable";
 
 interface ColumnDetails {
   [key: string]: any;
 }
 
-const Analyst = () => {
+const Doctor = () => {
   const [inputValue, setInputValue] = useState("");
   const data = React.useMemo<ColumnDetails[]>(
     () => [
@@ -195,64 +194,19 @@ const Analyst = () => {
           <FormButton text="Add Doctor" iconPlus={true} />
         </Link>
       </div>
-
-      <table {...getTableProps()} className="w-full mt-8 overflow-x-scroll">
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th
-                  {...column.getHeaderProps()}
-                  className={`bg-secondary py-3 px-4 text-sm font-semibold text-fontColor text-left ${styles.tableHeader}`}
-                >
-                  {column.render("Header")}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row: Row<ColumnDetails>) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => {
-                  return (
-                    <td
-                      {...cell.getCellProps()}
-                      className="px-4 pt-5 pb-12 border-b border-fontColor-darkGray text-sm text-fontColor font-thin last:border-b-0"
-                    >
-                      {cell.render("Cell")}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <div className="flex items-center justify-between pt-7">
-        <p className="text-sm text-fontColor text-semibold">
-          Results:{" "}
-          <span className="text-sm text-fontColor pl-1">{page?.length}</span>{" "}
-        </p>
-        <div className="flex">
-          <div className="pr-2">
-            <PaginationButton
-              leftIcon={true}
-              handleClick={() => previousPage()}
-              disability={!canPreviousPage}
-            />
-          </div>
-          <PaginationButton
-            rightIcon={true}
-            handleClick={() => nextPage()}
-            disability={!canNextPage}
-          />
-        </div>
-      </div>
+      <ReactTable
+        getTableProps={getTableProps}
+        getTableBodyProps={getTableBodyProps}
+        headerGroups={headerGroups}
+        page={page}
+        prepareRow={prepareRow}
+        nextPage={nextPage}
+        previousPage={previousPage}
+        canNextPage={canNextPage}
+        canPreviousPage={canPreviousPage}
+      />
     </div>
   );
 };
 
-export default Analyst;
+export default Doctor;
