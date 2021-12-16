@@ -123,8 +123,8 @@ const sideBarMenu = [
 ];
 
 const SiderBar = () => {
-  const [activeMenu, setActiveMenu] = useState(0);
-  const [openEmailMenu, setOpenEmailMenu] = useState(true);
+  const [activeMenu, setActiveMenu] = useState(7);
+  const [openEmailMenu, setOpenEmailMenu] = useState(false);
   const [activeMailMenu, setActiveMailMenu] = useState(0);
 
   const handleEmailMenu = (num: number) => {
