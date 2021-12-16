@@ -15,6 +15,7 @@ import Drafts from "./components/drafts/Drafts";
 import EmpanelledCompanies from "./components/empanelled/EmpanelledCompanies";
 import CreateCompany from "./components/empanelled/createCompany/CreateCompany";
 import UpdateCompanies from "./components/empanelled/updateCompanies/UpdateCompanies";
+import Mail from "./components/mail/Mail";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/newCase" element={<NewCase />} />
           <Route path="/order" element={<Order />} />
           <Route path="/drafts" element={<Drafts />} />
+          <Route path="/mail" element={<Mail />} />
           <Route
             path="/empanelledCompanies"
             element={<EmpanelledCompanies />}
