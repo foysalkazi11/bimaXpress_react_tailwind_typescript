@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import search_icon from "../../assets/icon/search_icon.svg";
 import deleteIcon from "../../assets/icon/delete_icon.svg";
 import openBook from "../../assets/icon/book_open.svg";
@@ -6,9 +6,11 @@ import smellEditIcon from "../../assets/icon/small_edit_icon.svg";
 import { RiSpamLine } from "react-icons/ri";
 import styles from "./Mail.module.css";
 import GeneralCheckbox from "../theme/generalCheckbox/GeneralCheckbox";
-import corner_up_left_alt from "../../assets/icon/corner-up-left-alt.svg";
-import corner_up_right_alt from "../../assets/icon/corner_up_right_alt.svg";
 import big_edit_icon from "../../assets/icon/big_edit_icon.svg";
+import MailDescripationHeader from "./mailDescripationHeader/MailDescripationHeader";
+import MailDescripation from "./mailDescripatio/MailDescripation";
+import ApproveModal from "./approveModal/ApproveModal";
+import ComposeModal from "./composeModal/ComposeModal";
 
 const mailList = [
   {
@@ -53,6 +55,33 @@ const mailList = [
   },
 ];
 const Mail = () => {
+  const [mailDes, setMailDes] = useState(0);
+  const [openApproveModal, setOpenApproveModal] = useState(false);
+  const [openComposeModal, setOpenComposeModal] = useState(false);
+
+  const handleOpenApproveModal = () => {
+    setOpenApproveModal((pre) => !pre);
+  };
+  const handleOpenComposeModal = () => {
+    setOpenComposeModal((pre) => !pre);
+  };
+
+  const renderUI = () => {
+    switch (mailDes) {
+      case 0:
+        return <MailDescripationHeader />;
+      case 1:
+        return (
+          <MailDescripation
+            openApproveModal={openApproveModal}
+            handleOpenApproveModal={handleOpenApproveModal}
+          />
+        );
+
+      default:
+        return <MailDescripationHeader />;
+    }
+  };
   return (
     <div className="grid grid-cols-12">
       <div className="col-span-5 bg-primary-dark min-h-screen">
@@ -72,7 +101,12 @@ const Mail = () => {
 
               <RiSpamLine className="mx-2 text-fontColor text-2xl" />
             </div>
-            <img src={smellEditIcon} alt="icon" />
+            <img
+              src={smellEditIcon}
+              alt="icon"
+              onClick={handleOpenComposeModal}
+              className="cursor-pointer"
+            />
           </div>
         </div>
         <div className="border-t-2 border-fontColor-darkGray p-4  ">
@@ -84,10 +118,21 @@ const Mail = () => {
                 </div>
                 <div className="col-span-11 mb-4 pb-3 border-b border-fontColor-darkGray">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-xl text-fontColor"> {mail?.heading}</h2>
+                    <div
+                      onClick={() => setMailDes(1)}
+                      className="cursor-pointer"
+                    >
+                      <h2 className="text-xl text-fontColor">
+                        {" "}
+                        {mail?.heading}
+                      </h2>
+                      <p className="text-xs text-fontColor">
+                        {mail?.sebHeading}
+                      </p>
+                    </div>
                     <p className="text-xs text-fontColor">{mail?.date}</p>
                   </div>
-                  <p className="text-xs text-fontColor">{mail?.sebHeading}</p>
+
                   <p className="text-sm text-fontColor mt-4">
                     {mail?.discripation}
                   </p>
@@ -98,22 +143,24 @@ const Mail = () => {
         </div>
       </div>
       <div className="col-span-7 bg-primary-light min-h-full p-4 relative">
-        <div className="flex items-center justify-end">
-          <div className="flex items-center">
-            <p className="text-xs text-fontColor opacity-80 mx-2">
-              10 November 2021
-            </p>
-            <img src={deleteIcon} alt="icon" className="px-2" />
-            <img src={corner_up_right_alt} alt="icon" className="px-2" />
-            <img src={corner_up_left_alt} alt="icon" className="px-2" />
-            <RiSpamLine className="mx-2 text-fontColor text-2xl" />
-          </div>
+        {renderUI()}
+        <div className={styles.compareButContainer}>
+          <button
+            className={`${styles.compostBtn}`}
+            onClick={handleOpenComposeModal}
+          >
+            <img src={big_edit_icon} alt="icon" className="mr-2" />
+            Compose
+          </button>
         </div>
-
-        <button className={styles.compostBtn}>
-          <img src={big_edit_icon} alt="icon" className="mr-2" />
-          Compose
-        </button>
+        <ApproveModal
+          isOpen={openApproveModal}
+          closeModal={handleOpenApproveModal}
+        />
+        <ComposeModal
+          isOpen={openComposeModal}
+          closeModal={handleOpenComposeModal}
+        />
       </div>
     </div>
   );
