@@ -10,6 +10,7 @@ type InputDateProps = {
   label?: string;
   style?: object;
   type?: string;
+  labelStyle?: object;
 };
 
 const InputDate = ({
@@ -18,11 +19,16 @@ const InputDate = ({
   label,
   value,
   style = {},
+  labelStyle = {},
   type = "date",
 }: InputDateProps) => {
   return (
     <div>
-      {label ? <p className="pb-3 text-sm text-fontColor ">{label}</p> : null}
+      {label ? (
+        <p className="pb-3 text-sm text-fontColor " style={labelStyle}>
+          {label}
+        </p>
+      ) : null}
 
       <input
         type={type}
