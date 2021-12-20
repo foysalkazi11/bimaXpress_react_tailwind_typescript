@@ -71,7 +71,7 @@ const StepOne = ({ newCaseData, setNewCaseData, nextStep }: StepOneProps) => {
       </div>
 
       <div className="absolute right-0 " style={{ top: "650px" }}>
-        <NextButton handleClick={nextStep} />
+        <NextButton iconRight={true} handleClick={nextStep} />
       </div>
     </div>
   );

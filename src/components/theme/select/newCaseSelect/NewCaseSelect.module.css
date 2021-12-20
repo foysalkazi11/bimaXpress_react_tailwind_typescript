@@ -1,23 +1,25 @@
 .select {
   width: 100%;
   height: 40px;
-  background: #ffffff17 !important;
+  background: #ffffff17;
   border: none;
   outline: none;
   color: #919191;
   border-radius: 5px;
   padding: 8px;
 
-  /* -webkit-appearance: none;
+  -webkit-appearance: none;
   appearance: none;
-  background-color: #fbfbfb;
-  background-image: url("../../../../assets/images/caret-down.png");
+  background-image: url("../../../../assets/images/downArrow.png");
   background-repeat: no-repeat;
-  background-position: 93%;
-  background-size: 16px;
+  background-position: 96%;
+  background-size: 10px;
   box-shadow: none;
   text-indent: 1px;
-  text-overflow: ""; */
+  text-overflow: "";
+
+  /* filter: brightness(0) invert(1);
+  opacity: 1 !important; */
 }
 
 .option {

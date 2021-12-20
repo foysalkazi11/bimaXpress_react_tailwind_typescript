@@ -43,68 +43,56 @@ const Drafts = () => {
   const data = React.useMemo<ColumnDetails[]>(
     () => [
       {
-        orderId: "TFS4556dD",
-        patientName: "Pranav vikram",
-        deliveryAddress:
-          "Akshya Nagar, Block 1st Cross, Rammurthy nagar, Bangalore-560016",
-        OrderedDate: "20 Nov 2021",
-        status: "Active",
-        registeredNumber: "AH2021",
+        name: "Pranav vikram",
+        phone: 9898525481,
+        claimNumber: "TFS4556dD",
+        admissionDate: "20 Nov 2021",
+        claimAmount: "2000",
         insuranceTPA: "Health India Insurance",
         action: <img src={download} alt="icon" />,
       },
       {
-        orderId: "TFS47556dD",
-        patientName: "Chandar sekar",
-        deliveryAddress:
-          "Akshya Nagar, Block 1st Cross, Rammurthy nagar, Bangalore-560016",
-        OrderedDate: "20 Oct 2021",
-        status: "Active",
-        registeredNumber: "AH25021",
+        name: "Chandar sekar",
+        phone: 9898525481,
+        claimNumber: "TFS47556dD",
+        admissionDate: "20 Nov 2021",
+        claimAmount: "3000",
         insuranceTPA: "Reliance General Insurance",
         action: <img src={download} alt="icon" />,
       },
       {
-        orderId: "T4556dD",
-        patientName: "Sai shree",
-        deliveryAddress:
-          "Akshya Nagar, Block 1st Cross, Rammurthy nagar, Bangalore-560016",
-        OrderedDate: "20 Nov 2021",
-        status: "Pending",
-        registeredNumber: "AH20521",
+        name: "Sai shree",
+        phone: 9898525481,
+        claimNumber: "T4556dD",
+        admissionDate: "20 Nov 2021",
+        claimAmount: "3000",
         insuranceTPA: "Futura Generali Insurance",
         action: <img src={download} alt="icon" />,
       },
       {
-        orderId: "RFS56dD",
-        patientName: "Rupa rajesh",
-        deliveryAddress:
-          "Akshya Nagar, Block 1st Cross, Rammurthy nagar, Bangalore-560016",
-        OrderedDate: "20 Nov 2021",
-        status: "Active",
-        registeredNumber: "AH26721",
+        name: "Rupa rajesh",
+        phone: 9898525481,
+        claimNumber: "RFS56dD",
+        admissionDate: "20 Nov 2021",
+        claimAmount: "2300",
         insuranceTPA: "Medsave Health Insurance",
         action: <img src={download} alt="icon" />,
       },
       {
-        orderId: "TFS4556dD",
-        patientName: "vikram",
-        deliveryAddress:
-          "Akshya Nagar, Block 1st Cross, Rammurthy nagar, Bangalore-560016",
-        OrderedDate: "20 Nov 2021",
-        status: "Active",
-        registeredNumber: "AH92021",
+        name: "vikram",
+        phone: 9898525481,
+        claimNumber: "TFS4556dD",
+        admissionDate: "20 Nov 2021",
+        claimAmount: "2300",
         insuranceTPA: "Bajaj Allianz Life Insurance",
         action: <img src={download} alt="icon" />,
       },
       {
-        orderId: "TDS4556dD",
-        patientName: "Kumar",
-        deliveryAddress:
-          "Akshya Nagar, Block 1st Cross, Rammurthy nagar, Bangalore-560016",
-        OrderedDate: "10 May 2021",
-        status: "Active",
-        registeredNumber: "AH2021",
+        name: "Kumar",
+        phone: 9898525481,
+        claimNumber: "TDS4556dD",
+        admissionDate: "20 Nov 2021",
+        claimAmount: "2300",
         insuranceTPA: "Bajaj Allianz Life Insurance",
         action: <img src={download} alt="icon" />,
       },
@@ -115,29 +103,30 @@ const Drafts = () => {
   const columns = React.useMemo(
     () => [
       {
-        Header: "Order ID",
-        accessor: "orderId", // accessor is the "key" in the data
+        Header: "Name",
+        accessor: "name", // accessor is the "key" in the data
       },
       {
-        Header: "Patient name",
-        accessor: "patientName",
+        Header: "Phone",
+        accessor: "phone",
       },
       {
-        Header: "Delivery Address",
-        accessor: "deliveryAddress",
+        Header: "Claim number",
+        accessor: "claimNumber",
       },
       {
-        Header: "Ordered date",
-        accessor: "OrderedDate",
+        Header: "Admission date",
+        accessor: "admissionDate",
       },
       {
-        Header: "Status",
-        accessor: "status",
+        Header: "Claim amount",
+        accessor: "claimAmount",
       },
       {
         Header: "Insurance TPA",
         accessor: "insuranceTPA",
       },
+
       {
         Header: "Action",
         accessor: "action",

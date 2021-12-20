@@ -496,7 +496,7 @@ const StepFour = ({
             amout
           </p>
           <div className="flex pt-8">
-            <NextButton icon={false} text="Save" />
+            <NextButton text="Save" />
           </div>
         </div>
       </div>
