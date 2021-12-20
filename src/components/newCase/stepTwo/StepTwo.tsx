@@ -10,6 +10,7 @@ type StepTwoProps = {
   setNewCaseData: any;
   updateNewCaseData: (name: string, value: string) => void;
   nextStep: () => void;
+  prevStep: () => void;
   yearList: { label: string; value: string }[];
   months: { label: string; value: string }[];
   days: { label: string; value: string }[];
@@ -19,6 +20,7 @@ const StepTwo = ({
   newCaseData,
   setNewCaseData,
   nextStep,
+  prevStep,
   updateNewCaseData,
   days,
   months,
@@ -124,7 +126,7 @@ const StepTwo = ({
                   handleChange={(e) => handleDateOfBirth(e, "day")}
                   defaultOption="Day"
                   value={patientDetails?.DOB?.slice(0, 2) || ""}
-                  style={{ maxWidth: "100px" }}
+                  style={{ minWidth: "60px" }}
                 />
               </div>
               <div className="pr-4">
@@ -134,7 +136,7 @@ const StepTwo = ({
                   handleChange={(e) => handleDateOfBirth(e, "month")}
                   defaultOption="Month"
                   value={patientDetails?.DOB?.slice(3, 5) || ""}
-                  style={{ maxWidth: "150px" }}
+                  style={{ minWidth: "120px" }}
                 />
               </div>
               <div className="pr-8">
@@ -144,7 +146,7 @@ const StepTwo = ({
                   handleChange={(e) => handleDateOfBirth(e, "year")}
                   defaultOption="Year"
                   value={patientDetails?.DOB?.slice(6) || ""}
-                  style={{ maxWidth: "120px" }}
+                  style={{ minWidth: "80px" }}
                 />
               </div>
             </div>
@@ -312,8 +314,9 @@ const StepTwo = ({
         </div>
       </div>
 
-      <div className="mt-18 flex items-end justify-end p-6">
-        <NextButton handleClick={nextStep} />
+      <div className="mt-18 flex items-center justify-between p-6">
+        <NextButton iconLeft={true} text="Back" handleClick={prevStep} />
+        <NextButton iconRight={true} handleClick={nextStep} />
       </div>
     </div>
   );

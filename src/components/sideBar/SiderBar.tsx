@@ -29,7 +29,7 @@ const emailMenu = {
 };
 const innerMailMenu = [
   {
-    name: "inbox",
+    name: "Inbox",
     amount: 200,
     icon: (
       <MdOutlineInbox className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />
@@ -37,7 +37,7 @@ const innerMailMenu = [
     pageLink: "#",
   },
   {
-    name: "inbox",
+    name: "Sent",
     amount: 120,
     icon: <FiSend className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />,
     pageLink: "#",

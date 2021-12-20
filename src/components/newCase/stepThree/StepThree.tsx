@@ -10,11 +10,13 @@ type StepThreeProps = {
   newCaseData: any;
   setNewCaseData: any;
   nextStep: () => void;
+  prevStep: () => void;
 };
 
 const StepThree = ({
   newCaseData,
   nextStep,
+  prevStep,
   setNewCaseData,
 }: StepThreeProps) => {
   const { diagnosisDetails } = newCaseData;
@@ -431,8 +433,9 @@ const StepThree = ({
         </div>
       </div>
 
-      <div className="p-6 flex items-end justify-end">
-        <NextButton handleClick={nextStep} />
+      <div className="p-6 flex items-center justify-between">
+        <NextButton iconLeft={true} text="Back" handleClick={prevStep} />
+        <NextButton iconRight={true} handleClick={nextStep} />
       </div>
     </div>
   );

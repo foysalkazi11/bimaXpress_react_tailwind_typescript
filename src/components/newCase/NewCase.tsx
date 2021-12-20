@@ -63,13 +63,21 @@ const NewCase = () => {
       setSteps((pre) => pre + 1);
     }
   };
-  const prevStep = (val: number) => {
+  const setStep = (val: number) => {
     console.log(val);
 
     if (val > 4) {
       return;
     } else {
       setSteps(val);
+    }
+  };
+
+  const prevStep = () => {
+    if (steps <= 1) {
+      return;
+    } else {
+      setSteps((pre) => pre - 1);
     }
   };
 
@@ -90,6 +98,7 @@ const NewCase = () => {
             setNewCaseData={setNewCaseData}
             updateNewCaseData={updateNewCaseData}
             nextStep={nextStep}
+            prevStep={prevStep}
             months={months}
             yearList={yearList}
             days={day}
@@ -101,6 +110,7 @@ const NewCase = () => {
             newCaseData={newCaseData}
             setNewCaseData={setNewCaseData}
             nextStep={nextStep}
+            prevStep={prevStep}
           />
         );
       case 4:
@@ -128,7 +138,7 @@ const NewCase = () => {
   return (
     <div>
       <div className="p-6">
-        <ProgessBar steps={steps} prevStep={prevStep} />{" "}
+        <ProgessBar steps={steps} prevStep={setStep} />{" "}
       </div>
       <div className="flex flex-col border-t border-fontColor-darkGray">
         {renderUI()}
