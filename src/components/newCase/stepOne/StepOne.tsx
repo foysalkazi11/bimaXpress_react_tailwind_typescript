@@ -46,7 +46,7 @@ const StepOne = ({ newCaseData, setNewCaseData, nextStep }: StepOneProps) => {
   };
 
   return (
-    <div className="h-full relative m-8">
+    <div className=" relative m-8" style={{ minHeight: "calc(100vh - 220px)" }}>
       <div className="grid grid-cols-2 gap-8 ">
         <div className="col-span-1">
           <NewCaseSelect
@@ -70,7 +70,7 @@ const StepOne = ({ newCaseData, setNewCaseData, nextStep }: StepOneProps) => {
         </div>
       </div>
 
-      <div className="absolute right-0 " style={{ top: "650px" }}>
+      <div className="absolute right-0 " style={{ bottom: "30px" }}>
         <NextButton iconRight={true} handleClick={nextStep} />
       </div>
     </div>
