@@ -6,114 +6,67 @@ import TableSearch from "../theme/table/tableSearchInput/TableSearchInput";
 import TableSearchButton from "../theme/table/tableSearchButton/TableSearchButton";
 import { Link } from "react-router-dom";
 import ReactTable from "../theme/reactTable/ReactTable";
-
+import axiosConfig from "../../config/axiosConfig";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { setLoading } from "../../redux/slices/utilitySlice";
+import notification from "../theme/utility/notification";
+import { setDoctorList } from "../../redux/slices/doctorSlice";
 interface ColumnDetails {
   [key: string]: any;
 }
 
 const Doctor = () => {
+  const { user } = useAppSelector((state) => state?.user);
+  const { doctorList } = useAppSelector((state) => state?.doctor);
+  const dispatch = useAppDispatch();
   const [inputValue, setInputValue] = useState("");
-  const data = React.useMemo<ColumnDetails[]>(
-    () => [
-      {
-        name: "Pranav vikram",
-        speciality: "Anesthesiologists",
-        registeredNumber: "AH2021",
-        emailAddress: "pranavvikram2021@gmail.com",
-        mobile: "+91 02414254",
-        action: (
-          <Link to="/doctor/update">
-            <BsEye className="text-lg" />
-          </Link>
-        ),
-      },
-      {
-        name: "Pradeep",
-        speciality: "Corneal Transplant",
-        registeredNumber: "PRR021",
-        emailAddress: "Pradeep@gmail.com",
-        mobile: "+91 02414254",
-        action: (
-          <Link to="/doctor/update">
-            <BsEye className="text-lg" />
-          </Link>
-        ),
-      },
-      {
-        name: "Sathisk k Kumar",
-        speciality: "General Surgery",
-        registeredNumber: "A256021",
-        emailAddress: "sathiskkkumar@gmail.com",
-        mobile: "+91 02414254",
-        action: (
-          <Link to="/doctor/update">
-            <BsEye className="text-lg" />
-          </Link>
-        ),
-      },
-      {
-        name: "Selvam",
-        speciality: "Hepatic Surgery",
-        registeredNumber: "HAH21",
-        emailAddress: "Selvam2021@gmail.com",
-        mobile: "+91 02414254",
-        action: (
-          <Link to="/doctor/update">
-            <BsEye className="text-lg" />
-          </Link>
-        ),
-      },
-      {
-        name: "Prakash",
-        speciality: "Cordiology",
-        registeredNumber: "AH20gh21",
-        emailAddress: "Prakash2021@gmail.com",
-        mobile: "+91 02414254",
-        action: (
-          <Link to="/doctor/update">
-            <BsEye className="text-lg" />
-          </Link>
-        ),
-      },
-      {
-        name: "S Kumar",
-        speciality: "General Surgery",
-        registeredNumber: "A2569021",
-        emailAddress: "skkkumar@gmail.com",
-        mobile: "+91 02414254",
-        action: (
-          <Link to="/doctor/update">
-            <BsEye className="text-lg" />
-          </Link>
-        ),
-      },
-      {
-        name: "Khan Selvam",
-        speciality: "Hepatic Surgery",
-        registeredNumber: "HAH21",
-        emailAddress: "Khan2021@gmail.com",
-        mobile: "+91 02414254",
-        action: (
-          <Link to="/doctor/update">
-            <BsEye className="text-lg" />
-          </Link>
-        ),
-      },
-      {
-        name: "Prakash Nandi",
-        speciality: "Cordiology",
-        registeredNumber: "AH240gh21",
-        emailAddress: "Prakashnandi2021@gmail.com",
-        mobile: "+91 02414254",
-        action: (
-          <Link to="/doctor/update">
-            <BsEye className="text-lg" />
-          </Link>
-        ),
-      },
-    ],
-    []
-  );
+  const [tableRow, setTableRow] = useState<ColumnDetails[]>([]);
+
+  const fetchDoctor = async () => {
+    dispatch(setLoading(true));
+    try {
+      const { data } = await axiosConfig.get(`/doctor?email=${user}`);
+      dispatch(setLoading(false));
+      dispatch(setDoctorList(data?.data));
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
+
+  useEffect(() => {
+    if (!Object.entries(doctorList)?.length) {
+      fetchDoctor();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (Object.entries(doctorList)?.length) {
+      const res = Object.entries(doctorList)?.map(
+        (
+          //@ts-ignore
+          [key, { name, phone, email, speciality, doctorRegistrationNo }]
+        ) => ({
+          name,
+          mobile: phone,
+          emailAddress: email,
+          registeredNumber: doctorRegistrationNo,
+          speciality,
+          key,
+          action: (
+            <Link to={`/doctor/${key}`}>
+              <BsEye className="text-lg" />
+            </Link>
+          ),
+        })
+      );
+      setTableRow(res);
+    }
+  }, [doctorList]);
+
+  const data = React.useMemo<ColumnDetails[]>(() => tableRow, [tableRow]);
 
   const columns = React.useMemo(
     () => [
