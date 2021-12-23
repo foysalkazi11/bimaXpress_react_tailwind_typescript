@@ -30,7 +30,7 @@ function App() {
           <Route path="/analyst/create" element={<AnalystCreate />} />
           <Route path="/doctor" element={<Doctor />} />
           <Route path="/doctor/create" element={<DoctorCreate />} />
-          <Route path="/doctor/update" element={<DoctorUpdate />} />
+          <Route path="/doctor/:key" element={<DoctorUpdate />} />
           <Route path="/newCase" element={<NewCase />} />
           <Route path="/order" element={<Order />} />
           <Route path="/drafts" element={<Drafts />} />

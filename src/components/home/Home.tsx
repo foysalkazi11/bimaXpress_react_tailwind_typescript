@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import HomeCard from "../theme/card/HomeCard";
 import approved from "../../assets/icon/approved.svg";
 import dischargedApproved from "../../assets/icon/dischargedApproved.svg";
@@ -10,6 +10,7 @@ import query from "../../assets/icon/noun_query_3407971.svg";
 import process from "../../assets/icon/process.svg";
 import reject from "../../assets/icon/reject.svg";
 import { Link } from "react-router-dom";
+import axiosConfig from "../../config/axiosConfig";
 
 const menuList = [
   {
@@ -70,6 +71,22 @@ const menuList = [
 ];
 
 const Home = () => {
+  const handleSignin = async () => {
+    try {
+      const URL = "/signin";
+      const res = await axiosConfig.post(URL, {
+        email: "abnew@gmail.com",
+        password: "123456",
+      });
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    handleSignin();
+  }, []);
   return (
     <div className="p-10 flex flex-wrap mx-auto">
       {menuList?.map((menu, index) => {

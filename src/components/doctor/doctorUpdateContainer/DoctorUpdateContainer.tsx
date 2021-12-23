@@ -1,85 +1,49 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import styles from "./DoctorUpdateContainer.module.css";
-import { BiLeftArrowAlt } from "react-icons/bi";
 import { RiDeleteBinLine } from "react-icons/ri";
 import Input from "../../theme/input/Input";
 import FormButton from "../../theme/button/FormButton";
+import { useParams } from "react-router-dom";
+import { useAppSelector } from "../../../redux/hooks";
+import { Link } from "react-router-dom";
+import left_arrow from "../../../assets/icon/left_arrow.svg";
 
 const DoctorUpdateContainer = () => {
   const [isEdit, setIsEdit] = useState(false);
+  const { key } = useParams();
+  const { doctorList } = useAppSelector((state) => state?.doctor);
+  //@ts-ignore
+  const obj = doctorList[key] || {};
 
-  const [analystInfo, setAnalystInfo] = useState({
-    heading: "Dr. Senthil",
-    name: "Dr. Senthil Sekar",
-    speciality: "Anesthesiologists",
-    qualification: "M.B.B.S degree",
-    emailAddress: "paranavvikram@gamil.com",
-    registrationNumber: "AH2021",
-    phone: "+048 098098203",
-    createPassword: "aHge#412",
-  });
-
-  const inputRef = useRef<any>(null);
-
-  useEffect(() => {
-    inputRef?.current?.focus();
-  }, [isEdit]);
+  const [analystInfo, setAnalystInfo] = useState(obj);
 
   const updateAnalytstInfo = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e?.target;
-    setAnalystInfo((pre) => ({ ...pre, [name]: value }));
+    setAnalystInfo((pre: any) => ({ ...pre, [name]: value }));
   };
 
   return (
     <div className="pb-10">
       <div className={styles.imageContainer}></div>
       <div className="flex justify-center">
-        <div
-          className={`w-full h-full mx-4  z-10  ${styles.inputContainer} ${
-            isEdit ? " " : styles.adjustMargin
-          }`}
-        >
-          {isEdit ? (
-            <div
-              className="w-10 h-10 flex justify-center items-center rounded-full mb-4 bg-primary-lighter opacity-95 cursor-pointer "
-              onClick={() => setIsEdit(!isEdit)}
-            >
-              {" "}
-              <BiLeftArrowAlt className="text-2xl text-fontColor-light " />
-            </div>
-          ) : null}
+        <div className={`w-full h-full mx-4  z-10  ${styles.inputContainer}`}>
+          <div
+            className="w-10 h-10 flex justify-center items-center rounded-full mb-4 bg-primary-lighter opacity-95 cursor-pointer "
+            onClick={() => setIsEdit(!isEdit)}
+          >
+            {isEdit ? (
+              <img src={left_arrow} alt="icon" />
+            ) : (
+              <Link to="/doctor">
+                <img src={left_arrow} alt="icon" />
+              </Link>
+            )}
+          </div>
 
           <div className="grid grid-cols-2 gap-x-8  mb-4 bg-primary-lighter px-8 py-4 rounded-xl opacity-95">
-            <div className="col-span-2 lg:col-span-1 pb-6">
-              {isEdit ? (
-                <Input
-                  handleChange={updateAnalytstInfo}
-                  name="heading"
-                  value={analystInfo?.heading}
-                  inputRef={inputRef}
-                  style={{
-                    border: "none",
-                    borderRadius: 0,
-                    borderBottom: "2px solid #707070",
-                    fontSize: "40px",
-                    paddingLeft: "0px",
-                    paddingRight: "0px",
-                    fontWeight: 400,
-                  }}
-                />
-              ) : (
-                <h2
-                  className="text-fontColor-light"
-                  style={{ fontSize: "40px" }}
-                >
-                  {analystInfo?.heading}
-                </h2>
-              )}
-            </div>
-
-            <div className="col-span-2 lg:col-span-1 pb-6 flex justify-end">
+            <div className="col-span-2  pb-6 flex justify-end">
               <FormButton
                 iconEdit={isEdit ? false : true}
                 text={isEdit ? "Save" : "Update"}
@@ -117,8 +81,8 @@ const DoctorUpdateContainer = () => {
             <div className="col-span-2 lg:col-span-1 pb-6">
               <Input
                 handleChange={updateAnalytstInfo}
-                name="emailAddress"
-                value={analystInfo?.emailAddress}
+                name="email"
+                value={analystInfo?.email}
                 label="Email Address"
                 isEdit={isEdit}
                 type="email"
@@ -127,8 +91,8 @@ const DoctorUpdateContainer = () => {
             <div className="col-span-2 lg:col-span-1 pb-6">
               <Input
                 handleChange={updateAnalytstInfo}
-                name="registrationNumber"
-                value={analystInfo?.registrationNumber}
+                name="doctorRegistrationNo"
+                value={analystInfo?.doctorRegistrationNo}
                 label="Registration Number"
                 isEdit={isEdit}
               />
