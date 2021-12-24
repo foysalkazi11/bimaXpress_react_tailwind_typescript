@@ -1,28 +1,59 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import styles from "./DoctorCreate.module.css";
 import { BiLeftArrowAlt } from "react-icons/bi";
 // import { RiDeleteBinLine } from "react-icons/ri";
 import Input from "../../theme/input/Input";
 import FormButton from "../../theme/button/FormButton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import axiosConfig from "../../../config/axiosConfig";
+import notification from "../../theme/utility/notification";
+import { setLoading } from "../../../redux/slices/utilitySlice";
+import { setDoctorList } from "../../../redux/slices/doctorSlice";
 
 const DoctorCreate = () => {
   const [analystInfo, setAnalystInfo] = useState({
-    heading: "",
     name: "",
     speciality: "",
     qualification: "",
-    emailAddress: "",
-    registrationNumber: "",
+    email: "",
+    registrationNo: "",
     phone: "",
-    createPassword: "",
+    password: "",
   });
 
-  const inputRef = useRef<any>(null);
+  const { user } = useAppSelector((state) => state?.user);
+  const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    inputRef?.current?.focus();
-  }, []);
+  const navigate = useNavigate();
+
+  const addDoctor = async () => {
+    const POST_URL = `/doctor?hospitalemail=${user}`;
+    const GET_URL = `/doctor?email=${user}`;
+
+    const formData = new FormData();
+    formData?.append("name", analystInfo?.name);
+    formData?.append("speciality", analystInfo?.speciality);
+    formData?.append("qualification", analystInfo?.qualification);
+    formData?.append("email", analystInfo?.email);
+    formData?.append("docregno", analystInfo?.registrationNo);
+    formData?.append("phone", analystInfo?.phone);
+    formData?.append("password", analystInfo?.password);
+    dispatch(setLoading(true));
+    try {
+      await axiosConfig.post(POST_URL, formData);
+      const { data } = await axiosConfig.get(GET_URL);
+
+      dispatch(setLoading(false));
+      notification("info", "Create successfully");
+      dispatch(setDoctorList(data?.data));
+      navigate(`/doctor/${analystInfo?.email}`);
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
 
   const updateAnalytstInfo = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -38,36 +69,14 @@ const DoctorCreate = () => {
         <div className={`w-full h-full mx-4  z-10  ${styles.inputContainer}`}>
           <div className="w-10 h-10 flex justify-center items-center rounded-full mb-4 bg-primary-lighter opacity-95 cursor-pointer ">
             {" "}
-            <Link to="/analyst">
+            <Link to="/doctor">
               <BiLeftArrowAlt className="text-2xl text-fontColor-light " />
             </Link>
           </div>
 
           <div className="grid grid-cols-2 gap-x-8  mb-4 bg-primary-lighter px-8 py-4 rounded-xl opacity-95">
-            <div className="col-span-2 lg:col-span-1 pb-6">
-              <Input
-                handleChange={updateAnalytstInfo}
-                name="heading"
-                value={analystInfo?.heading}
-                inputRef={inputRef}
-                placeHolder="Type name hear"
-                style={{
-                  border: "none",
-                  borderRadius: 0,
-                  borderBottom: "2px solid #707070",
-                  fontSize: "40px",
-                  paddingLeft: "0px",
-                  paddingRight: "0px",
-                  fontWeight: 400,
-                }}
-              />
-            </div>
-
-            <div className="col-span-2 lg:col-span-1 pb-6 flex justify-end">
-              <FormButton
-                text={"Create"}
-                // handleClick={() => setIsEdit(!isEdit)}
-              />
+            <div className="col-span-2 pb-6 flex justify-end">
+              <FormButton text={"Create"} handleClick={() => addDoctor()} />
             </div>
 
             <div className="col-span-2 lg:col-span-1 pb-6">
@@ -100,8 +109,8 @@ const DoctorCreate = () => {
             <div className="col-span-2 lg:col-span-1 pb-6">
               <Input
                 handleChange={updateAnalytstInfo}
-                name="emailAddress"
-                value={analystInfo?.emailAddress}
+                name="email"
+                value={analystInfo?.email}
                 label="Email Address"
                 isEdit={true}
                 type="email"
@@ -110,8 +119,8 @@ const DoctorCreate = () => {
             <div className="col-span-2 lg:col-span-1 pb-6">
               <Input
                 handleChange={updateAnalytstInfo}
-                name="registrationNumber"
-                value={analystInfo?.registrationNumber}
+                name="registrationNo"
+                value={analystInfo?.registrationNo}
                 label="Registration Number"
                 isEdit={true}
               />
@@ -129,10 +138,12 @@ const DoctorCreate = () => {
             <div className="col-span-2 lg:col-span-1 pb-6">
               <Input
                 handleChange={updateAnalytstInfo}
-                name="createPassword"
-                value={analystInfo?.createPassword}
-                label="Change Password"
+                name="password"
+                value={analystInfo?.password}
+                label="Create Password"
                 isEdit={true}
+                isPassword={true}
+                type="password"
               />
             </div>
           </div>

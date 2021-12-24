@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useState } from "react";
 import { BsEyeSlash, BsEye } from "react-icons/bs";
 import styles from "./Input.module.css";
 
@@ -13,7 +13,6 @@ type InputProps = {
   inputRef?: any;
   placeHolder?: string | undefined;
   isPassword?: boolean;
-  showInput?: boolean;
   labelStyle?: object;
 };
 
@@ -28,9 +27,9 @@ const Input = ({
   inputRef,
   placeHolder = "",
   isPassword = false,
-  showInput = false,
   labelStyle = {},
 }: InputProps) => {
+  const [showInput, setShowInput] = useState(false);
   if (!isEdit) {
     return (
       <>
@@ -50,23 +49,31 @@ const Input = ({
           {label}
         </p>
       ) : null}
-      <input
-        className={`outline-none rounded-lg border border-fontColor-light px-4 py-1 w-full text-base text-fontColor-light bg-transparent font-thin placeholder-primary-lightest ${styles.input}`}
-        value={value}
-        name={name}
-        onChange={(e) => handleChange(e)}
-        type={type}
-        style={style}
-        ref={inputRef ? inputRef : null}
-        placeholder={placeHolder}
-      />
-      {isPassword ? (
-        showInput ? (
-          <BsEyeSlash className="text-lg text-fontColor-light" />
-        ) : (
-          <BsEye className="text-lg text-fontColor-light" />
-        )
-      ) : null}
+      <div className="border border-fontColor-light rounded-md flex items-center">
+        <input
+          className={`outline-none rounded-md border-none px-2 py-1 w-full text-base text-fontColor-light bg-transparent font-thin placeholder-primary-lightest ${styles.input}`}
+          value={value}
+          name={name}
+          onChange={(e) => handleChange(e)}
+          type={showInput ? "text" : type}
+          style={style}
+          ref={inputRef ? inputRef : null}
+          placeholder={placeHolder}
+        />
+        {isPassword ? (
+          showInput ? (
+            <BsEyeSlash
+              className="text-lg text-fontColor-light mx-2 cursor-pointer"
+              onClick={() => setShowInput((pre) => !pre)}
+            />
+          ) : (
+            <BsEye
+              className="text-lg text-fontColor-light mx-2 cursor-pointer"
+              onClick={() => setShowInput((pre) => !pre)}
+            />
+          )
+        ) : null}
+      </div>
     </>
   );
 };
