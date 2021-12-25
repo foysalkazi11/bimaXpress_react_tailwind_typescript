@@ -5,8 +5,13 @@ import TableSearch from "../theme/table/tableSearchInput/TableSearchInput";
 import TableSearchButton from "../theme/table/tableSearchButton/TableSearchButton";
 import { Link } from "react-router-dom";
 import ReactTable from "../theme/reactTable/ReactTable";
-import BajajLogo from "../../assets/images/Bajaj-Logo.png";
+// import BajajLogo from "../../assets/images/Bajaj-Logo.png";
 import Eye from "../../assets/icon/eye.svg";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { setLoading } from "../../redux/slices/utilitySlice";
+import notification from "../theme/utility/notification";
+import axiosConfig from "../../config/axiosConfig";
+import { setEmpanelledCompaniesListList } from "../../redux/slices/empanelledCompaniesSlice";
 
 interface ColumnDetails {
   [key: string]: any;
@@ -14,83 +19,67 @@ interface ColumnDetails {
 
 const EmpanelledCompanies = () => {
   const [inputValue, setInputValue] = useState("");
-  const data = React.useMemo<ColumnDetails[]>(
-    () => [
-      {
-        logo: (
-          <img
-            src={BajajLogo}
-            alt="logo"
-            className="w-24 h-10 object-contain"
-          />
-        ),
-        name: "Bajaj_Allianz_General_Insuranc",
-        expiryDate: "10 Dec 2021",
-        discount: 10,
-        exclusion: 10,
-        action: (
-          <Link to="/empanelledCompanies/update">
-            <img src={Eye} alt="icon" />
-          </Link>
-        ),
-      },
-      {
-        logo: (
-          <img
-            src={BajajLogo}
-            alt="logo"
-            className="w-24 h-10 object-contain"
-          />
-        ),
-        name: "MDIndia_Health_Insurance_T",
-        expiryDate: "10 Dec 2021",
-        discount: 10,
-        exclusion: 10,
-        action: (
-          <Link to="/empanelledCompanies/update">
-            <img src={Eye} alt="icon" />
-          </Link>
-        ),
-      },
-      {
-        logo: (
-          <img
-            src={BajajLogo}
-            alt="logo"
-            className="w-24 h-10 object-contain"
-          />
-        ),
-        name: "Health_Insurance_TPA_of_Ind",
-        expiryDate: "10 Dec 2021",
-        discount: 10,
-        exclusion: 10,
-        action: (
-          <Link to="/empanelledCompanies/update">
-            <img src={Eye} alt="icon" />
-          </Link>
-        ),
-      },
-      {
-        logo: (
-          <img
-            src={BajajLogo}
-            alt="logo"
-            className="w-24 h-10 object-contain"
-          />
-        ),
-        name: "Cholamandalam_MS_Genera",
-        expiryDate: "10 Dec 2021",
-        discount: 10,
-        exclusion: 10,
-        action: (
-          <Link to="/empanelledCompanies/update">
-            <img src={Eye} alt="icon" />
-          </Link>
-        ),
-      },
-    ],
-    []
+  const [tableRow, setTableRow] = useState<ColumnDetails[]>([]);
+
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state?.user);
+  const { empanelledCompaniesList } = useAppSelector(
+    (state) => state?.empanelledCompanies
   );
+
+  const fetchDoctor = async () => {
+    const URL = `/empanelcompany?email=${user}`;
+    dispatch(setLoading(true));
+    try {
+      const { data } = await axiosConfig.get(URL);
+      console.log(data);
+
+      dispatch(setLoading(false));
+      dispatch(setEmpanelledCompaniesListList(data?.data));
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
+
+  useEffect(() => {
+    if (!Object.entries(empanelledCompaniesList)?.length) {
+      fetchDoctor();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (Object.entries(empanelledCompaniesList)?.length) {
+      const res = Object.entries(empanelledCompaniesList)?.map(
+        (
+          //@ts-ignore
+          [key, { Exclusion, Ratelist, Discount, expiryDate }]
+        ) => ({
+          logo: (
+            <img
+              src={Ratelist}
+              alt="logo"
+              className="w-24 h-10 object-contain"
+            />
+          ),
+          name: key,
+          expiryDate: expiryDate || "",
+          discount: Discount,
+          exclusion: Exclusion,
+          action: (
+            <Link to={`/empanelledCompanies/${key}`}>
+              <img src={Eye} alt="icon" />
+            </Link>
+          ),
+        })
+      );
+      setTableRow(res);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [empanelledCompaniesList]);
+  const data = React.useMemo<ColumnDetails[]>(() => tableRow, [tableRow]);
 
   const columns = React.useMemo(
     () => [

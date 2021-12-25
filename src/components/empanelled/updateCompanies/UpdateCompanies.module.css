@@ -17,7 +17,7 @@
 }
 .companyLogo {
   max-width: 585px;
-  height: 150px;
+  height: 100px;
   object-fit: contain;
   position: absolute;
   top: 0px;

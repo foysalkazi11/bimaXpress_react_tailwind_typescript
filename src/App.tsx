@@ -44,7 +44,7 @@ function App() {
             element={<CreateCompany />}
           />
           <Route
-            path="/empanelledCompanies/update"
+            path="/empanelledCompanies/:key"
             element={<UpdateCompanies />}
           />
         </Routes>
