@@ -26,7 +26,6 @@ const Doctor = () => {
     dispatch(setLoading(true));
     try {
       const { data } = await axiosConfig.get(`/doctor?email=${user}`);
-      console.log(data);
 
       dispatch(setLoading(false));
       dispatch(setDoctorList(data?.data));
@@ -56,7 +55,7 @@ const Doctor = () => {
           emailAddress: email,
           registeredNumber: doctorRegistrationNo,
           speciality,
-          key,
+
           action: (
             <Link to={`/doctor/${key}`}>
               <BsEye className="text-lg" />

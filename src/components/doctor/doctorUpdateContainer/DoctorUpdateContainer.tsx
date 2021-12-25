@@ -29,12 +29,13 @@ const DoctorUpdateContainer = () => {
       <div className={styles.imageContainer}></div>
       <div className="flex justify-center">
         <div className={`w-full h-full mx-4  z-10  ${styles.inputContainer}`}>
-          <div
-            className="w-10 h-10 flex justify-center items-center rounded-full mb-4 bg-primary-lighter opacity-95 cursor-pointer "
-            onClick={() => setIsEdit(!isEdit)}
-          >
+          <div className="w-10 h-10 flex justify-center items-center rounded-full mb-4 bg-primary-lighter opacity-95 cursor-pointer ">
             {isEdit ? (
-              <img src={left_arrow} alt="icon" />
+              <img
+                src={left_arrow}
+                alt="icon"
+                onClick={() => setIsEdit(!isEdit)}
+              />
             ) : (
               <Link to="/doctor">
                 <img src={left_arrow} alt="icon" />

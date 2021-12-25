@@ -1,29 +1,28 @@
-import React, { useState, useRef, useEffect, ChangeEvent } from "react";
+import React, { useState, ChangeEvent } from "react";
 import styles from "./UpdateCompanies.module.css";
 import { RiDeleteBinLine } from "react-icons/ri";
 import Input from "../../theme/input/Input";
 import FormButton from "../../theme/button/FormButton";
-import BajajLogo from "../../../assets/images/Bajaj-Logo.png";
 import InputDate from "../../theme/inputDate/InputDate";
 import left_arrow from "../../../assets/icon/left_arrow.svg";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useAppSelector } from "../../../redux/hooks";
 
 const UpdateCompanies = () => {
   const [isEdit, setIsEdit] = useState(false);
+  const { key } = useParams();
+  const { empanelledCompaniesList } = useAppSelector(
+    (state) => state?.empanelledCompanies
+  );
+  //@ts-ignore
+  const obj = empanelledCompaniesList[key] || {};
 
   const [analystInfo, setAnalystInfo] = useState({
-    // heading: "Pranav",
-    name: "Bajaj_Allianz_General_Insuranc",
-    expiryDate: "10 Dec 2021",
-    discount: 10,
-    exclusion: 10,
+    name: key || "",
+    expiryDate: obj?.expiryDate || "",
+    discount: obj?.Discount || "",
+    exclusion: obj?.Exclusion || "",
   });
-
-  const inputRef = useRef<any>(null);
-
-  useEffect(() => {
-    inputRef?.current?.focus();
-  }, [isEdit]);
 
   const updateAnalytstInfo = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLDataElement | any>
@@ -36,7 +35,7 @@ const UpdateCompanies = () => {
     <div className="pb-10">
       <div className={styles.imageContainer}>
         <div className={styles.innerImageContainer}>
-          <img src={BajajLogo} alt="img" className={styles.companyLogo} />
+          <img src={obj?.Ratelist} alt="img" className={styles.companyLogo} />
         </div>
       </div>
       <div className="flex justify-center">
@@ -62,33 +61,6 @@ const UpdateCompanies = () => {
           )}
 
           <div className="grid grid-cols-2 gap-x-8  mb-4 bg-primary-lighter px-8 py-4 rounded-xl opacity-95">
-            {/* <div className="col-span-2 lg:col-span-1 pb-6">
-              {isEdit ? (
-                <Input
-                  handleChange={updateAnalytstInfo}
-                  name="heading"
-                  value={analystInfo?.heading}
-                  inputRef={inputRef}
-                  style={{
-                    border: "none",
-                    borderRadius: 0,
-                    borderBottom: "2px solid #707070",
-                    fontSize: "40px",
-                    paddingLeft: "0px",
-                    paddingRight: "0px",
-                    fontWeight: 400,
-                  }}
-                />
-              ) : (
-                <h2
-                  className="text-fontColor-light"
-                  style={{ fontSize: "40px" }}
-                >
-                  {analystInfo?.heading}
-                </h2>
-              )}
-            </div> */}
-
             <div className="col-span-2  pb-6 flex justify-end">
               <FormButton
                 iconEdit={isEdit ? false : true}
@@ -127,7 +99,12 @@ const UpdateCompanies = () => {
                     Expiry date
                   </p>
 
-                  <p className=" border-b-2 border-fontColor-darkGray py-1 w-full text-base text-fontColor-light ">
+                  <p
+                    className=" border-b-2 border-fontColor-darkGray py-1 w-full text-base text-fontColor-light "
+                    style={{
+                      height: analystInfo?.expiryDate ? "inherit" : "34px",
+                    }}
+                  >
                     {analystInfo?.expiryDate}
                   </p>
                 </>

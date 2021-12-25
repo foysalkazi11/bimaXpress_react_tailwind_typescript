@@ -36,7 +36,10 @@ const Input = ({
         {label ? (
           <p className="pb-4 text-sm text-fontColor-light font-thin">{label}</p>
         ) : null}
-        <p className=" border-b-2 border-fontColor-darkGray py-1 w-full text-base text-fontColor-light ">
+        <p
+          className={`border-b-2 border-fontColor-darkGray py-1 w-full text-base text-fontColor-light `}
+          style={{ height: value ? "inherit" : "34px" }}
+        >
           {value}
         </p>
       </>
