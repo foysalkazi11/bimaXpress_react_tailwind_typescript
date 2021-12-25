@@ -1,36 +1,115 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import FormButton from "../theme/button/FormButton";
 import Input from "../theme/input/Input";
 import Select from "../theme/select/Select";
 import styles from "./Hospital.module.css";
 import { BiLeftArrowAlt } from "react-icons/bi";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { setLoading } from "../../redux/slices/utilitySlice";
+import axiosConfig from "../../config/axiosConfig";
+import { setHospitalData } from "../../redux/slices/hospitalSlice";
+import notification from "../theme/utility/notification";
+
+// type HospitalState = {
+//   name: string;
+//   address: string;
+//   plan: string;
+//   state: string;
+//   phone: string | number ;
+//   country: string;
+//   website: string;
+//   pinCode: string | number;
+// };
 
 const Hospital = () => {
-  const [hospitalInfo, setHospitalInfo] = useState({
-    heading: "Apollo",
-    hospitalName: "Apollo Medical Hospital",
-    streetAddress: "Bhari street, 3rd main road",
-    type: "maltiSpeciality",
-    state: "Bihar",
-    mobile: "+048 098098203",
-    country: "India",
-    website: "apollohospital.in",
-    postCode: 455684,
+  const [hospitalInfo, setHospitalInfo] = useState<any>({
+    name: "",
+    address: "",
+    plan: "",
+    state: "",
+    phone: "",
+    country: "",
+    website: "",
+    pinCode: "",
   });
 
   const [isEdit, setIsEdit] = useState(false);
-  const inputRef = useRef<any>(null);
+  const dispatch = useAppDispatch();
+  const { hospitalData } = useAppSelector((state) => state?.hospital);
+  const { user } = useAppSelector((state) => state?.user);
+
+  const fetchHospitalInfo = async () => {
+    dispatch(setLoading(true));
+    const URL = `/hospitaldetails?email=${user}`;
+    try {
+      const { data } = await axiosConfig.get(URL);
+
+      dispatch(setLoading(false));
+      dispatch(setHospitalData(data?.data));
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
+
+  useEffect(() => {
+    //@ts-ignore
+    if (!hospitalData?.name) {
+      fetchHospitalInfo();
+    } else {
+      //@ts-ignore
+      const { state, plan, phone, pinCode, name, address, country, website } =
+        hospitalData;
+      setHospitalInfo((pre: any) => ({
+        ...pre,
+        name: name || "",
+        address: address || "",
+        plan: plan || "",
+        state: state || "",
+        phone: phone || "",
+        country: country || "India",
+        website: website || "",
+        pinCode: pinCode || "",
+      }));
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hospitalData]);
 
   const updateHospitalInfo = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e?.target;
-    setHospitalInfo((pre) => ({ ...pre, [name]: value }));
+    setHospitalInfo((pre: any) => ({ ...pre, [name]: value }));
   };
 
-  useEffect(() => {
-    inputRef?.current?.focus();
-  }, [isEdit]);
+  const handleUpdateHospitalInfo = async () => {
+    dispatch(setLoading(true));
+    const POSTURL = `/hospitaldetails?email=${user}`;
+    const GETURL = `/hospitaldetails?email=${user}`;
+    try {
+      const formData = new FormData();
+      formData?.append("name", hospitalInfo?.name);
+      formData?.append("address", hospitalInfo?.address);
+      formData?.append("plan", hospitalInfo?.plan);
+      formData?.append("state", hospitalInfo?.state);
+      formData?.append("phone", hospitalInfo?.phone);
+      formData?.append("country", hospitalInfo?.country);
+      formData?.append("website", hospitalInfo?.website);
+      formData?.append("pinCode", hospitalInfo?.pinCode);
+      await axiosConfig.post(POSTURL, formData);
+      const { data } = await axiosConfig.get(GETURL);
+      dispatch(setLoading(false));
+      notification("info", "Updated successfully");
+      dispatch(setHospitalData(data?.data));
+      setIsEdit(false);
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
 
   return (
     <div className="pb-10">
@@ -45,53 +124,28 @@ const Hospital = () => {
           {isEdit ? (
             <div
               className="w-10 h-10 flex justify-center items-center rounded-full mb-4 bg-primary-lighter opacity-95 cursor-pointer "
-              onClick={() => setIsEdit(!isEdit)}
+              onClick={() => setIsEdit(false)}
             >
               {" "}
               <BiLeftArrowAlt className="text-2xl text-fontColor-light " />
             </div>
           ) : null}
           <div className="grid grid-cols-2 gap-x-8  mb-4 bg-primary-lighter px-8 py-4 rounded-xl opacity-95">
-            <div className="col-span-2 lg:col-span-1 pb-6">
-              {isEdit ? (
-                <Input
-                  handleChange={updateHospitalInfo}
-                  name="heading"
-                  value={hospitalInfo?.heading}
-                  style={{
-                    border: "none",
-                    borderRadius: 0,
-                    borderBottom: "2px solid #707070",
-                    fontSize: "40px",
-                    paddingLeft: "0px",
-                    paddingRight: "0px",
-                    fontWeight: 400,
-                  }}
-                  inputRef={inputRef}
-                />
-              ) : (
-                <h2
-                  className="text-fontColor-light"
-                  style={{ fontSize: "40px" }}
-                >
-                  {hospitalInfo?.heading}
-                </h2>
-              )}
-            </div>
-
-            <div className="col-span-2 lg:col-span-1 pb-6 flex justify-end">
+            <div className="col-span-2  pb-6 flex justify-end">
               <FormButton
                 iconEdit={isEdit ? false : true}
                 text={isEdit ? "Save" : "Update"}
-                handleClick={() => setIsEdit(!isEdit)}
+                handleClick={() =>
+                  isEdit ? handleUpdateHospitalInfo() : setIsEdit(true)
+                }
               />
             </div>
 
             <div className="col-span-2 lg:col-span-1 pb-6">
               <Input
                 handleChange={updateHospitalInfo}
-                name="hospitalName"
-                value={hospitalInfo?.hospitalName}
+                name="name"
+                value={hospitalInfo?.name}
                 label="Hospital name"
                 isEdit={isEdit}
               />
@@ -99,8 +153,8 @@ const Hospital = () => {
             <div className="col-span-2 lg:col-span-1 pb-6">
               <Input
                 handleChange={updateHospitalInfo}
-                name="streetAddress"
-                value={hospitalInfo?.streetAddress}
+                name="address"
+                value={hospitalInfo?.address}
                 label="Street address"
                 isEdit={isEdit}
               />
@@ -109,10 +163,17 @@ const Hospital = () => {
               <Select
                 options={[
                   { label: "Malti-Speciality", value: "maltiSpeciality" },
+                  {
+                    label: "Preemium",
+                    value:
+                      hospitalInfo?.plan === "freemium"
+                        ? "freemium"
+                        : "preemium",
+                  },
                 ]}
                 handleChange={updateHospitalInfo}
-                name="type"
-                value={hospitalInfo?.type}
+                name="plan"
+                value={hospitalInfo?.plan}
                 label="Type"
                 isEdit={isEdit}
               />
@@ -129,8 +190,8 @@ const Hospital = () => {
             <div className="col-span-2 lg:col-span-1 pb-6">
               <Input
                 handleChange={updateHospitalInfo}
-                name="mobile"
-                value={hospitalInfo?.mobile}
+                name="phone"
+                value={hospitalInfo?.phone}
                 label="Mobile"
                 isEdit={isEdit}
               />
@@ -156,9 +217,9 @@ const Hospital = () => {
             <div className="col-span-2 lg:col-span-1 pb-6">
               <Input
                 handleChange={updateHospitalInfo}
-                name="postCode"
-                value={hospitalInfo?.postCode}
-                label="Postcode"
+                name="pinCode"
+                value={hospitalInfo?.pinCode}
+                label="Pincode"
                 isEdit={isEdit}
               />
             </div>

@@ -26,7 +26,7 @@ function App() {
           <Route path="/plan" element={<Plan />} />
           <Route path="/hospital" element={<Hospital />} />
           <Route path="/analyst" element={<Analyst />} />
-          <Route path="/analyst/update" element={<AnalystUpdate />} />
+          <Route path="/analyst/:key" element={<AnalystUpdate />} />
           <Route path="/analyst/create" element={<AnalystCreate />} />
           <Route path="/doctor" element={<Doctor />} />
           <Route path="/doctor/create" element={<DoctorCreate />} />

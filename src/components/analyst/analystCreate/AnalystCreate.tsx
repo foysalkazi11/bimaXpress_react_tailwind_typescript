@@ -1,26 +1,56 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import styles from "./AnalystCreate.module.css";
-import { BiLeftArrowAlt } from "react-icons/bi";
 // import { RiDeleteBinLine } from "react-icons/ri";
 import Input from "../../theme/input/Input";
 import FormButton from "../../theme/button/FormButton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import left_arrow from "../../../assets/icon/left_arrow.svg";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { setLoading } from "../../../redux/slices/utilitySlice";
+import axiosConfig from "../../../config/axiosConfig";
+import notification from "../../theme/utility/notification";
+import { setAnalystList } from "../../../redux/slices/analystSlice";
 
 const AnalystCreate = () => {
   const [analystInfo, setAnalystInfo] = useState({
-    heading: "",
     name: "",
-    emailAddress: "",
+    email: "",
     employeeId: "",
     phone: "",
-    createPassword: "",
+    password: "",
   });
 
-  const inputRef = useRef<any>(null);
+  const { user, role } = useAppSelector((state) => state?.user);
 
-  useEffect(() => {
-    inputRef?.current?.focus();
-  }, []);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const addAnalyst = async () => {
+    const POST_URL = `/analyst?hospitalemail=${user}`;
+    const GET_URL = `/analyst?email=${user}`;
+
+    const formData = new FormData();
+    formData?.append("name", analystInfo?.name);
+    formData?.append("email", analystInfo?.email);
+    formData?.append("employeeId", analystInfo?.employeeId);
+    formData?.append("phone", analystInfo?.phone);
+    formData?.append("role", role);
+    formData?.append("password", analystInfo?.password);
+    dispatch(setLoading(true));
+    try {
+      await axiosConfig.post(POST_URL, formData);
+      const { data } = await axiosConfig.get(GET_URL);
+
+      dispatch(setLoading(false));
+      notification("info", "Create successfully");
+      dispatch(setAnalystList(data?.data));
+      navigate(`/analyst/${analystInfo?.email}`);
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
 
   const updateAnalytstInfo = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -37,35 +67,13 @@ const AnalystCreate = () => {
           <div className="w-10 h-10 flex justify-center items-center rounded-full mb-4 bg-primary-lighter opacity-95 cursor-pointer ">
             {" "}
             <Link to="/analyst">
-              <BiLeftArrowAlt className="text-2xl text-fontColor-light " />
+              <img src={left_arrow} alt="icon" />
             </Link>
           </div>
 
           <div className="grid grid-cols-2 gap-x-8  mb-4 bg-primary-lighter px-8 py-4 rounded-xl opacity-95">
-            <div className="col-span-2 lg:col-span-1 pb-6">
-              <Input
-                handleChange={updateAnalytstInfo}
-                name="heading"
-                value={analystInfo?.heading}
-                inputRef={inputRef}
-                placeHolder="Type name hear"
-                style={{
-                  border: "none",
-                  borderRadius: 0,
-                  borderBottom: "2px solid #707070",
-                  fontSize: "40px",
-                  paddingLeft: "0px",
-                  paddingRight: "0px",
-                  fontWeight: 400,
-                }}
-              />
-            </div>
-
-            <div className="col-span-2 lg:col-span-1 pb-6 flex justify-end">
-              <FormButton
-                text={"Create"}
-                // handleClick={() => setIsEdit(!isEdit)}
-              />
+            <div className="col-span-2  pb-6 flex justify-end">
+              <FormButton text={"Create"} handleClick={() => addAnalyst()} />
             </div>
 
             <div className="col-span-2 lg:col-span-1 pb-6">
@@ -80,8 +88,8 @@ const AnalystCreate = () => {
             <div className="col-span-2 lg:col-span-1 pb-6">
               <Input
                 handleChange={updateAnalytstInfo}
-                name="emailAddress"
-                value={analystInfo?.emailAddress}
+                name="email"
+                value={analystInfo?.email}
                 label="Email Address"
                 isEdit={true}
                 type="email"
@@ -109,8 +117,8 @@ const AnalystCreate = () => {
             <div className="col-span-2 lg:col-span-1 pb-6">
               <Input
                 handleChange={updateAnalytstInfo}
-                name="createPassword"
-                value={analystInfo?.createPassword}
+                name="password"
+                value={analystInfo?.password}
                 label="Change Password"
                 isEdit={true}
               />

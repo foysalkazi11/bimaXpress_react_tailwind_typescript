@@ -9,7 +9,7 @@ const initialState: doctorSliceState = {
 };
 
 export const doctorSlice = createSlice({
-  name: "user",
+  name: "doctor",
   initialState,
   reducers: {
     setDoctorList: (state, action: PayloadAction<{}>) => {

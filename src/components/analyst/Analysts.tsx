@@ -7,6 +7,10 @@ import TableSearch from "../theme/table/tableSearchInput/TableSearchInput";
 import TableSearchButton from "../theme/table/tableSearchButton/TableSearchButton";
 import { Link } from "react-router-dom";
 import PaginationButton from "../theme/PaginationButton/PaginationButton";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { setLoading } from "../../redux/slices/utilitySlice";
+import axiosConfig from "../../config/axiosConfig";
+import { setAnalystList } from "../../redux/slices/analystSlice";
 
 interface ColumnDetails {
   [key: string]: any;
@@ -14,99 +18,55 @@ interface ColumnDetails {
 
 const Analyst = () => {
   const [inputValue, setInputValue] = useState("");
-  const data = React.useMemo<ColumnDetails[]>(
-    () => [
-      {
-        name: "Pranav vikram",
-        EmployeeId: "AH2021",
-        emailAddress: "pranavvikram2021@gmail.com",
-        mobile: "+91 02414254",
-        action: (
-          <Link to="/analyst/update">
-            <BsEye className="text-lg" />
-          </Link>
-        ),
-      },
-      {
-        name: "Pradeep",
-        EmployeeId: "PRR021",
-        emailAddress: "Pradeep@gmail.com",
-        mobile: "+91 02414254",
-        action: (
-          <Link to="/analyst/update">
-            <BsEye className="text-lg" />
-          </Link>
-        ),
-      },
-      {
-        name: "Sathisk k Kumar",
-        EmployeeId: "A256021",
-        emailAddress: "sathiskkkumar@gmail.com",
-        mobile: "+91 02414254",
-        action: (
-          <Link to="/analyst/update">
-            <BsEye className="text-lg" />
-          </Link>
-        ),
-      },
-      {
-        name: "Selvam",
-        EmployeeId: "HAH21",
-        emailAddress: "Selvam2021@gmail.com",
-        mobile: "+91 02414254",
-        action: (
-          <Link to="/analyst/update">
-            <BsEye className="text-lg" />
-          </Link>
-        ),
-      },
-      {
-        name: "Prakash",
-        EmployeeId: "AH20gh21",
-        emailAddress: "Prakash2021@gmail.com",
-        mobile: "+91 02414254",
-        action: (
-          <Link to="/analyst/update">
-            <BsEye className="text-lg" />
-          </Link>
-        ),
-      },
-      {
-        name: "Kumar",
-        EmployeeId: "A2568021",
-        emailAddress: "kumar@gmail.com",
-        mobile: "+91 0214254",
-        action: (
-          <Link to="/analyst/update">
-            <BsEye className="text-lg" />
-          </Link>
-        ),
-      },
-      {
-        name: "Selvam Rahaman",
-        EmployeeId: "HAH621",
-        emailAddress: "selvamrahaman2021@gmail.com",
-        mobile: "+91 024142574",
-        action: (
-          <Link to="/analyst/update">
-            <BsEye className="text-lg" />
-          </Link>
-        ),
-      },
-      {
-        name: "Prakash Nandi",
-        EmployeeId: "AH20gh281",
-        emailAddress: "Prakashnandi2021@gmail.com",
-        mobile: "+91 024142754",
-        action: (
-          <Link to="/analyst/update">
-            <BsEye className="text-lg" />
-          </Link>
-        ),
-      },
-    ],
-    []
-  );
+  const { user } = useAppSelector((state) => state?.user);
+  const { analystList } = useAppSelector((state) => state?.analyst);
+  const dispatch = useAppDispatch();
+  const [tableRow, setTableRow] = useState<ColumnDetails[]>([]);
+
+  const fetchAnalyst = async () => {
+    dispatch(setLoading(true));
+    const URL = `/analyst?email=${user}`;
+    try {
+      const { data } = await axiosConfig.get(URL);
+      dispatch(setLoading(false));
+      dispatch(setAnalystList(data?.data));
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
+
+  useEffect(() => {
+    if (!Object.entries(analystList)?.length) {
+      fetchAnalyst();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (Object.entries(analystList)?.length) {
+      const res = Object.entries(analystList)?.map(
+        (
+          //@ts-ignore
+          [key, { name, phone, email, employeeId }]
+        ) => ({
+          name,
+          mobile: phone,
+          emailAddress: email,
+          employeeId,
+
+          action: (
+            <Link to={`/analyst/${key}`}>
+              <BsEye className="text-lg" />
+            </Link>
+          ),
+        })
+      );
+      setTableRow(res);
+    }
+  }, [analystList]);
+
+  const data = React.useMemo<ColumnDetails[]>(() => tableRow, [tableRow]);
 
   const columns = React.useMemo(
     () => [
@@ -116,7 +76,7 @@ const Analyst = () => {
       },
       {
         Header: "Employee ID",
-        accessor: "EmployeeId",
+        accessor: "employeeId",
       },
       {
         Header: "Email address",
