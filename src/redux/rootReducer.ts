@@ -4,7 +4,8 @@ import userReducer from "./slices/userSlice";
 import doctorReducer from "./slices/doctorSlice";
 import analystReducer from "./slices/analystSlice";
 import hospitalReducer from "./slices/hospitalSlice";
-import empanelledCompaniesSlice from "./slices/empanelledCompaniesSlice";
+import empanelledCompaniesReducer from "./slices/empanelledCompaniesSlice";
+import planReducer from "./slices/planSlice";
 
 const rootReducer = combineReducers({
   utility: utilityReducer,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
   doctor: doctorReducer,
   analyst: analystReducer,
   hospital: hospitalReducer,
-  empanelledCompanies: empanelledCompaniesSlice,
+  empanelledCompanies: empanelledCompaniesReducer,
+  plan: planReducer,
 });
 
 // export type RootState = ReturnType<typeof rootReducer>;
