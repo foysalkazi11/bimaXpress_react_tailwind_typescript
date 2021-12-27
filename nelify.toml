@@ -1,5 +1,10 @@
+# api redirect.
 [[redirects]]
-  from = "/"
-  to = "http://ec2-3-110-207-150.ap-south-1.compute.amazonaws.com/"
+  from = "/api/*"
+  to = "http://ec2-3-110-207-150.ap-south-1.compute.amazonaws.com/:splat"
   status = 200
-  force = true # COMMENT: ensure that we always redirect
+# SPA router support.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
