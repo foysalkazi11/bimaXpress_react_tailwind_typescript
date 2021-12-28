@@ -9,6 +9,7 @@ import { setCurrentPlan } from "../../../redux/slices/planSlice";
 import axiosConfig from "../../../config/axiosConfig";
 // import { format } from "date-fns";
 import rupi from "../../../assets/icon/rupi.svg";
+import notification from "../../theme/utility/notification";
 
 // type typeCurrentPlanDetails = {
 //   claimsleft: null | number | undefined;
