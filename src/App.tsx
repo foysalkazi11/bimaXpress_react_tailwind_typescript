@@ -33,7 +33,7 @@ function App() {
           <Route path="/doctor/:key" element={<DoctorUpdate />} />
           <Route path="/newCase" element={<NewCase />} />
           <Route path="/order" element={<Order />} />
-          <Route path="/drafts" element={<Drafts />} />
+          <Route path="/caseData/:case" element={<Drafts />} />
           <Route path="/mail" element={<Mail />} />
           <Route
             path="/empanelledCompanies"

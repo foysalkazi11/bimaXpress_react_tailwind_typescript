@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import HomeCard from "../theme/card/HomeCard";
 import approved from "../../assets/icon/approved.svg";
 import dischargedApproved from "../../assets/icon/dischargedApproved.svg";
@@ -11,82 +11,141 @@ import process from "../../assets/icon/process.svg";
 import reject from "../../assets/icon/reject.svg";
 import { Link } from "react-router-dom";
 import axiosConfig from "../../config/axiosConfig";
-
-const menuList = [
-  {
-    name: "Draft",
-    icon: draft,
-    amount: 210,
-    pageLink: "/drafts",
-  },
-  {
-    name: "Unprocessed",
-    icon: process,
-    amount: 10,
-    pageLink: "#",
-  },
-  {
-    name: "Queries",
-    icon: query,
-    amount: 2,
-    pageLink: "#",
-  },
-  {
-    name: "Approved",
-    icon: approved,
-    amount: 10,
-    pageLink: "#",
-  },
-  {
-    name: "Rejected",
-    icon: reject,
-    amount: 1,
-    pageLink: "#",
-  },
-  {
-    name: "Enhance",
-    icon: enhance,
-    amount: 20,
-    pageLink: "#",
-  },
-  {
-    name: "FCI",
-    icon: fci,
-    amount: 10,
-    pageLink: "#",
-  },
-
-  {
-    name: "Discharge Approved",
-    icon: dischargedApproved,
-    amount: 20,
-    pageLink: "#",
-  },
-  {
-    name: "Settle",
-    icon: approved,
-    amount: 50,
-    pageLink: "#",
-  },
-];
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { setUser, setUserData } from "../../redux/slices/userSlice";
+import notification from "../theme/utility/notification";
+import { setLoading } from "../../redux/slices/utilitySlice";
+import { setCounter } from "../../redux/slices/homeSlice";
 
 const Home = () => {
+  const [menuList, setMenuList] = useState<
+    { name: any; icon: any; amount: any; pageLink: any }[]
+  >([]);
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state?.user);
+  const { counter } = useAppSelector((state) => state?.home);
+
   const handleSignin = async () => {
     try {
       const URL = "/signin";
-      const res = await axiosConfig.post(URL, {
+      const {
+        data: { data },
+      } = await axiosConfig.post(URL, {
         email: "abnew@gmail.com",
         password: "123456",
       });
-      console.log(res);
+      console.log(user);
+
+      dispatch(setUserData(data));
+      dispatch(setUser(data?.email));
     } catch (error) {
-      console.log(error);
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
+
+  const fetchCounter = async () => {
+    dispatch(setLoading(true));
+    const URL = `/counter?email=${user}`;
+
+    try {
+      const {
+        data: { data },
+      } = await axiosConfig.get(URL);
+      dispatch(setLoading(false));
+      dispatch(setCounter(data));
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
     }
   };
 
   useEffect(() => {
-    handleSignin();
-  }, []);
+    if (!user) {
+      handleSignin();
+    } else {
+      if (!Object.entries(counter).length) {
+        fetchCounter();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  useEffect(() => {
+    if (Object.entries(counter).length) {
+      if (!menuList?.length) {
+        setMenuList([
+          {
+            name: "Draft",
+            icon: draft,
+            //@ts-ignore
+            amount: counter?.draft,
+            pageLink: "/caseData/draftcases",
+          },
+          {
+            name: "Unprocessed",
+            icon: process,
+            //@ts-ignore
+            amount: counter?.Unprocessed,
+            pageLink: "/caseData/unprocessedcases",
+          },
+          {
+            name: "Queries",
+            icon: query,
+            //@ts-ignore
+            amount: counter?.query,
+            pageLink: "/caseData/querycases",
+          },
+          {
+            name: "Approved",
+            icon: approved,
+            //@ts-ignore
+            amount: counter?.Approved,
+            pageLink: "/caseData/approvedcases",
+          },
+          {
+            name: "Rejected",
+            icon: reject,
+            //@ts-ignore
+            amount: counter?.Reject,
+            pageLink: "/caseData/rejectcases",
+          },
+          {
+            name: "Enhance",
+            icon: enhance,
+            //@ts-ignore
+            amount: counter?.Enhance,
+            pageLink: "/caseData/enhancedcases",
+          },
+          {
+            name: "FCI",
+            icon: fci,
+            //@ts-ignore
+            amount: counter?.fci,
+            pageLink: "/caseData/fcicases",
+          },
+
+          {
+            name: "Discharge Approved",
+            icon: dischargedApproved,
+            //@ts-ignore
+            amount: counter?.Discharge_Approved,
+            pageLink: "/caseData/dischargeapprovedcases",
+          },
+          {
+            name: "Settle",
+            icon: approved,
+            //@ts-ignore
+            amount: counter?.Settled,
+            pageLink: "/caseData/settledcases",
+          },
+        ]);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [counter]);
+
   return (
     <div className="p-10 flex flex-wrap mx-auto">
       {menuList?.map((menu, index) => {
