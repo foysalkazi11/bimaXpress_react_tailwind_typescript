@@ -14,6 +14,12 @@ import filter from "../../assets/icon/filter.svg";
 import NewCaseSelect from "../theme/select/newCaseSelect/NewCaseSelect";
 import TableCheckbox from "../theme/table/tableCheckbox/TableCheckbox";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useParams } from "react-router-dom";
+import { setLoading } from "../../redux/slices/utilitySlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import axiosConfig from "../../config/axiosConfig";
+import { setCaseData } from "../../redux/slices/homeSlice";
+import notification from "../theme/utility/notification";
 
 const insuranceCompany = [
   { label: "Health India Insurance", value: "health_india_insurance" },
@@ -39,66 +45,58 @@ interface ColumnDetails {
 }
 
 const Drafts = () => {
+  const [tableRow, setTableRow] = useState<ColumnDetails[]>([]);
+  const param = useParams();
   const [inputValue, setInputValue] = useState("");
-  const data = React.useMemo<ColumnDetails[]>(
-    () => [
-      {
-        name: "Pranav vikram",
-        phone: 9898525481,
-        claimNumber: "TFS4556dD",
-        admissionDate: "20 Nov 2021",
-        claimAmount: "2000",
-        insuranceTPA: "Health India Insurance",
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state?.user);
+  const { caseData } = useAppSelector((state) => state?.home);
+  const fetchAnalyst = async () => {
+    dispatch(setLoading(true));
+    const URL = `/${param?.case}?email=${user}`;
+    try {
+      const { data } = await axiosConfig.get(URL);
+      dispatch(setLoading(false));
+      dispatch(setCaseData(data?.data));
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchAnalyst();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const res = Object.entries(caseData)?.map(
+      (
+        //@ts-ignore
+        [
+          key,
+          {
+            patient_details: { Name, Phone, Policy_Id },
+            Tpa_Company,
+            hospital_details: { total, Date_of_Admission },
+          },
+        ]
+      ) => ({
+        name: Name,
+        phone: Phone,
+        claimNumber: Policy_Id,
+        admissionDate: Date_of_Admission,
+        claimAmount: total,
+        insuranceTPA: Tpa_Company,
         action: <img src={download} alt="icon" />,
-      },
-      {
-        name: "Chandar sekar",
-        phone: 9898525481,
-        claimNumber: "TFS47556dD",
-        admissionDate: "20 Nov 2021",
-        claimAmount: "3000",
-        insuranceTPA: "Reliance General Insurance",
-        action: <img src={download} alt="icon" />,
-      },
-      {
-        name: "Sai shree",
-        phone: 9898525481,
-        claimNumber: "T4556dD",
-        admissionDate: "20 Nov 2021",
-        claimAmount: "3000",
-        insuranceTPA: "Futura Generali Insurance",
-        action: <img src={download} alt="icon" />,
-      },
-      {
-        name: "Rupa rajesh",
-        phone: 9898525481,
-        claimNumber: "RFS56dD",
-        admissionDate: "20 Nov 2021",
-        claimAmount: "2300",
-        insuranceTPA: "Medsave Health Insurance",
-        action: <img src={download} alt="icon" />,
-      },
-      {
-        name: "vikram",
-        phone: 9898525481,
-        claimNumber: "TFS4556dD",
-        admissionDate: "20 Nov 2021",
-        claimAmount: "2300",
-        insuranceTPA: "Bajaj Allianz Life Insurance",
-        action: <img src={download} alt="icon" />,
-      },
-      {
-        name: "Kumar",
-        phone: 9898525481,
-        claimNumber: "TDS4556dD",
-        admissionDate: "20 Nov 2021",
-        claimAmount: "2300",
-        insuranceTPA: "Bajaj Allianz Life Insurance",
-        action: <img src={download} alt="icon" />,
-      },
-    ],
-    []
-  );
+      })
+    );
+    setTableRow(res);
+  }, [caseData]);
+
+  const data = React.useMemo<ColumnDetails[]>(() => tableRow, [tableRow]);
 
   const columns = React.useMemo(
     () => [
@@ -239,10 +237,10 @@ const Drafts = () => {
                 defaultOption="Insurance TPA"
                 value={options?.insuranceTPA || ""}
                 style={{
-                  maxWidth: "170px",
+                  minWidth: "170px",
                   height: "30px",
                   backgroundColor: "#FFFFFF17",
-                  padding: "0px",
+                  padding: "0px 5px",
                   borderRadius: "3px",
                   fontSize: "12px",
                 }}
@@ -256,10 +254,10 @@ const Drafts = () => {
                 defaultOption="Status"
                 value={options?.dateRange || ""}
                 style={{
-                  maxWidth: "125px",
+                  minWidth: "125px",
                   height: "30px",
                   backgroundColor: "#FFFFFF17",
-                  padding: "0px",
+                  padding: "0px 5px",
                   borderRadius: "3px",
                   fontSize: "12px",
                 }}

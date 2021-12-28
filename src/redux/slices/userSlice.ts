@@ -3,11 +3,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 type SideTrayState = {
   user: string;
   role: string;
+  userData: object;
 };
 
 const initialState: SideTrayState = {
-  user: "abnew@gmail.com",
+  user: "",
   role: "admin",
+  userData: {},
 };
 
 export const userSlice = createSlice({
@@ -20,9 +22,12 @@ export const userSlice = createSlice({
     setRole: (state, action: PayloadAction<string>) => {
       state.role = action?.payload;
     },
+    setUserData: (state, action: PayloadAction<object>) => {
+      state.userData = action?.payload;
+    },
   },
 });
 
-export const { setUser, setRole } = userSlice?.actions;
+export const { setUser, setRole, setUserData } = userSlice?.actions;
 
 export default userSlice?.reducer;
