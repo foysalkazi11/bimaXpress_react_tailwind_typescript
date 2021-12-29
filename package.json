@@ -31,7 +31,7 @@
   },
   "proxy": "http://ec2-3-110-207-150.ap-south-1.compute.amazonaws.com",
   "scripts": {
-    "start": "serve -s build",
+    "start": "craco start",
     "build": "craco build",
     "test": "craco test",
     "heroku-postbuild": "npm run build",

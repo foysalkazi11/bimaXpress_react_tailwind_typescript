@@ -9,10 +9,9 @@ import fci from "../../assets/icon/fci.svg";
 import query from "../../assets/icon/noun_query_3407971.svg";
 import process from "../../assets/icon/process.svg";
 import reject from "../../assets/icon/reject.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosConfig from "../../config/axiosConfig";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { setUser, setUserData } from "../../redux/slices/userSlice";
 import notification from "../theme/utility/notification";
 import { setLoading } from "../../redux/slices/utilitySlice";
 import { setCounter } from "../../redux/slices/homeSlice";
@@ -24,25 +23,7 @@ const Home = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state?.user);
   const { counter } = useAppSelector((state) => state?.home);
-
-  const handleSignin = async () => {
-    try {
-      const URL = "/signin";
-      const {
-        data: { data },
-      } = await axiosConfig.post(URL, {
-        email: "abnew@gmail.com",
-        password: "123456",
-      });
-      console.log(user);
-
-      dispatch(setUserData(data));
-      dispatch(setUser(data?.email));
-    } catch (error) {
-      //@ts-ignore
-      notification("error", error?.message);
-    }
-  };
+  const navigate = useNavigate();
 
   const fetchCounter = async () => {
     dispatch(setLoading(true));
@@ -63,7 +44,7 @@ const Home = () => {
 
   useEffect(() => {
     if (!user) {
-      handleSignin();
+      navigate("/login");
     } else {
       if (!Object.entries(counter).length) {
         fetchCounter();

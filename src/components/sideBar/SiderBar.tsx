@@ -14,7 +14,9 @@ import { FiSend } from "react-icons/fi";
 import { MdOutlineInbox } from "react-icons/md";
 import { SiSimpleanalytics } from "react-icons/si";
 import logo from "../../assets/images/logo.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { setCurrentMenu } from "../../redux/slices/homeSlice";
 
 const homeMenu = {
   name: "Home",
@@ -126,15 +128,29 @@ const SiderBar = () => {
   const [activeMenu, setActiveMenu] = useState(7);
   const [openEmailMenu, setOpenEmailMenu] = useState(false);
   const [activeMailMenu, setActiveMailMenu] = useState(0);
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state?.user);
+  const navigate = useNavigate();
 
-  const handleEmailMenu = (num: number) => {
-    setActiveMenu(num);
-    setOpenEmailMenu((pre) => !pre);
+  const handleEmailMenu = (num: number, name: string, link: string) => {
+    if (user) {
+      setActiveMenu(num);
+      setOpenEmailMenu((pre) => !pre);
+      navigate(link);
+    } else {
+      navigate("/login");
+    }
   };
-  const handleActiveMenu = (num: number) => {
-    setActiveMenu(num);
-    if (openEmailMenu) {
-      setOpenEmailMenu(false);
+  const handleActiveMenu = (num: number, name: string, link: string) => {
+    if (user) {
+      setActiveMenu(num);
+      dispatch(setCurrentMenu(name));
+      if (openEmailMenu) {
+        setOpenEmailMenu(false);
+      }
+      navigate(link);
+    } else {
+      navigate("/login");
     }
   };
   return (
@@ -143,24 +159,26 @@ const SiderBar = () => {
         <img src={logo} alt="logo" />
       </div>
       <div>
-        <Link
-          to={homeMenu?.pageLink}
-          className={`flex items-center p-3 my-4 rounded ${
+        <div
+          className={`flex items-center p-3 my-4 rounded cursor-pointer ${
             activeMenu === 7 ? "bg-primary-light" : ""
           } `}
-          onClick={() => handleActiveMenu(7)}
+          onClick={() =>
+            handleActiveMenu(7, homeMenu?.name, homeMenu?.pageLink)
+          }
         >
           {homeMenu?.icon}
           <p className="text-fontColor font-semibold text-sm">
             {homeMenu?.name}
           </p>
-        </Link>
-        <Link
-          to={emailMenu?.pageLink}
-          className={`flex items-center justify-between p-3 my-4 rounded ${
+        </div>
+        <div
+          className={`flex items-center justify-between p-3 my-4 rounded cursor-pointer  ${
             activeMenu === 8 ? " bg-secondary-light" : ""
           } `}
-          onClick={() => handleEmailMenu(8)}
+          onClick={() =>
+            handleEmailMenu(8, emailMenu?.name, emailMenu?.pageLink)
+          }
         >
           <div className="flex">
             {emailMenu?.icon}
@@ -173,7 +191,7 @@ const SiderBar = () => {
           ) : (
             <IoIosArrowDown className="text-fontColor text-xl" />
           )}
-        </Link>
+        </div>
         {openEmailMenu ? (
           <div className="border-b border-fontColor-darkGray">
             {innerMailMenu?.map((menu, index) => {
@@ -181,7 +199,7 @@ const SiderBar = () => {
                 <Link
                   to={menu?.pageLink}
                   key={index}
-                  className={`flex items-center justify-between p-3 my-2 rounded ${
+                  className={`flex items-center justify-between p-3 my-2 rounded cursor-pointer  ${
                     index === activeMailMenu ? "bg-primary-light" : ""
                   }`}
                   onClick={() => setActiveMailMenu(index)}
@@ -209,19 +227,20 @@ const SiderBar = () => {
 
         {sideBarMenu?.map((menu, index) => {
           return (
-            <Link
-              to={menu?.pageLink}
+            <div
               key={index}
-              className={`flex items-center p-3 my-4 rounded ${
+              className={`flex items-center p-3 my-4 rounded cursor-pointer  ${
                 index === activeMenu ? "bg-primary-light" : ""
               } `}
-              onClick={() => handleActiveMenu(index)}
+              onClick={() =>
+                handleActiveMenu(index, menu?.name, menu?.pageLink)
+              }
             >
               {menu?.icon}
               <p className="text-fontColor font-semibold text-sm">
                 {menu?.name}
               </p>
-            </Link>
+            </div>
           );
         })}
       </div>
