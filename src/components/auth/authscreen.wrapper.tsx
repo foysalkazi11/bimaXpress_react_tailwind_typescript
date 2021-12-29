@@ -21,7 +21,7 @@ function AuthScreenWrapper({
         <div className="authscreen__background__shape"></div>
       </div>
       {/* @ts-ignore */}
-      <form className="authscreen__form">
+      <form className="authscreen__form" onSubmit={submit}>
         <h3>{title}</h3>
         {children}
       </form>

@@ -16,37 +16,52 @@ import EmpanelledCompanies from "./components/empanelled/EmpanelledCompanies";
 import CreateCompany from "./components/empanelled/createCompany/CreateCompany";
 import UpdateCompanies from "./components/empanelled/updateCompanies/UpdateCompanies";
 import Mail from "./components/mail/Mail";
+import LoginPage from "./components/auth/login.page";
+import SignPage from "./components/auth/signup.page";
+import { useAppSelector } from "./redux/hooks";
 
 function App() {
+  const { user } = useAppSelector((state) => state?.user);
+
   return (
     <Router>
       <Layout>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/plan" element={<Plan />} />
-          <Route path="/hospital" element={<Hospital />} />
-          <Route path="/analyst" element={<Analyst />} />
-          <Route path="/analyst/:key" element={<AnalystUpdate />} />
-          <Route path="/analyst/create" element={<AnalystCreate />} />
-          <Route path="/doctor" element={<Doctor />} />
-          <Route path="/doctor/create" element={<DoctorCreate />} />
-          <Route path="/doctor/:key" element={<DoctorUpdate />} />
-          <Route path="/newCase" element={<NewCase />} />
-          <Route path="/order" element={<Order />} />
-          <Route path="/caseData/:case" element={<Drafts />} />
-          <Route path="/mail" element={<Mail />} />
-          <Route
-            path="/empanelledCompanies"
-            element={<EmpanelledCompanies />}
-          />
-          <Route
-            path="/empanelledCompanies/create"
-            element={<CreateCompany />}
-          />
-          <Route
-            path="/empanelledCompanies/:key"
-            element={<UpdateCompanies />}
-          />
+          {user ? (
+            <>
+              <Route path="/" element={<Home />} />
+              <Route path="/plan" element={<Plan />} />
+              <Route path="/hospital" element={<Hospital />} />
+              <Route path="/analyst" element={<Analyst />} />
+              <Route path="/analyst/:key" element={<AnalystUpdate />} />
+              <Route path="/analyst/create" element={<AnalystCreate />} />
+              <Route path="/doctor" element={<Doctor />} />
+              <Route path="/doctor/create" element={<DoctorCreate />} />
+              <Route path="/doctor/:key" element={<DoctorUpdate />} />
+              <Route path="/newCase" element={<NewCase />} />
+              <Route path="/order" element={<Order />} />
+              <Route path="/caseData/:case" element={<Drafts />} />
+              <Route path="/mail" element={<Mail />} />
+              <Route
+                path="/empanelledCompanies"
+                element={<EmpanelledCompanies />}
+              />
+              <Route
+                path="/empanelledCompanies/create"
+                element={<CreateCompany />}
+              />
+              <Route
+                path="/empanelledCompanies/:key"
+                element={<UpdateCompanies />}
+              />
+            </>
+          ) : (
+            <>
+              <Route path="/" element={<LoginPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignPage />} />
+            </>
+          )}
         </Routes>
       </Layout>
     </Router>

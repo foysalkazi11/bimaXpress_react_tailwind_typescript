@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../redux/hooks";
 import NavBar from "../navBar/NavBar";
 import SiderBar from "../sideBar/SiderBar";
 
@@ -7,6 +9,15 @@ type LayoutProps = {
 };
 
 const Layout = ({ children }: LayoutProps) => {
+  const navigate = useNavigate();
+  const { user } = useAppSelector((state) => state?.user);
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
   return (
     <div className="grid grid-cols-12 mx-auto h-full min-h-screen w-full">
       <div className="col-span-12 md:col-span-3 bg-primary-dark p-3 border-r border-gray-500 ">
