@@ -17,7 +17,7 @@ import CreateCompany from "./components/empanelled/createCompany/CreateCompany";
 import UpdateCompanies from "./components/empanelled/updateCompanies/UpdateCompanies";
 import Mail from "./components/mail/Mail";
 import LoginPage from "./components/auth/login.page";
-import SignPage from "./components/auth/signup.page";
+// import SignPage from "./components/auth/signup.page";
 import { useAppSelector } from "./redux/hooks";
 
 function App() {
@@ -59,7 +59,7 @@ function App() {
             <>
               <Route path="/" element={<LoginPage />} />
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignPage />} />
+              {/* <Route path="/signup" element={<SignPage />} /> */}
             </>
           )}
         </Routes>
