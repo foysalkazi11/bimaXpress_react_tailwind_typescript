@@ -40,9 +40,11 @@ const ComposeModal = ({
       <p className="px-4 py-2 text-sm text-primary font-medium">
         bhimxpress2000@outlook.in
       </p>
-      <p className="px-4 py-2 text-sm text-fontColor-darkGray border-t border-fontColor-gray tracking-wide">
-        Cc Bcc
-      </p>
+      <div className="px-4 py-2 text-sm text-fontColor-darkGray border-t border-fontColor-gray tracking-wide flex items-center">
+        <p className="mr-2">Cc</p>
+
+        <input className="border-none outline-none w-full h-full" />
+      </div>
       <p className="px-4 py-2 text-sm text-fontColor-darkGray border-t border-fontColor-gray tracking-wide">
         Subject
       </p>

@@ -53,9 +53,9 @@ function LoginPage() {
   };
 
   // HANDLE CLICK ON SIGNUP LINK
-  const handleRedirect = () => {
-    navigate("/signup");
-  };
+  // const handleRedirect = () => {
+  //   navigate("/signup");
+  // };
 
   return (
     <AuthScreenWrapper title="LOGIN" submit={handleSignin}>
@@ -84,9 +84,9 @@ function LoginPage() {
         </div>
         <button>Log In</button>
       </div>
-      <div className="authscreen__or">
+      {/* <div className="authscreen__or">
         NO ACCOUNT? <span onClick={handleRedirect}>SIGNUP</span>
-      </div>
+      </div> */}
     </AuthScreenWrapper>
   );
 }
