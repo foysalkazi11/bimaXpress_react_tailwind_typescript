@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
 import styles from "./ComposeModal.module.css";
 import { IoClose } from "react-icons/io5";
@@ -9,6 +9,8 @@ import underline from "../../../assets/icon/underline.svg";
 import align_center_alt from "../../../assets/icon/align-center-alt.svg";
 import align_left from "../../../assets/icon/align_left.svg";
 import align_right from "../../../assets/icon/align_right.svg";
+import { MdOutlineClose } from "react-icons/md";
+const emailRegex = /^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/;
 
 type ComposeModalProps = {
   isOpen?: boolean;
@@ -19,6 +21,55 @@ const ComposeModal = ({
   isOpen = false,
   closeModal = () => {},
 }: ComposeModalProps) => {
+  const [mail, setMail] = useState({
+    to: "",
+    cc: "",
+    bcc: "",
+    toList: [],
+    ccList: [],
+    bccList: [],
+    sub: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e?.target;
+    if (value !== ",") {
+      setMail((pre) => ({ ...pre, [name]: value }));
+    }
+  };
+
+  const handleKeypress = (
+    e: React.KeyboardEvent,
+    name: string,
+    listName: string
+  ) => {
+    if (e?.key === "Enter" || e?.key === ",") {
+      //@ts-ignore
+      if (mail[name]) {
+        setMail((pre) => ({
+          ...pre,
+          //@ts-ignore
+          [listName]: [...pre[listName], pre[name]],
+          [name]: "",
+        }));
+      }
+    }
+  };
+
+  console.log(mail);
+
+  const removeEmail = (val: string, listName: string) => {
+    setMail((pre) => ({
+      ...pre,
+      //@ts-ignore
+      [listName]: [...pre[listName]]?.filter((mail) => mail !== val),
+    }));
+  };
+
+  const checkValidEmail = (val: string) => {
+    return emailRegex?.test(val);
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -37,17 +88,111 @@ const ComposeModal = ({
           onClick={closeModal}
         />
       </div>
-      <p className="px-4 py-2 text-sm text-primary font-medium">
+      {/* <p className="px-4 py-2 text-sm text-primary font-medium">
         bhimxpress2000@outlook.in
-      </p>
-      <div className="px-4 py-2 text-sm text-fontColor-darkGray border-t border-fontColor-gray tracking-wide flex items-center">
-        <p className="mr-2">Cc</p>
+      </p> */}
+      <div className="px-4 py-2 text-sm text-fontColor-darkGray border-t border-fontColor-gray tracking-wide flex items-center flex-wrap">
+        <p className="mr-2 mb-1">To</p>
+        {mail?.toList?.map((item, index) => {
+          return (
+            <div
+              className={`flex items-center border border-fontColor-darkGray rounded-3xl mr-2 px-2 mb-1  ${
+                checkValidEmail(item)
+                  ? "font-medium text-primary"
+                  : "border-none bg-red-600 text-fontColor"
+              }`}
+              key={index}
+            >
+              <p>{item}</p>
+              <MdOutlineClose
+                className={`text-fontColor-darkGray ml-2 cursor-pointer ${
+                  checkValidEmail(item) ? "" : "text-fontColor"
+                }`}
+                onClick={() => removeEmail(item, "toList")}
+              />
+            </div>
+          );
+        })}
 
-        <input className="border-none outline-none w-full h-full" />
+        <input
+          className="border-none outline-none "
+          value={mail?.to}
+          name="to"
+          onChange={(e) => handleChange(e)}
+          onKeyPress={(e) => handleKeypress(e, "to", "toList")}
+        />
       </div>
-      <p className="px-4 py-2 text-sm text-fontColor-darkGray border-t border-fontColor-gray tracking-wide">
-        Subject
-      </p>
+      <div className="px-4 py-2 text-sm text-fontColor-darkGray border-t border-fontColor-gray tracking-wide flex items-center flex-wrap">
+        <p className="mr-2 mb-1">Cc</p>
+        {mail?.ccList?.map((item, index) => {
+          return (
+            <div
+              className={`flex items-center border border-fontColor-darkGray rounded-3xl mr-2 px-2 mb-1  ${
+                checkValidEmail(item)
+                  ? "font-medium text-primary"
+                  : "border-none bg-red-600 text-fontColor"
+              }`}
+              key={index}
+            >
+              <p>{item}</p>
+              <MdOutlineClose
+                className={`text-fontColor-darkGray ml-2 cursor-pointer ${
+                  checkValidEmail(item) ? "" : "text-fontColor"
+                }`}
+                onClick={() => removeEmail(item, "ccList")}
+              />
+            </div>
+          );
+        })}
+
+        <input
+          className="border-none outline-none "
+          value={mail?.cc}
+          name="cc"
+          onChange={(e) => handleChange(e)}
+          onKeyPress={(e) => handleKeypress(e, "cc", "ccList")}
+        />
+      </div>
+      <div className="px-4 py-2 text-sm text-fontColor-darkGray border-t border-fontColor-gray tracking-wide flex items-center flex-wrap">
+        <p className="mr-2 mb-1">Bcc</p>
+        {mail?.bccList?.map((item, index) => {
+          return (
+            <div
+              className={`flex items-center border border-fontColor-darkGray rounded-3xl mr-2 px-2 mb-1 ${
+                checkValidEmail(item)
+                  ? "font-medium text-primary"
+                  : "border-none bg-red-600 text-fontColor"
+              }`}
+              key={index}
+            >
+              <p>{item}</p>
+              <MdOutlineClose
+                className={`text-fontColor-darkGray ml-2 cursor-pointer ${
+                  checkValidEmail(item) ? "" : "text-fontColor"
+                }`}
+                onClick={() => removeEmail(item, "bccList")}
+              />
+            </div>
+          );
+        })}
+
+        <input
+          className="border-none outline-none "
+          value={mail?.bcc}
+          name="bcc"
+          onChange={(e) => handleChange(e)}
+          onKeyPress={(e) => handleKeypress(e, "bcc", "bccList")}
+        />
+      </div>
+      <div className="px-4 py-2 text-sm text-fontColor-darkGray border-t border-fontColor-gray tracking-wide">
+        <input
+          className="border-none outline-none text-primary font-medium"
+          value={mail?.sub}
+          name="sub"
+          onChange={(e) => handleChange(e)}
+          placeholder="Subject"
+        />
+      </div>
       <div className="px-4 py-2 pb-4 text-sm text-fontColor-darkGray border-t border-b border-fontColor-gray tracking-wide">
         <p className="text-base">Hey</p>
         <p className="mt-4 text-base">
