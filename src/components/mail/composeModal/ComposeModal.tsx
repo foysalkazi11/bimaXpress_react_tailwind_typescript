@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Modal from "react-modal";
 import styles from "./ComposeModal.module.css";
 import { IoClose } from "react-icons/io5";
@@ -10,6 +10,10 @@ import align_center_alt from "../../../assets/icon/align-center-alt.svg";
 import align_left from "../../../assets/icon/align_left.svg";
 import align_right from "../../../assets/icon/align_right.svg";
 import { MdOutlineClose } from "react-icons/md";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import axiosConfig from "../../../config/axiosConfig";
+import notification from "../../theme/utility/notification";
+import { setLoading } from "../../../redux/slices/utilitySlice";
 const emailRegex = /^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/;
 
 type ComposeModalProps = {
@@ -29,12 +33,61 @@ const ComposeModal = ({
     ccList: [],
     bccList: [],
     sub: "",
+    body: "",
+    file: [],
   });
+  const { user } = useAppSelector((state) => state?.user);
+  const dispatch = useAppDispatch();
+
+  const bodyRef = useRef(null);
+
+  const uploadFile = async () => {
+    dispatch(setLoading(true));
+    const URL = `/sendEmail?email=${user}`;
+    const formData = new FormData();
+    formData?.append("reciever", mail?.to?.toString());
+    formData?.append("Cc", mail?.cc?.toString());
+    formData?.append("Bcc", mail?.bcc?.toString());
+    formData?.append("sub", mail?.sub);
+    //@ts-ignore
+    formData?.append("sender_msg", bodyRef?.current?.innerHTML);
+    try {
+      await axiosConfig.post(URL, formData);
+      dispatch(setLoading(false));
+      notification("info", "Email sent successfully");
+      closeModal();
+      setMail({
+        to: "",
+        cc: "",
+        bcc: "",
+        toList: [],
+        ccList: [],
+        bccList: [],
+        sub: "",
+        body: "",
+        file: [],
+      });
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
+
+  const runCommand = (command: string) => {
+    document.execCommand(command, false, undefined);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e?.target;
+
     if (value !== ",") {
-      setMail((pre) => ({ ...pre, [name]: value }));
+      if (name === "file") {
+        //@ts-ignore
+        setMail((pre) => ({ ...pre, [name]: [...pre[name], value] }));
+      } else {
+        setMail((pre) => ({ ...pre, [name]: value }));
+      }
     }
   };
 
@@ -55,8 +108,6 @@ const ComposeModal = ({
       }
     }
   };
-
-  console.log(mail);
 
   const removeEmail = (val: string, listName: string) => {
     setMail((pre) => ({
@@ -193,42 +244,82 @@ const ComposeModal = ({
           placeholder="Subject"
         />
       </div>
-      <div className="px-4 py-2 pb-4 text-sm text-fontColor-darkGray border-t border-b border-fontColor-gray tracking-wide">
-        <p className="text-base">Hey</p>
-        <p className="mt-4 text-base">
-          Hey Forget about spam, advertising mailings, hacking and attacking
-          robots. Keep your real mailbox clean and secure. Temp Mail provides
-          temporary, secure.{" "}
-        </p>
-        <p className="mt-4 text-base">
-          We all know that Internet / Technologies / Automation is present and
-          future.
-        </p>
-        <p className="mt-4 text-base">
-          Hey Forget about spam, advertising mailings, hacking and attacking
-          robots. Keep your real mailbox clean and secure. Temp Mail provides
-          temporary, secure.{" "}
-        </p>
-        <p className="mt-4 text-base">
-          We all know that Internet / Technologies / Automation is present and
-          future.
-        </p>
-      </div>
+      <div
+        className="px-4 py-2 pb-4 text-sm text-fontColor-darkGray border-t border-b border-fontColor-gray tracking-wide outline-none"
+        style={{ minHeight: "250px" }}
+        contentEditable={true}
+        ref={bodyRef}
+      ></div>
       <div className=" flex items-center py-8 p px-4">
-        <button className="w-28 h-10 bg-primary-dark text-sm text-fontColor border-none outline-none rounded mr-3">
+        <button
+          className="w-28 h-10 bg-primary-dark text-sm text-fontColor border-none outline-none rounded mr-3"
+          onClick={uploadFile}
+        >
           Send
         </button>
-        <img src={paperclip_black} alt="icon" className="mr-3" />
+        <div className="relative w-8 h-8 cursor-pointer">
+          <img
+            src={paperclip_black}
+            alt="icon"
+            className="absolute mr-3 top-2 cursor-pointer"
+          />
+          <input
+            type="file"
+            accept="image/*"
+            className="absolute border-none outline-none cursor-pointer opacity-0 w-full h-full top-0 left-0 "
+            name="file"
+            onChange={handleChange}
+          />
+        </div>
         <div
           className="flex items-center p-3 rounded"
           style={{ backgroundColor: "#EEEEEE" }}
+          onClick={(e) => e.stopPropagation()}
         >
-          <img src={bold} alt="icon" className="mr-3" />
-          <img src={italic} alt="icon" className="mr-3" />
-          <img src={underline} alt="icon" className="mr-3" />
-          <img src={align_center_alt} alt="icon" className="mr-3" />
-          <img src={align_right} alt="icon" className="mr-3" />
-          <img src={align_left} alt="icon" className="mr-3" />
+          <img
+            src={bold}
+            alt="icon"
+            className="mr-3 cursor-pointer"
+            onClick={() => runCommand("bold")}
+            onMouseDown={(e) => e.preventDefault()}
+          />
+
+          <img
+            src={italic}
+            alt="icon"
+            className="mr-3 cursor-pointer"
+            onClick={() => runCommand("italic")}
+            onMouseDown={(e) => e.preventDefault()}
+          />
+          <img
+            src={underline}
+            alt="icon"
+            className="mr-3 cursor-pointer"
+            onClick={() => runCommand("underline")}
+            onMouseDown={(e) => e.preventDefault()}
+          />
+
+          <img
+            src={align_right}
+            alt="icon"
+            className="mr-3 cursor-pointer"
+            onClick={() => runCommand("justifyLeft")}
+            onMouseDown={(e) => e.preventDefault()}
+          />
+          <img
+            src={align_center_alt}
+            alt="icon"
+            className="mr-3 cursor-pointer"
+            onClick={() => runCommand("justifyCenter")}
+            onMouseDown={(e) => e.preventDefault()}
+          />
+          <img
+            src={align_left}
+            alt="icon"
+            className="mr-3 cursor-pointer"
+            onClick={() => runCommand("justifyRight")}
+            onMouseDown={(e) => e.preventDefault()}
+          />
         </div>
       </div>
     </Modal>
