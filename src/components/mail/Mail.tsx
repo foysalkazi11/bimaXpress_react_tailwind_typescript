@@ -11,6 +11,8 @@ import MailDescripationHeader from "./mailDescripationHeader/MailDescripationHea
 import MailDescripation from "./mailDescripatio/MailDescripation";
 import ApproveModal from "./approveModal/ApproveModal";
 import ComposeModal from "./composeModal/ComposeModal";
+import { useAppDispatch } from "../../redux/hooks";
+import { setComposeMailStatus } from "../../redux/slices/mailSlice";
 
 const mailList = [
   {
@@ -58,6 +60,7 @@ const Mail = () => {
   const [mailDes, setMailDes] = useState(0);
   const [openApproveModal, setOpenApproveModal] = useState(false);
   const [openComposeModal, setOpenComposeModal] = useState(false);
+  const dispatch = useAppDispatch();
 
   const handleOpenApproveModal = () => {
     setOpenApproveModal((pre) => !pre);
@@ -75,6 +78,7 @@ const Mail = () => {
           <MailDescripation
             openApproveModal={openApproveModal}
             handleOpenApproveModal={handleOpenApproveModal}
+            openModal={handleOpenComposeModal}
           />
         );
 
@@ -104,7 +108,10 @@ const Mail = () => {
             <img
               src={smellEditIcon}
               alt="icon"
-              onClick={handleOpenComposeModal}
+              onClick={() => {
+                dispatch(setComposeMailStatus("new"));
+                handleOpenComposeModal();
+              }}
               className="cursor-pointer"
             />
           </div>
@@ -147,7 +154,10 @@ const Mail = () => {
         <div className={styles.compareButContainer}>
           <button
             className={`${styles.compostBtn}`}
-            onClick={handleOpenComposeModal}
+            onClick={() => {
+              dispatch(setComposeMailStatus("new"));
+              handleOpenComposeModal();
+            }}
           >
             <img src={big_edit_icon} alt="icon" className="mr-2" />
             Compose
