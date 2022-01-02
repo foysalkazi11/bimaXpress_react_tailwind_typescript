@@ -4,15 +4,29 @@ import corner_up_left_alt from "../../../assets/icon/corner-up-left-alt.svg";
 import corner_up_right_alt from "../../../assets/icon/corner_up_right_alt.svg";
 import styles from "./MailDescripation.module.css";
 import downArrow from "../../../assets/icon/downArrow.svg";
+import { useAppDispatch } from "../../../redux/hooks";
+import { setComposeMailStatus } from "../../../redux/slices/mailSlice";
 
 type MailDescripationProps = {
   openApproveModal: boolean;
   handleOpenApproveModal: () => void;
+  openModal: () => void;
 };
 const MailDescripation = ({
   openApproveModal = false,
   handleOpenApproveModal = () => {},
+  openModal,
 }: MailDescripationProps) => {
+  const dispatch = useAppDispatch();
+
+  const handleReplyMail = () => {
+    dispatch(setComposeMailStatus("reply"));
+    openModal();
+  };
+  const handleForwardMail = () => {
+    dispatch(setComposeMailStatus("forward"));
+    openModal();
+  };
   return (
     <div>
       <div className="flex justify-between items-start">
@@ -55,13 +69,19 @@ const MailDescripation = ({
         </p>
         <div className="mt-8 flex items-center justify-between">
           <div className="flex">
-            <button className=" outline-none px-4 py-2 border-2 border-fontColor flex justify-center items-center rounded-xl mr-4">
+            <button
+              className=" outline-none px-4 py-2 border-2 border-fontColor flex justify-center items-center rounded-xl mr-4"
+              onClick={handleReplyMail}
+            >
               <img src={corner_up_left_alt} alt="icon" />
               <p className="text-lg text-fontColor ml-2 font-semibold tracking-wide">
                 Reply
               </p>
             </button>
-            <button className=" outline-none px-4 py-2 border-2 border-fontColor flex justify-center items-center rounded-xl mr-2">
+            <button
+              className=" outline-none px-4 py-2 border-2 border-fontColor flex justify-center items-center rounded-xl mr-2"
+              onClick={handleForwardMail}
+            >
               <img src={corner_up_right_alt} alt="icon" />
               <p className="text-lg text-fontColor ml-2 font-semibold tracking-wide">
                 Forward

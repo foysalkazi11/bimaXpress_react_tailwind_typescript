@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Modal from "react-modal";
 import styles from "./ComposeModal.module.css";
 import { IoClose } from "react-icons/io5";
@@ -14,7 +14,11 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import axiosConfig from "../../../config/axiosConfig";
 import notification from "../../theme/utility/notification";
 import { setLoading } from "../../../redux/slices/utilitySlice";
+import ReactHtmlParser from "react-html-parser";
 const emailRegex = /^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/;
+
+const dummyText =
+  "Forget about spam, advertising mailings, hacking and attacking robots. Keep your real mailbox clean and secure. Temp Mail provides temporary, secure.Forget about spam, advertising mailings, hacking and attacking robots. Keep your real mailbox clean and secure. Temp Mail provides temporary, secure.";
 
 type ComposeModalProps = {
   isOpen?: boolean;
@@ -25,7 +29,17 @@ const ComposeModal = ({
   isOpen = false,
   closeModal = () => {},
 }: ComposeModalProps) => {
-  const [mail, setMail] = useState({
+  const [mail, setMail] = useState<{
+    to: string;
+    cc: string;
+    bcc: string;
+    toList: string[];
+    ccList: string[];
+    bccList: string[];
+    sub: string;
+    body: any;
+    file: string[];
+  }>({
     to: "",
     cc: "",
     bcc: "",
@@ -37,13 +51,26 @@ const ComposeModal = ({
     file: [],
   });
   const { user } = useAppSelector((state) => state?.user);
+  const { composeMailStatus } = useAppSelector((state) => state?.mail);
   const dispatch = useAppDispatch();
+  const replayMail = "bhimxpress2000@outlook.in";
 
   const bodyRef = useRef(null);
 
   const uploadFile = async () => {
+    console.log(mail);
+    //@ts-ignore
+    console.log(typeof bodyRef?.current?.innerHTML);
+
     dispatch(setLoading(true));
-    const URL = `/sendEmail?email=${user}`;
+
+    const URL = `/${
+      composeMailStatus === "new"
+        ? "sendEmail"
+        : composeMailStatus === "reply"
+        ? "replyMail"
+        : "forwardMail"
+    }?email=${user}`;
     const formData = new FormData();
     formData?.append("reciever", mail?.to?.toString());
     formData?.append("Cc", mail?.cc?.toString());
@@ -54,7 +81,16 @@ const ComposeModal = ({
     try {
       await axiosConfig.post(URL, formData);
       dispatch(setLoading(false));
-      notification("info", "Email sent successfully");
+      notification(
+        "info",
+        `Email ${
+          composeMailStatus === "new"
+            ? "sent"
+            : composeMailStatus === "reply"
+            ? "reply"
+            : "forward"
+        } successfully`
+      );
       closeModal();
       setMail({
         to: "",
@@ -91,6 +127,10 @@ const ComposeModal = ({
     }
   };
 
+  useEffect(() => {
+    console.log(mail);
+  }, [mail]);
+
   const handleKeypress = (
     e: React.KeyboardEvent,
     name: string,
@@ -121,6 +161,49 @@ const ComposeModal = ({
     return emailRegex?.test(val);
   };
 
+  useEffect(() => {
+    if (composeMailStatus === "reply") {
+      setMail((pre) => ({
+        ...pre,
+        to: "",
+        cc: "",
+        bcc: "",
+        ccList: [],
+        bccList: [],
+        sub: "",
+        file: [],
+        //@ts-ignore
+        toList: [...pre?.toList, replayMail],
+        body: dummyText,
+      }));
+    } else if (composeMailStatus === "forward") {
+      setMail((pre) => ({
+        ...pre,
+        to: "",
+        cc: "",
+        bcc: "",
+        ccList: [],
+        bccList: [],
+        sub: "",
+        file: [],
+        toList: [],
+        body: dummyText,
+      }));
+    } else {
+      setMail({
+        to: "",
+        cc: "",
+        bcc: "",
+        ccList: [],
+        bccList: [],
+        sub: "",
+        file: [],
+        toList: [],
+        body: "",
+      });
+    }
+  }, [composeMailStatus]);
+
   return (
     <Modal
       isOpen={isOpen}
@@ -133,7 +216,9 @@ const ComposeModal = ({
         className={`flex items-center justify-between h-10 w-full bg-primary px-4 border-none outline-none ${styles.composeModalHeader}`}
       >
         <div></div>
-        <p className="text-base text-fontColor tracking-wide">New Mail</p>
+        <p className="text-base text-fontColor tracking-wide capitalize">
+          {composeMailStatus} Mail
+        </p>
         <IoClose
           className=" text-2xl text-fontColor cursor-pointer"
           onClick={closeModal}
@@ -143,7 +228,7 @@ const ComposeModal = ({
         bhimxpress2000@outlook.in
       </p> */}
       <div className="px-4 py-2 text-sm text-fontColor-darkGray border-t border-fontColor-gray tracking-wide flex items-center flex-wrap">
-        <p className="mr-2 mb-1">To</p>
+        <p className="mr-2 mb-1 ">To</p>
         {mail?.toList?.map((item, index) => {
           return (
             <div
@@ -166,90 +251,99 @@ const ComposeModal = ({
         })}
 
         <input
-          className="border-none outline-none "
+          className="border-none outline-none flex-auto"
           value={mail?.to}
           name="to"
           onChange={(e) => handleChange(e)}
           onKeyPress={(e) => handleKeypress(e, "to", "toList")}
         />
       </div>
-      <div className="px-4 py-2 text-sm text-fontColor-darkGray border-t border-fontColor-gray tracking-wide flex items-center flex-wrap">
-        <p className="mr-2 mb-1">Cc</p>
-        {mail?.ccList?.map((item, index) => {
-          return (
-            <div
-              className={`flex items-center border border-fontColor-darkGray rounded-3xl mr-2 px-2 mb-1  ${
-                checkValidEmail(item)
-                  ? "font-medium text-primary"
-                  : "border-none bg-red-600 text-fontColor"
-              }`}
-              key={index}
-            >
-              <p>{item}</p>
-              <MdOutlineClose
-                className={`text-fontColor-darkGray ml-2 cursor-pointer ${
-                  checkValidEmail(item) ? "" : "text-fontColor"
-                }`}
-                onClick={() => removeEmail(item, "ccList")}
-              />
-            </div>
-          );
-        })}
+      {composeMailStatus === "reply" ? null : (
+        <>
+          <div className="px-4 py-2 text-sm text-fontColor-darkGray border-t border-fontColor-gray tracking-wide flex items-center flex-wrap">
+            <p className="mr-2 mb-1">Cc</p>
+            {mail?.ccList?.map((item, index) => {
+              return (
+                <div
+                  className={`flex items-center border border-fontColor-darkGray rounded-3xl mr-2 px-2 mb-1  ${
+                    checkValidEmail(item)
+                      ? "font-medium text-primary"
+                      : "border-none bg-red-600 text-fontColor"
+                  }`}
+                  key={index}
+                >
+                  <p>{item}</p>
+                  <MdOutlineClose
+                    className={`text-fontColor-darkGray ml-2 cursor-pointer ${
+                      checkValidEmail(item) ? "" : "text-fontColor"
+                    }`}
+                    onClick={() => removeEmail(item, "ccList")}
+                  />
+                </div>
+              );
+            })}
 
-        <input
-          className="border-none outline-none "
-          value={mail?.cc}
-          name="cc"
-          onChange={(e) => handleChange(e)}
-          onKeyPress={(e) => handleKeypress(e, "cc", "ccList")}
-        />
-      </div>
-      <div className="px-4 py-2 text-sm text-fontColor-darkGray border-t border-fontColor-gray tracking-wide flex items-center flex-wrap">
-        <p className="mr-2 mb-1">Bcc</p>
-        {mail?.bccList?.map((item, index) => {
-          return (
-            <div
-              className={`flex items-center border border-fontColor-darkGray rounded-3xl mr-2 px-2 mb-1 ${
-                checkValidEmail(item)
-                  ? "font-medium text-primary"
-                  : "border-none bg-red-600 text-fontColor"
-              }`}
-              key={index}
-            >
-              <p>{item}</p>
-              <MdOutlineClose
-                className={`text-fontColor-darkGray ml-2 cursor-pointer ${
-                  checkValidEmail(item) ? "" : "text-fontColor"
-                }`}
-                onClick={() => removeEmail(item, "bccList")}
-              />
-            </div>
-          );
-        })}
+            <input
+              className="border-none outline-none flex-auto"
+              value={mail?.cc}
+              name="cc"
+              onChange={(e) => handleChange(e)}
+              onKeyPress={(e) => handleKeypress(e, "cc", "ccList")}
+            />
+          </div>
+          <div className="px-4 py-2 text-sm text-fontColor-darkGray border-t border-fontColor-gray tracking-wide flex items-center flex-wrap">
+            <p className="mr-2 mb-1">Bcc</p>
+            {mail?.bccList?.map((item, index) => {
+              return (
+                <div
+                  className={`flex items-center border border-fontColor-darkGray rounded-3xl mr-2 px-2 mb-1 ${
+                    checkValidEmail(item)
+                      ? "font-medium text-primary"
+                      : "border-none bg-red-600 text-fontColor"
+                  }`}
+                  key={index}
+                >
+                  <p>{item}</p>
+                  <MdOutlineClose
+                    className={`text-fontColor-darkGray ml-2 cursor-pointer ${
+                      checkValidEmail(item) ? "" : "text-fontColor"
+                    }`}
+                    onClick={() => removeEmail(item, "bccList")}
+                  />
+                </div>
+              );
+            })}
 
-        <input
-          className="border-none outline-none "
-          value={mail?.bcc}
-          name="bcc"
-          onChange={(e) => handleChange(e)}
-          onKeyPress={(e) => handleKeypress(e, "bcc", "bccList")}
-        />
-      </div>
-      <div className="px-4 py-2 text-sm text-fontColor-darkGray border-t border-fontColor-gray tracking-wide">
-        <input
-          className="border-none outline-none text-primary font-medium"
-          value={mail?.sub}
-          name="sub"
-          onChange={(e) => handleChange(e)}
-          placeholder="Subject"
-        />
-      </div>
+            <input
+              className="border-none outline-none flex-auto"
+              value={mail?.bcc}
+              name="bcc"
+              onChange={(e) => handleChange(e)}
+              onKeyPress={(e) => handleKeypress(e, "bcc", "bccList")}
+            />
+          </div>
+        </>
+      )}
+      {composeMailStatus === "reply" ||
+      composeMailStatus === "forward" ? null : (
+        <div className="px-4 py-2 text-sm text-fontColor-darkGray border-t border-fontColor-gray tracking-wide flex">
+          <input
+            className="border-none outline-none text-primary font-medium flex-auto"
+            value={mail?.sub}
+            name="sub"
+            onChange={(e) => handleChange(e)}
+            placeholder="Subject"
+          />
+        </div>
+      )}
       <div
         className="px-4 py-2 pb-4 text-sm text-fontColor-darkGray border-t border-b border-fontColor-gray tracking-wide outline-none"
         style={{ minHeight: "250px" }}
         contentEditable={true}
         ref={bodyRef}
-      ></div>
+      >
+        {ReactHtmlParser(mail?.body)}
+      </div>
       <div className=" flex items-center py-8 p px-4">
         <button
           className="w-28 h-10 bg-primary-dark text-sm text-fontColor border-none outline-none rounded mr-3"
