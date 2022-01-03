@@ -20,6 +20,7 @@ module.exports = {
         fontColor: {
           light: "#E3E3E3",
           gray: "#C8C8C8",
+          deepGray: "#C1C1C1",
           darkGray: "#707070",
           DEFAULT: "#FFFFFF",
         },

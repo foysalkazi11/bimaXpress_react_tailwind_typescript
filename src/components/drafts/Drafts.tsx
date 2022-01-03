@@ -20,6 +20,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import axiosConfig from "../../config/axiosConfig";
 import { setCaseData } from "../../redux/slices/homeSlice";
 import notification from "../theme/utility/notification";
+// import SummeryModal from "./Summary/SummeryModal";
 
 const insuranceCompany = [
   { label: "Health India Insurance", value: "health_india_insurance" },
@@ -51,6 +52,11 @@ const Drafts = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state?.user);
   const { caseData } = useAppSelector((state) => state?.home);
+  // const [openSummeryModal, setOpenSummeryModal] = useState<boolean>(false);
+
+  // const toggleSummeryModal = () => {
+  //   setOpenSummeryModal((pre) => !pre);
+  // };
   const fetchAnalyst = async () => {
     dispatch(setLoading(true));
     const URL = `/${param?.case}?email=${user}`;
@@ -281,6 +287,8 @@ const Drafts = () => {
         canNextPage={canNextPage}
         canPreviousPage={canPreviousPage}
       />
+
+      {/* <SummeryModal closeModal={toggleSummeryModal} isOpen={openSummeryModal} /> */}
     </div>
   );
 };

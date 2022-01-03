@@ -19,6 +19,7 @@ import Mail from "./components/mail/Mail";
 import LoginPage from "./components/auth/login.page";
 // import SignPage from "./components/auth/signup.page";
 import { useAppSelector } from "./redux/hooks";
+import SummeryModal from "./components/drafts/Summary/SummeryModal";
 
 function App() {
   const { user } = useAppSelector((state) => state?.user);
@@ -42,6 +43,7 @@ function App() {
               <Route path="/order" element={<Order />} />
               <Route path="/caseData/:case" element={<Drafts />} />
               <Route path="/mail" element={<Mail />} />
+              <Route path="/summery" element={<SummeryModal />} />
               <Route
                 path="/empanelledCompanies"
                 element={<EmpanelledCompanies />}

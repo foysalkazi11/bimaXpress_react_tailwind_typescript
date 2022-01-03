@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setLoading } from "../../redux/slices/utilitySlice";
 import axiosConfig from "../../config/axiosConfig";
 import { setAnalystList } from "../../redux/slices/analystSlice";
+import notification from "../theme/utility/notification";
 
 interface ColumnDetails {
   [key: string]: any;
