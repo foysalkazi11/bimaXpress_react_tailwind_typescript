@@ -12,7 +12,7 @@
   background: transparent linear-gradient(312deg, #090909 0%, #5a5a5a 100%) 0%
     0% no-repeat padding-box;
   border-radius: 10px;
-
+  outline: none;
   margin: 0 16px;
 }
 
