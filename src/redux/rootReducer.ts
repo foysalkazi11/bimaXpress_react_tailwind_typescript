@@ -8,6 +8,7 @@ import empanelledCompaniesReducer from "./slices/empanelledCompaniesSlice";
 import planReducer from "./slices/planSlice";
 import homeReducer from "./slices/homeSlice";
 import mailSliceReducer from "./slices/mailSlice";
+import caseReducer from "./slices/caseSlice";
 
 const rootReducer = combineReducers({
   utility: utilityReducer,
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   plan: planReducer,
   home: homeReducer,
   mail: mailSliceReducer,
+  case: caseReducer,
 });
 
 // export type RootState = ReturnType<typeof rootReducer>;

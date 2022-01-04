@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import ProgessBar from "./progessBar/ProgessBar";
 import StepFour from "./stepFour/StepFour";
 import StepOne from "./stepOne/StepOne";
 import StepThree from "./stepThree/StepThree";
 import StepTwo from "./stepTwo/StepTwo";
+import axiosConfig from "../../config/axiosConfig";
+import { setNewCaseNum } from "../../redux/slices/caseSlice";
 
 const months = [
   { label: "January", value: "01" },
@@ -21,6 +24,7 @@ const months = [
 ];
 
 const NewCase = () => {
+  const [steps, setSteps] = useState(1);
   const [yearList, setYearList] = useState<{ label: string; value: string }[]>(
     []
   );
@@ -31,6 +35,24 @@ const NewCase = () => {
     diagnosisDetails: {},
     admissionDetails: {},
   });
+
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state?.user);
+
+  const getNewCaseNumber = async () => {
+    const URL = `/newcase?email=${user}`;
+    try {
+      const { data } = await axiosConfig.get(URL);
+      dispatch(setNewCaseNum(data?.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getNewCaseNumber();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     let arr = [];
@@ -49,8 +71,6 @@ const NewCase = () => {
     }
     setDay(days);
   }, []);
-
-  const [steps, setSteps] = useState(0);
 
   const updateNewCaseData = (name: string, value: string) => {
     setNewCaseData((pre) => ({ ...pre, [name]: value }));

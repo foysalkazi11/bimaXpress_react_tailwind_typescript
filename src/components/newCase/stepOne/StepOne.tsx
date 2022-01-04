@@ -1,6 +1,10 @@
 import React from "react";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { setLoading } from "../../../redux/slices/utilitySlice";
 import NextButton from "../../theme/nextButton/NextButton";
 import NewCaseSelect from "../../theme/select/newCaseSelect/NewCaseSelect";
+import axiosConfig from "../../../config/axiosConfig";
+import notification from "../../theme/utility/notification";
 
 type StepOneProps = {
   newCaseData: any;
@@ -21,20 +25,44 @@ const insuranceCompany = [
 const TPA = [
   {
     label: "Paramount Helth Services & Insurance",
-    value: "Paramount Helth Services & Insurance",
+    value: "paramount_helth_services_&_insurance",
   },
   {
     label: "Medi Assist Insurance TPA Private Limited",
-    value: "Medi Assist Insurance TPA Private Limited",
+    value: "medi_Assist_insurance_tpa_private_limited",
   },
   {
     label: "Medsave Health Insurance TPA Limited",
-    value: "Medsave Health Insurance TPA Limited",
+    value: "medsave_health_insurance_tpa_limited",
   },
 ];
 
 const StepOne = ({ newCaseData, setNewCaseData, nextStep }: StepOneProps) => {
   const { detailsOfTPA } = newCaseData;
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state?.user);
+  const { newCaseNum } = useAppSelector((state) => state?.case);
+
+  const saveDataToDb = async () => {
+    const POST_URL = `/preauthdata?email=${user}&casenumber=${newCaseNum}`;
+
+    const formData = new FormData();
+    formData?.append("insurance_company", detailsOfTPA?.insuranceCompany);
+    formData?.append("Tpa_Company", detailsOfTPA?.TPA);
+
+    dispatch(setLoading(true));
+    try {
+      await axiosConfig.post(POST_URL, formData);
+
+      dispatch(setLoading(false));
+      notification("info", "Save successfully");
+      nextStep();
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -71,7 +99,7 @@ const StepOne = ({ newCaseData, setNewCaseData, nextStep }: StepOneProps) => {
       </div>
 
       <div className="absolute right-0 " style={{ bottom: "30px" }}>
-        <NextButton iconRight={true} handleClick={nextStep} />
+        <NextButton iconRight={true} handleClick={saveDataToDb} />
       </div>
     </div>
   );

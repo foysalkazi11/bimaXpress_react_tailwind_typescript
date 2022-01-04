@@ -1,9 +1,13 @@
 import React from "react";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import Input from "../../theme/input/Input";
 // import InputContained from "../../theme/inputContained/InputContained";
 import InputRadio from "../../theme/inputRadio/InputRadio";
 import NextButton from "../../theme/nextButton/NextButton";
 import NewCaseSelect from "../../theme/select/newCaseSelect/NewCaseSelect";
+import axiosConfig from "../../../config/axiosConfig";
+import notification from "../../theme/utility/notification";
+import { setLoading } from "../../../redux/slices/utilitySlice";
 
 type StepTwoProps = {
   newCaseData: any;
@@ -27,6 +31,65 @@ const StepTwo = ({
   yearList,
 }: StepTwoProps) => {
   const { patientDetails } = newCaseData;
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state?.user);
+  const { newCaseNum } = useAppSelector((state) => state?.case);
+
+  const saveDataToDb = async () => {
+    const POST_URL = `/preauthdata?email=${user}&casenumber=${newCaseNum}`;
+    // const array = [
+
+    //   "postalCode",
+    //   "state",
+    // ]
+
+    const formData = new FormData();
+    formData?.append("city", patientDetails?.city);
+    formData?.append(
+      "patient_details_HealthInsurance",
+      patientDetails?.previousHealthInsurance
+    );
+    formData?.append("patient_details_name", patientDetails?.patientName);
+    formData?.append("patient_details_gender", patientDetails?.gender);
+    // formData?.append("patient_details_ageYear", patientDetails?.TPA);
+    // formData?.append("patient_details_ageMonth", patientDetails?.TPA);
+    formData?.append("patient_details_date", patientDetails?.DOB);
+    formData?.append(
+      "patient_details_contact_number",
+      patientDetails?.contractNumber
+    );
+    formData?.append(
+      "patient_details_numberOfAttendingRelative",
+      patientDetails?.relativeContractNumber
+    );
+    formData?.append(
+      "patient_details_insuredMemberIdCardNo",
+      patientDetails?.insuredCardNumber
+    );
+    formData?.append(
+      "patient_details_policyNumberorCorporateName",
+      patientDetails?.policyNumber
+    );
+    formData?.append("patient_details_EmployeeId", patientDetails?.employeeId);
+    formData?.append("patient_details_occupation", patientDetails?.occupation);
+    formData?.append(
+      "patient_details_familyPhysician",
+      patientDetails?.familyPhysician
+    );
+
+    dispatch(setLoading(true));
+    try {
+      await axiosConfig.post(POST_URL, formData);
+
+      dispatch(setLoading(false));
+      notification("info", "Save successfully");
+      nextStep();
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | any>
@@ -316,7 +379,7 @@ const StepTwo = ({
 
       <div className="mt-18 flex items-center justify-between p-6">
         <NextButton iconLeft={true} text="Back" handleClick={prevStep} />
-        <NextButton iconRight={true} handleClick={nextStep} />
+        <NextButton iconRight={true} handleClick={saveDataToDb} />
       </div>
     </div>
   );

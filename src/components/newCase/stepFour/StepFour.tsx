@@ -14,7 +14,7 @@ const roomType = [
 
 const inputStyle = {
   height: "40px",
-  border: "none",
+  border: "none !important",
   borderBottom: "2px solid #707070",
   borderRadius: 0,
 };
