@@ -5,6 +5,10 @@ import InputContained from "../../theme/inputContained/InputContained";
 import InputDate from "../../theme/inputDate/InputDate";
 import InputRadio from "../../theme/inputRadio/InputRadio";
 import NextButton from "../../theme/nextButton/NextButton";
+import axiosConfig from "../../../config/axiosConfig";
+import notification from "../../theme/utility/notification";
+import { setLoading } from "../../../redux/slices/utilitySlice";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 
 type StepThreeProps = {
   newCaseData: any;
@@ -20,12 +24,135 @@ const StepThree = ({
   setNewCaseData,
 }: StepThreeProps) => {
   const { diagnosisDetails } = newCaseData;
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state?.user);
+  const { newCaseNum } = useAppSelector((state) => state?.case);
+
+  const saveDataToDb = async () => {
+    const POST_URL = `/preauthdata?email=${user}&casenumber=${newCaseNum}`;
+    // const array = [
+
+    //   "ICD",
+    //   "contractNumber",
+    //   "doctorsName",
+    //   "expectedDeliveryDate",
+    //   "maternity",
+    //   "proposedLineOfTreatment",
+    //   "proposedLineOfTreatmentInvestigationDetails",
+    // ]
+
+    const formData = new FormData();
+    formData?.append(
+      "doctor_natureOfLiness",
+      diagnosisDetails?.natureOfIllness
+    );
+    formData?.append(
+      "doctor_durationOfPresentAliment",
+      diagnosisDetails?.durationOfPresentAilment
+    );
+    formData?.append(
+      "doctor_dateOfFirstConsultation",
+      diagnosisDetails?.firstConsultation
+    );
+    // formData?.append("doctor_CauseofAilment", diagnosisDetails?.gender);
+    formData?.append(
+      "doctor_PastHistoryOfPresentAlignment",
+      diagnosisDetails?.historyOfPresentAilmentDis
+    );
+    // formData?.append("doctor_provisionalDiagnosis", diagnosisDetails?.gender);
+    formData?.append("doctor_icdCode", diagnosisDetails?.ICDCode);
+
+    formData?.append(
+      "doctor_ifOtherTratmentProvideDetails",
+      diagnosisDetails?.otherTreatments
+    );
+    formData?.append(
+      "doctor_howDidInjuryOccure",
+      diagnosisDetails?.injuryCause
+    );
+    formData?.append("doctor_dateOfInjury", diagnosisDetails?.dateOfInjury);
+    formData?.append(
+      "doctor_releventClinicFindings",
+      diagnosisDetails?.relevantClinicFindings
+    );
+    formData?.append(
+      "doctor_reportedToPolice",
+      diagnosisDetails?.repotedToPolice
+    );
+    formData?.append(
+      "doctor_proposedLineOfTreatment_Medical_Managment",
+      diagnosisDetails?.proposedLineOfTreatment?.includes("medicalManageemnt")
+        ? "yes"
+        : "no"
+    );
+    formData?.append(
+      "doctor_proposedLineOfTreatment_Surgical_Managment",
+      diagnosisDetails?.proposedLineOfTreatment?.includes("surgicalManagement")
+        ? "yes"
+        : "no"
+    );
+    formData?.append(
+      "doctor_proposedLineOfTreatment_Intensive_Care",
+      diagnosisDetails?.proposedLineOfTreatment?.includes("intensiveCare")
+        ? "yes"
+        : "no"
+    );
+    formData?.append(
+      "doctor_proposedLineOfTreatment_Investigation",
+      diagnosisDetails?.proposedLineOfTreatment?.includes("investigation")
+        ? "yes"
+        : "no"
+    );
+    formData?.append(
+      "doctor_proposedLineOfTreatment_Allopathic_Treatment",
+      diagnosisDetails?.proposedLineOfTreatment?.includes(
+        "nonAllopaticTreatment"
+      )
+        ? "yes"
+        : "no"
+    );
+    formData?.append("doctor_inCaseOfAccident", diagnosisDetails?.accident);
+    // formData?.append(
+    //   "doctor_injuryorDiseaseCausedDueToSubstance",
+    //   diagnosisDetails?.gender
+    // );
+    formData?.append("doctor_testAlcohol", diagnosisDetails?.alcoholConsumer);
+    // formData?.append("doctor_firNo", diagnosisDetails?.gender);
+    formData?.append(
+      "doctor_inCaseMaternityG",
+      diagnosisDetails?.maternity?.includes("g") ? "yes" : "no"
+    );
+    formData?.append(
+      "doctor_inCaseMaternityP",
+      diagnosisDetails?.maternity?.includes("p") ? "yes" : "no"
+    );
+    formData?.append(
+      "doctor_inCaseMaternityL",
+      diagnosisDetails?.maternity?.includes("l") ? "yes" : "no"
+    );
+    formData?.append(
+      "doctor_inCaseMaternityA",
+      diagnosisDetails?.maternity?.includes("a") ? "yes" : "no"
+    );
+
+    dispatch(setLoading(true));
+    try {
+      await axiosConfig.post(POST_URL, formData);
+
+      dispatch(setLoading(false));
+      notification("info", "Save successfully");
+      nextStep();
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | any> | any
   ) => {
     const { name, value, type, checked } = e.target;
-    console.log(name, value, type, checked);
 
     const handleCheck = (pre: any, val: any) => {
       if (pre) {
@@ -155,9 +282,23 @@ const StepThree = ({
               </div>
             </div>
             {diagnosisDetails?.historyOfPresentAilment === "yes" ? (
-              <p className=" border-b-2 border-fontColor-darkGray py-1 mt-4 w-full text-base text-fontColor-light ">
-                Yes, I'm having the past history of present ailment
-              </p>
+              // <p className=" border-b-2 border-fontColor-darkGray py-1 mt-4 w-full text-base text-fontColor-light ">
+              //   Yes, I'm having the past history of present ailment
+              // </p>
+              <div className="pt-4">
+                <Input
+                  handleChange={handleChange}
+                  name="historyOfPresentAilmentDis"
+                  value={diagnosisDetails?.historyOfPresentAilmentDis || ""}
+                  style={{
+                    height: "40px",
+                    border: "none",
+                    borderBottom: "2px solid #707070",
+                    borderRadius: 0,
+                  }}
+                  placeHolder="Yes, I'm having the past history of present ailment"
+                />
+              </div>
             ) : null}
           </div>
           <div className="mt-6">
@@ -168,31 +309,6 @@ const StepThree = ({
               label="ICD code"
               style={{ maxWidth: "100px" }}
             />
-          </div>
-          <div className="mt-6">
-            <p className="pb-4 text-sm text-fontColor-light">
-              Test conducted or not ?
-            </p>
-            <div className="flex items-center">
-              <div className="mr-8">
-                <InputRadio
-                  handleChange={handleChange}
-                  name="testConductedOrNot"
-                  value="yes"
-                  radioLabel="Yes"
-                  fieldName={diagnosisDetails?.testConductedOrNot || ""}
-                />
-              </div>
-              <div className="mr-8">
-                <InputRadio
-                  handleChange={handleChange}
-                  name="testConductedOrNot"
-                  value="no"
-                  radioLabel="No"
-                  fieldName={diagnosisDetails?.testConductedOrNot || ""}
-                />
-              </div>
-            </div>
           </div>
 
           <div className="mt-6">
@@ -381,6 +497,57 @@ const StepThree = ({
           </div>
 
           <div className="mt-6">
+            <p className="pb-4 text-sm text-fontColor-light">
+              Are you an alcohol consumer ?
+            </p>
+            <div className="flex items-center">
+              <div className="mr-8">
+                <InputRadio
+                  handleChange={handleChange}
+                  name="alcoholConsumer"
+                  value="yes"
+                  radioLabel="Yes"
+                  fieldName={diagnosisDetails?.alcoholConsumer || ""}
+                />
+              </div>
+              <div className="mr-8">
+                <InputRadio
+                  handleChange={handleChange}
+                  name="alcoholConsumer"
+                  value="no"
+                  radioLabel="No"
+                  fieldName={diagnosisDetails?.alcoholConsumer || ""}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="mt-6">
+            <p className="pb-4 text-sm text-fontColor-light">
+              Test conducted or not ?
+            </p>
+            <div className="flex items-center">
+              <div className="mr-8">
+                <InputRadio
+                  handleChange={handleChange}
+                  name="testConductedOrNot"
+                  value="yes"
+                  radioLabel="Yes"
+                  fieldName={diagnosisDetails?.testConductedOrNot || ""}
+                />
+              </div>
+              <div className="mr-8">
+                <InputRadio
+                  handleChange={handleChange}
+                  name="testConductedOrNot"
+                  value="no"
+                  radioLabel="No"
+                  fieldName={diagnosisDetails?.testConductedOrNot || ""}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6">
             <p className="pb-4 text-sm text-fontColor-light">Maternity</p>
             <div className="flex items-center">
               <div className="mr-8">
@@ -435,7 +602,7 @@ const StepThree = ({
 
       <div className="p-6 flex items-center justify-between">
         <NextButton iconLeft={true} text="Back" handleClick={prevStep} />
-        <NextButton iconRight={true} handleClick={nextStep} />
+        <NextButton iconRight={true} handleClick={saveDataToDb} />
       </div>
     </div>
   );
