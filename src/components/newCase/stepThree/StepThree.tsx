@@ -36,8 +36,6 @@ const StepThree = ({
     //   "contractNumber",
     //   "doctorsName",
     //   "expectedDeliveryDate",
-    //   "maternity",
-    //   "proposedLineOfTreatment",
     //   "proposedLineOfTreatmentInvestigationDetails",
     // ]
 
