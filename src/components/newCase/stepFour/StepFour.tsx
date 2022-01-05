@@ -1,15 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import InputContained from "../../theme/inputContained/InputContained";
 import InputDate from "../../theme/inputDate/InputDate";
 import InputRadio from "../../theme/inputRadio/InputRadio";
 import NewCaseSelect from "../../theme/select/newCaseSelect/NewCaseSelect";
 import Input from "../../theme/input/Input";
 import NextButton from "../../theme/nextButton/NextButton";
+import { setLoading } from "../../../redux/slices/utilitySlice";
+import axiosConfig from "../../../config/axiosConfig";
+import notification from "../../theme/utility/notification";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { useNavigate } from "react-router-dom";
 
 const roomType = [
-  { label: "Single room", value: "singleRoom" },
-  { label: "Double room", value: "doubleRoom" },
-  { label: "Semi double room", value: "semiDoubleRoom" },
+  {
+    label: "sharing / semi-private room non ac",
+    value: "sharing/semi_private_room_non_ac",
+  },
+  { label: "Aemi-private room ac", value: "semi_private_room_ac" },
+  { label: "Single_room_non_ac", value: "single_room_non_ac" },
+  { label: "Super deluxe", value: "super_deluxe" },
+  { label: "Executive room", value: "executive_room" },
+  { label: "Twin_sharing_non_ac", value: "Twin_sharing_non-ac" },
+  { label: "Deluxe non ac", value: "deluxe_non_ac" },
 ];
 
 const inputStyle = {
@@ -35,28 +47,152 @@ const StepFour = ({
   yearList,
 }: StepFourProps) => {
   const { admissionDetails } = newCaseData;
+  const [totalCost, setTotalCost] = useState(0);
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state?.user);
+  const { newCaseNum } = useAppSelector((state) => state?.case);
+  const navigate = useNavigate();
 
-  const handleDate = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | any> | any,
-    key: string
-  ) => {
-    const { name, value } = e.target;
-    let month = admissionDetails?.[name]?.slice(0, 2);
-    let year = admissionDetails?.[name]?.slice(3);
-    if (key === "month") {
-      month = value;
-    } else {
-      year = value;
+  const saveDataToDb = async () => {
+    const POST_URL = `/preauthdata?email=${user}&casenumber=${newCaseNum}`;
+    // const array = [
+
+    // "ICU_charge",
+    // "OT_charge",
+    // "cost_for_investigation_and_diagnosis",
+    // "dateOfAdmission",
+    // "daysInHospital",
+    // "daysInICU",
+    // "expenses",
+    // "others",
+    // "professional_fees",
+    // "timeOfAdmission",
+
+    // "timeOfAdmissionAMOrPM",
+
+    // ]
+
+    const formData = new FormData();
+    // formData?.append("dateOfAdmission", admissionDetails?.dateOfAdmission);
+    // formData?.append("timeOfAdmission", admissionDetails?.timeOfAdmission);
+    // formData?.append("total", admissionDetails?.totalCost);
+    formData?.append(
+      "admission_isThisAEmergencyPlannedHospitalization",
+      admissionDetails?.emergencyOrPlanedHospitalizedEvent
+    );
+    formData?.append("admission_roomType", admissionDetails?.roomType);
+    formData?.append(
+      "admission_mandatoryPastHistoryMonth",
+      admissionDetails?.diabetes_month
+    );
+    formData?.append(
+      "admission_mandatoryPastHistoryYear",
+      admissionDetails?.diabetes_year
+    );
+    formData?.append(
+      "admission_heartDiseaseMonth",
+      admissionDetails?.heart_disease_month
+    );
+    formData?.append(
+      "admission_heartDiseaseYear",
+      admissionDetails?.heart_disease_year
+    );
+    formData?.append(
+      "admission_hypertensionMonth",
+      admissionDetails?.hypertension_month
+    );
+    formData?.append(
+      "admission_hypertensionYear",
+      admissionDetails?.hypertension_year
+    );
+    formData?.append(
+      "admission_HyperlipidemiasMonth",
+      admissionDetails?.hyperlipidemias_month
+    );
+    formData?.append(
+      "admission_HyperlipidemiasYear",
+      admissionDetails?.hyperlipidemias_year
+    );
+    formData?.append(
+      "admission_osteoarthritisMonth",
+      admissionDetails?.osteoarthritis_month
+    );
+    formData?.append(
+      "admission_osteoarthritisYear",
+      admissionDetails?.osteoarthritis_year
+    );
+    formData?.append(
+      "admission_asthmaOrCOPDOrBronchitisMonth",
+      admissionDetails?.asthma_COPD_bronchitis_month
+    );
+    formData?.append(
+      "admission_asthmaOrCOPDOrBronchitisYear",
+      admissionDetails?.asthma_COPD_bronchitis_year
+    );
+    formData?.append("admission_cancerMonth", admissionDetails?.cancer_month);
+    formData?.append("admission_cancerYear", admissionDetails?.cancer_year);
+    formData?.append(
+      "admission_alcoholOrDrugAbuseMonth",
+      admissionDetails?.alcohol_drag_abuse_month
+    );
+    formData?.append(
+      "admission_alcoholOrDrugAbuseYear",
+      admissionDetails?.alcohol_drag_abuse_year
+    );
+    formData?.append(
+      "admission_anyHIVOrSTDOrRelatedAlimentsMonth",
+      admissionDetails?.HIV_STD_related_ailments_months
+    );
+    formData?.append(
+      "admission_anyHIVOrSTDOrRelatedAlimentsYear",
+      admissionDetails?.HIV_STD_related_ailments_year
+    );
+    // formData?.append(
+    //   "admission_anyOtherAliments",
+    //   admissionDetails?.natureOfIllness
+    // );
+
+    formData?.append(
+      "admission_isThisAEmergencyPlannedHospitalization",
+      admissionDetails?.emergencyOrPlanedHospitalizedEvent
+    );
+
+    dispatch(setLoading(true));
+    try {
+      await axiosConfig.post(POST_URL, formData);
+
+      dispatch(setLoading(false));
+      notification("info", "Save successfully");
+      navigate("/");
+      // nextStep();
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
     }
-
-    setNewCaseData((pre: any) => ({
-      ...pre,
-      admissionDetails: {
-        ...pre?.admissionDetails,
-        [name]: `${month || "00"}/${year}`,
-      },
-    }));
   };
+
+  // const handleDate = (
+  //   e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | any> | any,
+  //   key: string
+  // ) => {
+  //   const { name, value } = e.target;
+  //   let month = admissionDetails?.[name]?.slice(0, 2);
+  //   let year = admissionDetails?.[name]?.slice(3);
+  //   if (key === "month") {
+  //     month = value;
+  //   } else {
+  //     year = value;
+  //   }
+
+  //   setNewCaseData((pre: any) => ({
+  //     ...pre,
+  //     admissionDetails: {
+  //       ...pre?.admissionDetails,
+  //       [name]: `${month || "00"}/${year}`,
+  //     },
+  //   }));
+  // };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | any> | any
@@ -68,6 +204,29 @@ const StepFour = ({
       admissionDetails: { ...pre?.admissionDetails, [name]: value },
     }));
   };
+
+  useEffect(() => {
+    if (
+      admissionDetails?.ICU_charge ||
+      admissionDetails?.OT_charge ||
+      admissionDetails?.cost_for_investigation_and_diagnosis ||
+      admissionDetails?.expenses ||
+      admissionDetails?.others ||
+      admissionDetails?.professional_fees
+    ) {
+      const totalSum =
+        Number(admissionDetails?.ICU_charge) +
+        Number(admissionDetails?.OT_charge) +
+        Number(admissionDetails?.cost_for_investigation_and_diagnosis) +
+        Number(admissionDetails?.expenses) +
+        Number(admissionDetails?.others) +
+        Number(admissionDetails?.professional_fees);
+      setTotalCost(totalSum);
+    }
+    console.log(newCaseData);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newCaseData]);
 
   return (
     <div className="pb-8">
@@ -259,19 +418,19 @@ const StepFour = ({
               <div className="col-span-2">
                 <NewCaseSelect
                   options={months}
-                  name="diabetes"
-                  handleChange={(e) => handleDate(e, "month")}
+                  name="diabetes_month"
+                  handleChange={handleChange}
                   defaultOption="Select month"
-                  value={admissionDetails?.diabetes?.slice(0, 2) || ""}
+                  value={admissionDetails?.diabetes_month || ""}
                 />
               </div>
               <div className="col-span-2">
                 <NewCaseSelect
                   options={yearList}
-                  name="diabetes"
-                  handleChange={(e) => handleDate(e, "year")}
+                  name="diabetes_year"
+                  handleChange={handleChange}
                   defaultOption="Select year"
-                  value={admissionDetails?.diabetes?.slice(3) || ""}
+                  value={admissionDetails?.diabetes_year || ""}
                 />
               </div>
             </div>
@@ -282,19 +441,19 @@ const StepFour = ({
               <div className="col-span-2">
                 <NewCaseSelect
                   options={months}
-                  name="heart_disease"
-                  handleChange={(e) => handleDate(e, "month")}
+                  name="heart_disease_month"
+                  handleChange={handleChange}
                   defaultOption="Select month"
-                  value={admissionDetails?.heart_disease?.slice(0, 2) || ""}
+                  value={admissionDetails?.heart_disease_month || ""}
                 />
               </div>
               <div className="col-span-2">
                 <NewCaseSelect
                   options={yearList}
-                  name="heart_disease"
-                  handleChange={(e) => handleDate(e, "year")}
+                  name="heart_disease_year"
+                  handleChange={handleChange}
                   defaultOption="Select year"
-                  value={admissionDetails?.heart_disease?.slice(3) || ""}
+                  value={admissionDetails?.heart_disease_year || ""}
                 />
               </div>
             </div>
@@ -306,19 +465,19 @@ const StepFour = ({
               <div className="col-span-2">
                 <NewCaseSelect
                   options={months}
-                  name="hypertension"
-                  handleChange={(e) => handleDate(e, "month")}
+                  name="hypertension_month"
+                  handleChange={handleChange}
                   defaultOption="Select month"
-                  value={admissionDetails?.hypertension?.slice(0, 2) || ""}
+                  value={admissionDetails?.hypertension_month || ""}
                 />
               </div>
               <div className="col-span-2">
                 <NewCaseSelect
                   options={yearList}
-                  name="hypertension"
-                  handleChange={(e) => handleDate(e, "year")}
+                  name="hypertension_year"
+                  handleChange={handleChange}
                   defaultOption="Select year"
-                  value={admissionDetails?.hypertension?.slice(3) || ""}
+                  value={admissionDetails?.hypertension_year || ""}
                 />
               </div>
             </div>
@@ -330,19 +489,19 @@ const StepFour = ({
               <div className="col-span-2">
                 <NewCaseSelect
                   options={months}
-                  name="hyperlipidemias"
-                  handleChange={(e) => handleDate(e, "month")}
+                  name="hyperlipidemias_month"
+                  handleChange={handleChange}
                   defaultOption="Select month"
-                  value={admissionDetails?.hyperlipidemias?.slice(0, 2) || ""}
+                  value={admissionDetails?.hyperlipidemias_month || ""}
                 />
               </div>
               <div className="col-span-2">
                 <NewCaseSelect
                   options={yearList}
-                  name="hyperlipidemias"
-                  handleChange={(e) => handleDate(e, "year")}
+                  name="hyperlipidemias_year"
+                  handleChange={handleChange}
                   defaultOption="Select year"
-                  value={admissionDetails?.hyperlipidemias?.slice(3) || ""}
+                  value={admissionDetails?.hyperlipidemias_year || ""}
                 />
               </div>
             </div>
@@ -354,19 +513,19 @@ const StepFour = ({
               <div className="col-span-2">
                 <NewCaseSelect
                   options={months}
-                  name="osteoarthritis"
-                  handleChange={(e) => handleDate(e, "month")}
+                  name="osteoarthritis_month"
+                  handleChange={handleChange}
                   defaultOption="Select month"
-                  value={admissionDetails?.osteoarthritis?.slice(0, 2) || ""}
+                  value={admissionDetails?.osteoarthritis_month || ""}
                 />
               </div>
               <div className="col-span-2">
                 <NewCaseSelect
                   options={yearList}
-                  name="osteoarthritis"
-                  handleChange={(e) => handleDate(e, "year")}
+                  name="osteoarthritis_year"
+                  handleChange={handleChange}
                   defaultOption="Select year"
-                  value={admissionDetails?.osteoarthritis?.slice(3) || ""}
+                  value={admissionDetails?.osteoarthritis_year || ""}
                 />
               </div>
             </div>
@@ -380,23 +539,19 @@ const StepFour = ({
               <div className="col-span-2">
                 <NewCaseSelect
                   options={months}
-                  name="asthma_COPD_bronchitis"
-                  handleChange={(e) => handleDate(e, "month")}
+                  name="asthma_COPD_bronchitis_month"
+                  handleChange={handleChange}
                   defaultOption="Select month"
-                  value={
-                    admissionDetails?.asthma_COPD_bronchitis?.slice(0, 2) || ""
-                  }
+                  value={admissionDetails?.asthma_COPD_bronchitis_month || ""}
                 />
               </div>
               <div className="col-span-2">
                 <NewCaseSelect
                   options={yearList}
-                  name="asthma_COPD_bronchitis"
-                  handleChange={(e) => handleDate(e, "year")}
+                  name="asthma_COPD_bronchitis_year"
+                  handleChange={handleChange}
                   defaultOption="Select year"
-                  value={
-                    admissionDetails?.asthma_COPD_bronchitis?.slice(3) || ""
-                  }
+                  value={admissionDetails?.asthma_COPD_bronchitis_year || ""}
                 />
               </div>
             </div>
@@ -408,19 +563,19 @@ const StepFour = ({
               <div className="col-span-2">
                 <NewCaseSelect
                   options={months}
-                  name="cancer"
-                  handleChange={(e) => handleDate(e, "month")}
+                  name="cancer_month"
+                  handleChange={handleChange}
                   defaultOption="Select month"
-                  value={admissionDetails?.cancer?.slice(0, 2) || ""}
+                  value={admissionDetails?.cancer_month || ""}
                 />
               </div>
               <div className="col-span-2">
                 <NewCaseSelect
                   options={yearList}
-                  name="cancer"
-                  handleChange={(e) => handleDate(e, "year")}
+                  name="cancer_year"
+                  handleChange={handleChange}
                   defaultOption="Select year"
-                  value={admissionDetails?.cancer?.slice(3) || ""}
+                  value={admissionDetails?.cancer_year || ""}
                 />
               </div>
             </div>
@@ -434,21 +589,19 @@ const StepFour = ({
               <div className="col-span-2">
                 <NewCaseSelect
                   options={months}
-                  name="alcohol_drag_abuse"
-                  handleChange={(e) => handleDate(e, "month")}
+                  name="alcohol_drag_abuse_month"
+                  handleChange={handleChange}
                   defaultOption="Select month"
-                  value={
-                    admissionDetails?.alcohol_drag_abuse?.slice(0, 2) || ""
-                  }
+                  value={admissionDetails?.alcohol_drag_abuse_month || ""}
                 />
               </div>
               <div className="col-span-2">
                 <NewCaseSelect
                   options={yearList}
-                  name="alcohol_drag_abuse"
-                  handleChange={(e) => handleDate(e, "year")}
+                  name="alcohol_drag_abuse_year"
+                  handleChange={handleChange}
                   defaultOption="Select year"
-                  value={admissionDetails?.alcohol_drag_abuse?.slice(3) || ""}
+                  value={admissionDetails?.alcohol_drag_abuse_year || ""}
                 />
               </div>
             </div>
@@ -462,24 +615,21 @@ const StepFour = ({
               <div className="col-span-2">
                 <NewCaseSelect
                   options={months}
-                  name="HIV_STD_related_ailments"
-                  handleChange={(e) => handleDate(e, "month")}
+                  name="HIV_STD_related_ailments_months"
+                  handleChange={handleChange}
                   defaultOption="Select month"
                   value={
-                    admissionDetails?.HIV_STD_related_ailments?.slice(0, 2) ||
-                    ""
+                    admissionDetails?.HIV_STD_related_ailments_months || ""
                   }
                 />
               </div>
               <div className="col-span-2">
                 <NewCaseSelect
                   options={yearList}
-                  name="HIV_STD_related_ailments"
-                  handleChange={(e) => handleDate(e, "year")}
+                  name="HIV_STD_related_ailments_year"
+                  handleChange={handleChange}
                   defaultOption="Select year"
-                  value={
-                    admissionDetails?.HIV_STD_related_ailments?.slice(3) || ""
-                  }
+                  value={admissionDetails?.HIV_STD_related_ailments_year || ""}
                 />
               </div>
             </div>
@@ -493,10 +643,10 @@ const StepFour = ({
           </p>
 
           <p className=" border-b-2 border-fontColor-darkGray py-1 w-full text-base text-fontColor-light ">
-            amout
+            {totalCost}
           </p>
           <div className="flex pt-8">
-            <NextButton text="Save" />
+            <NextButton text="Save" handleClick={saveDataToDb} />
           </div>
         </div>
       </div>

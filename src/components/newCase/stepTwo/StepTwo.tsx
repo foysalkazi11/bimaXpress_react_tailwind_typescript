@@ -41,6 +41,22 @@ const StepTwo = ({
 
     //   "postalCode",
     //   "state",
+
+    //   "contractNumber",
+    //   "doctorsName",
+    //   "expectedDeliveryDate",
+
+    //   "ICU_charge",
+    //   "OT_charge",
+    //   "cost_for_investigation_and_diagnosis",
+    //   "dateOfAdmission",
+    //   "daysInHospital",
+    //   "daysInICU",
+    //   "emergencyOrPlanedHospitalizedEvent",
+    //   "expenses",
+    //   "othersExpenses",
+    //   "professional_fees",
+    //   "timeOfAdmission",
     // ]
 
     const formData = new FormData();
@@ -126,10 +142,6 @@ const StepTwo = ({
       },
     }));
   };
-
-  React.useEffect(() => {
-    console.log(newCaseData);
-  }, [newCaseData]);
 
   return (
     <div className="h-full relative">

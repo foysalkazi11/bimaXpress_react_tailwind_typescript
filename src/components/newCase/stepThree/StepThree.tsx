@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Input from "../../theme/input/Input";
 import InputCheckbox from "../../theme/inputCheckbox/InputCheckbox";
 import InputContained from "../../theme/inputContained/InputContained";
@@ -32,14 +32,32 @@ const StepThree = ({
     const POST_URL = `/preauthdata?email=${user}&casenumber=${newCaseNum}`;
     // const array = [
 
-    //   "ICD",
-    //   "contractNumber",
-    //   "doctorsName",
     //   "expectedDeliveryDate",
-    //   "proposedLineOfTreatmentInvestigationDetails",
+
     // ]
 
     const formData = new FormData();
+    formData?.append(
+      "If_Surgical_Name_of_Surgery",
+      diagnosisDetails?.surgeryName
+    );
+    formData?.append(
+      "PhysicianYesPhysicianContactNum",
+      diagnosisDetails?.contractNumber
+    );
+    formData?.append(
+      "PhysicianYesPhysicianName",
+      diagnosisDetails?.doctorsName
+    );
+    formData?.append("ICD_Code_10_PCS", diagnosisDetails?.ICD);
+    formData?.append(
+      "If_Investigation_Or_Medical_Management_Provide_Details",
+      diagnosisDetails?.proposedLineOfTreatmentInvestigationDetails
+    );
+    formData?.append(
+      "Route_Of_Drug_Administration",
+      diagnosisDetails?.routeOfDrag
+    );
     formData?.append(
       "doctor_natureOfLiness",
       diagnosisDetails?.natureOfIllness
@@ -189,10 +207,6 @@ const StepThree = ({
       }));
     }
   };
-
-  useEffect(() => {
-    console.log(newCaseData);
-  }, [newCaseData]);
 
   return (
     <div className="mb-8">

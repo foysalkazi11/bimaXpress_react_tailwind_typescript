@@ -38,11 +38,14 @@ const NewCase = () => {
 
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state?.user);
+  const { newCaseNum } = useAppSelector((state) => state?.case);
+  console.log(newCaseNum);
 
   const getNewCaseNumber = async () => {
     const URL = `/newcase?email=${user}`;
     try {
       const { data } = await axiosConfig.get(URL);
+
       dispatch(setNewCaseNum(data?.data));
     } catch (error) {
       console.log(error);
@@ -50,7 +53,9 @@ const NewCase = () => {
   };
 
   useEffect(() => {
-    getNewCaseNumber();
+    if (!newCaseNum) {
+      getNewCaseNumber();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

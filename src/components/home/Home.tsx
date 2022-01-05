@@ -132,23 +132,13 @@ const Home = () => {
       {menuList?.map((menu, index) => {
         return (
           <>
-            {menu?.pageLink === "#" ? (
-              <div key={index} className="pr-8 pb-8">
-                <HomeCard
-                  name={menu?.name}
-                  icon={menu?.icon}
-                  amount={menu?.amount}
-                />
-              </div>
-            ) : (
-              <Link to={menu?.pageLink} key={index} className="pr-8 pb-8">
-                <HomeCard
-                  name={menu?.name}
-                  icon={menu?.icon}
-                  amount={menu?.amount}
-                />
-              </Link>
-            )}
+            <Link to={menu?.pageLink} key={index} className="pr-8 pb-8">
+              <HomeCard
+                name={menu?.name}
+                icon={menu?.icon}
+                amount={menu?.amount}
+              />
+            </Link>
           </>
         );
       })}
