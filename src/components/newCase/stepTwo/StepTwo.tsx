@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import Input from "../../theme/input/Input";
 // import InputContained from "../../theme/inputContained/InputContained";
@@ -18,6 +18,8 @@ type StepTwoProps = {
   yearList: { label: string; value: string }[];
   months: { label: string; value: string }[];
   days: { label: string; value: string }[];
+  param: string | undefined;
+  toggleModal?: () => void;
 };
 
 const StepTwo = ({
@@ -29,6 +31,8 @@ const StepTwo = ({
   days,
   months,
   yearList,
+  param,
+  toggleModal,
 }: StepTwoProps) => {
   const { patientDetails } = newCaseData;
   const dispatch = useAppDispatch();
@@ -60,38 +64,55 @@ const StepTwo = ({
     // ]
 
     const formData = new FormData();
-    formData?.append("city", patientDetails?.city);
-    formData?.append(
-      "patient_details_HealthInsurance",
-      patientDetails?.previousHealthInsurance
-    );
-    formData?.append("patient_details_name", patientDetails?.patientName);
-    formData?.append("patient_details_gender", patientDetails?.gender);
+    patientDetails?.city && formData?.append("city", patientDetails?.city);
+    patientDetails?.previousHealthInsurance &&
+      formData?.append(
+        "patient_details_HealthInsurance",
+        patientDetails?.previousHealthInsurance
+      );
+    patientDetails?.patientName &&
+      formData?.append("patient_details_name", patientDetails?.patientName);
+    patientDetails?.gender &&
+      formData?.append("patient_details_gender", patientDetails?.gender);
     // formData?.append("patient_details_ageYear", patientDetails?.TPA);
     // formData?.append("patient_details_ageMonth", patientDetails?.TPA);
-    formData?.append("patient_details_date", patientDetails?.DOB);
-    formData?.append(
-      "patient_details_contact_number",
-      patientDetails?.contractNumber
-    );
-    formData?.append(
-      "patient_details_numberOfAttendingRelative",
-      patientDetails?.relativeContractNumber
-    );
-    formData?.append(
-      "patient_details_insuredMemberIdCardNo",
-      patientDetails?.insuredCardNumber
-    );
-    formData?.append(
-      "patient_details_policyNumberorCorporateName",
-      patientDetails?.policyNumber
-    );
-    formData?.append("patient_details_EmployeeId", patientDetails?.employeeId);
-    formData?.append("patient_details_occupation", patientDetails?.occupation);
-    formData?.append(
-      "patient_details_familyPhysician",
-      patientDetails?.familyPhysician
-    );
+    patientDetails?.DOB &&
+      formData?.append("patient_details_date", patientDetails?.DOB);
+    patientDetails?.contractNumber &&
+      formData?.append(
+        "patient_details_contact_number",
+        patientDetails?.contractNumber
+      );
+    patientDetails?.relativeContractNumber &&
+      formData?.append(
+        "patient_details_numberOfAttendingRelative",
+        patientDetails?.relativeContractNumber
+      );
+    patientDetails?.insuredCardNumber &&
+      formData?.append(
+        "patient_details_insuredMemberIdCardNo",
+        patientDetails?.insuredCardNumber
+      );
+    patientDetails?.policyNumber &&
+      formData?.append(
+        "patient_details_policyNumberorCorporateName",
+        patientDetails?.policyNumber
+      );
+    patientDetails?.employeeId &&
+      formData?.append(
+        "patient_details_EmployeeId",
+        patientDetails?.employeeId
+      );
+    patientDetails?.occupation &&
+      formData?.append(
+        "patient_details_occupation",
+        patientDetails?.occupation
+      );
+    patientDetails?.familyPhysician &&
+      formData?.append(
+        "patient_details_familyPhysician",
+        patientDetails?.familyPhysician
+      );
 
     dispatch(setLoading(true));
     try {
@@ -142,6 +163,10 @@ const StepTwo = ({
       },
     }));
   };
+
+  useEffect(() => {
+    console.log(newCaseData);
+  }, [newCaseData]);
 
   return (
     <div className="h-full relative">
@@ -389,8 +414,23 @@ const StepTwo = ({
         </div>
       </div>
 
-      <div className="mt-18 flex items-center justify-between p-6">
+      <div className="mt-18 flex items-center justify-between flex-wrap p-6">
         <NextButton iconLeft={true} text="Back" handleClick={prevStep} />
+        <div className="flex items-center flex-wrap">
+          <NextButton
+            text="View ReteList"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+          />
+          <NextButton
+            text="View Documents"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+          />
+          <NextButton
+            text="Send Mail"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+            handleClick={toggleModal}
+          />
+        </div>
         <NextButton iconRight={true} handleClick={saveDataToDb} />
       </div>
     </div>

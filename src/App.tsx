@@ -40,6 +40,7 @@ function App() {
               <Route path="/doctor/create" element={<DoctorCreate />} />
               <Route path="/doctor/:key" element={<DoctorUpdate />} />
               <Route path="/newCase" element={<NewCase />} />
+              <Route path="/newCase/:case" element={<NewCase />} />
               <Route path="/order" element={<Order />} />
               <Route path="/caseData/:case" element={<Drafts />} />
               <Route path="/mail" element={<Mail />} />

@@ -137,6 +137,7 @@ const Home = () => {
                 name={menu?.name}
                 icon={menu?.icon}
                 amount={menu?.amount}
+                key={index}
               />
             </Link>
           </>
