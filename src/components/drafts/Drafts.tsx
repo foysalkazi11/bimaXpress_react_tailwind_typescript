@@ -14,7 +14,7 @@ import filter from "../../assets/icon/filter.svg";
 import NewCaseSelect from "../theme/select/newCaseSelect/NewCaseSelect";
 import TableCheckbox from "../theme/table/tableCheckbox/TableCheckbox";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { setLoading } from "../../redux/slices/utilitySlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import axiosConfig from "../../config/axiosConfig";
@@ -52,11 +52,15 @@ const Drafts = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state?.user);
   const { caseData } = useAppSelector((state) => state?.home);
+  const navigate = useNavigate();
+  console.log(param?.case);
+
   // const [openSummeryModal, setOpenSummeryModal] = useState<boolean>(false);
 
   // const toggleSummeryModal = () => {
   //   setOpenSummeryModal((pre) => !pre);
   // };
+
   const fetchAnalyst = async () => {
     dispatch(setLoading(true));
     const URL = `/${param?.case}?email=${user}`;
@@ -77,6 +81,16 @@ const Drafts = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const showDetails = (value: string) => {
+    if (param?.case === "draftcases") {
+      navigate(`/newCase/${value}`);
+    } else {
+      //@ts-ignore
+      const obj = caseData[value] || {};
+      console.log(obj);
+    }
+  };
+
   useEffect(() => {
     const res = Object.entries(caseData)?.map(
       (
@@ -96,10 +110,13 @@ const Drafts = () => {
         admissionDate: Date_of_Admission,
         claimAmount: total,
         insuranceTPA: Tpa_Company,
-        action: <img src={download} alt="icon" />,
+        action: (
+          <img src={download} alt="icon" onClick={() => showDetails(key)} />
+        ),
       })
     );
     setTableRow(res);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [caseData]);
 
   const data = React.useMemo<ColumnDetails[]>(() => tableRow, [tableRow]);

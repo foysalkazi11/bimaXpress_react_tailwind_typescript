@@ -2,10 +2,12 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type empanelledCompaniesState = {
   empanelledCompaniesList: {};
+  allCompaniesList: {};
 };
 
 const initialState: empanelledCompaniesState = {
   empanelledCompaniesList: {},
+  allCompaniesList: {},
 };
 
 export const empanelledCompaniesSlice = createSlice({
@@ -15,10 +17,13 @@ export const empanelledCompaniesSlice = createSlice({
     setEmpanelledCompaniesListList: (state, action: PayloadAction<{}>) => {
       state.empanelledCompaniesList = action?.payload;
     },
+    setAllCompaniesList: (state, action: PayloadAction<{}>) => {
+      state.allCompaniesList = action?.payload;
+    },
   },
 });
 
-export const { setEmpanelledCompaniesListList } =
+export const { setEmpanelledCompaniesListList, setAllCompaniesList } =
   empanelledCompaniesSlice?.actions;
 
 export default empanelledCompaniesSlice?.reducer;

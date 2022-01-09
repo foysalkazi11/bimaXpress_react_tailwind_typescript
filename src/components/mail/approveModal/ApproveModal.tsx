@@ -6,6 +6,7 @@ import paperclip from "../../../assets/icon/paperclip.svg";
 import Input from "../../theme/input/Input";
 import InputDate from "../../theme/inputDate/InputDate";
 import PlanSelectButton from "../../theme/button/PlanSelectButton";
+Modal.setAppElement("#root");
 
 type ApproveModalProps = {
   isOpen?: boolean;

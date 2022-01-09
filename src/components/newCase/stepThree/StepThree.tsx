@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Input from "../../theme/input/Input";
 import InputCheckbox from "../../theme/inputCheckbox/InputCheckbox";
 import InputContained from "../../theme/inputContained/InputContained";
@@ -15,6 +15,8 @@ type StepThreeProps = {
   setNewCaseData: any;
   nextStep: () => void;
   prevStep: () => void;
+  param: string | undefined;
+  toggleModal?: () => void;
 };
 
 const StepThree = ({
@@ -22,6 +24,8 @@ const StepThree = ({
   nextStep,
   prevStep,
   setNewCaseData,
+  param,
+  toggleModal,
 }: StepThreeProps) => {
   const { diagnosisDetails } = newCaseData;
   const dispatch = useAppDispatch();
@@ -37,119 +41,150 @@ const StepThree = ({
     // ]
 
     const formData = new FormData();
-    formData?.append(
-      "If_Surgical_Name_of_Surgery",
-      diagnosisDetails?.surgeryName
-    );
-    formData?.append(
-      "PhysicianYesPhysicianContactNum",
-      diagnosisDetails?.contractNumber
-    );
-    formData?.append(
-      "PhysicianYesPhysicianName",
-      diagnosisDetails?.doctorsName
-    );
-    formData?.append("ICD_Code_10_PCS", diagnosisDetails?.ICD);
-    formData?.append(
-      "If_Investigation_Or_Medical_Management_Provide_Details",
-      diagnosisDetails?.proposedLineOfTreatmentInvestigationDetails
-    );
-    formData?.append(
-      "Route_Of_Drug_Administration",
-      diagnosisDetails?.routeOfDrag
-    );
-    formData?.append(
-      "doctor_natureOfLiness",
-      diagnosisDetails?.natureOfIllness
-    );
-    formData?.append(
-      "doctor_durationOfPresentAliment",
-      diagnosisDetails?.durationOfPresentAilment
-    );
-    formData?.append(
-      "doctor_dateOfFirstConsultation",
-      diagnosisDetails?.firstConsultation
-    );
-    // formData?.append("doctor_CauseofAilment", diagnosisDetails?.gender);
-    formData?.append(
-      "doctor_PastHistoryOfPresentAlignment",
-      diagnosisDetails?.historyOfPresentAilmentDis
-    );
-    // formData?.append("doctor_provisionalDiagnosis", diagnosisDetails?.gender);
-    formData?.append("doctor_icdCode", diagnosisDetails?.ICDCode);
+    diagnosisDetails?.surgeryName &&
+      formData?.append(
+        "If_Surgical_Name_of_Surgery",
+        diagnosisDetails?.surgeryName
+      );
+    diagnosisDetails?.contractNumber &&
+      formData?.append(
+        "PhysicianYesPhysicianContactNum",
+        diagnosisDetails?.contractNumber
+      );
+    diagnosisDetails?.doctorsName &&
+      formData?.append(
+        "PhysicianYesPhysicianName",
+        diagnosisDetails?.doctorsName
+      );
+    diagnosisDetails?.ICD &&
+      formData?.append("ICD_Code_10_PCS", diagnosisDetails?.ICD);
+    diagnosisDetails?.proposedLineOfTreatmentInvestigationDetails &&
+      formData?.append(
+        "If_Investigation_Or_Medical_Management_Provide_Details",
+        diagnosisDetails?.proposedLineOfTreatmentInvestigationDetails
+      );
+    diagnosisDetails?.routeOfDrag &&
+      formData?.append(
+        "Route_Of_Drug_Administration",
+        diagnosisDetails?.routeOfDrag
+      );
+    diagnosisDetails?.natureOfIllness &&
+      formData?.append(
+        "doctor_natureOfLiness",
+        diagnosisDetails?.natureOfIllness
+      );
+    diagnosisDetails?.durationOfPresentAilment &&
+      formData?.append(
+        "doctor_durationOfPresentAliment",
+        diagnosisDetails?.durationOfPresentAilment
+      );
+    diagnosisDetails?.firstConsultation &&
+      formData?.append(
+        "doctor_dateOfFirstConsultation",
+        diagnosisDetails?.firstConsultation
+      );
+    // diagnosisDetails?.surgeryName && formData?.append("doctor_CauseofAilment", diagnosisDetails?.gender);
+    diagnosisDetails?.historyOfPresentAilmentDis &&
+      formData?.append(
+        "doctor_PastHistoryOfPresentAlignment",
+        diagnosisDetails?.historyOfPresentAilmentDis
+      );
+    // diagnosisDetails?.surgeryName && formData?.append("doctor_provisionalDiagnosis", diagnosisDetails?.gender);
+    diagnosisDetails?.ICDCode &&
+      formData?.append("doctor_icdCode", diagnosisDetails?.ICDCode);
 
-    formData?.append(
-      "doctor_ifOtherTratmentProvideDetails",
-      diagnosisDetails?.otherTreatments
-    );
-    formData?.append(
-      "doctor_howDidInjuryOccure",
-      diagnosisDetails?.injuryCause
-    );
-    formData?.append("doctor_dateOfInjury", diagnosisDetails?.dateOfInjury);
-    formData?.append(
-      "doctor_releventClinicFindings",
-      diagnosisDetails?.relevantClinicFindings
-    );
-    formData?.append(
-      "doctor_reportedToPolice",
-      diagnosisDetails?.repotedToPolice
-    );
-    formData?.append(
-      "doctor_proposedLineOfTreatment_Medical_Managment",
-      diagnosisDetails?.proposedLineOfTreatment?.includes("medicalManageemnt")
-        ? "yes"
-        : "no"
-    );
-    formData?.append(
-      "doctor_proposedLineOfTreatment_Surgical_Managment",
-      diagnosisDetails?.proposedLineOfTreatment?.includes("surgicalManagement")
-        ? "yes"
-        : "no"
-    );
-    formData?.append(
-      "doctor_proposedLineOfTreatment_Intensive_Care",
-      diagnosisDetails?.proposedLineOfTreatment?.includes("intensiveCare")
-        ? "yes"
-        : "no"
-    );
-    formData?.append(
-      "doctor_proposedLineOfTreatment_Investigation",
-      diagnosisDetails?.proposedLineOfTreatment?.includes("investigation")
-        ? "yes"
-        : "no"
-    );
-    formData?.append(
-      "doctor_proposedLineOfTreatment_Allopathic_Treatment",
-      diagnosisDetails?.proposedLineOfTreatment?.includes(
-        "nonAllopaticTreatment"
-      )
-        ? "yes"
-        : "no"
-    );
-    formData?.append("doctor_inCaseOfAccident", diagnosisDetails?.accident);
-    // formData?.append(
+    diagnosisDetails?.otherTreatments &&
+      formData?.append(
+        "doctor_ifOtherTratmentProvideDetails",
+        diagnosisDetails?.otherTreatments
+      );
+    diagnosisDetails?.injuryCause &&
+      formData?.append(
+        "doctor_howDidInjuryOccure",
+        diagnosisDetails?.injuryCause
+      );
+    diagnosisDetails?.dateOfInjury &&
+      formData?.append("doctor_dateOfInjury", diagnosisDetails?.dateOfInjury);
+    diagnosisDetails?.relevantClinicFindings &&
+      formData?.append(
+        "doctor_releventClinicFindings",
+        diagnosisDetails?.relevantClinicFindings
+      );
+    diagnosisDetails?.repotedToPolice &&
+      formData?.append(
+        "doctor_reportedToPolice",
+        diagnosisDetails?.repotedToPolice
+      );
+    diagnosisDetails?.proposedLineOfTreatment?.includes("medicalManageemnt") &&
+      formData?.append(
+        "doctor_proposedLineOfTreatment_Medical_Managment",
+        diagnosisDetails?.proposedLineOfTreatment?.includes("medicalManageemnt")
+          ? "Yes"
+          : "No"
+      );
+    diagnosisDetails?.proposedLineOfTreatment?.includes("surgicalManagement") &&
+      formData?.append(
+        "doctor_proposedLineOfTreatment_Surgical_Managment",
+        diagnosisDetails?.proposedLineOfTreatment?.includes(
+          "surgicalManagement"
+        )
+          ? "Yes"
+          : "No"
+      );
+    diagnosisDetails?.proposedLineOfTreatment?.includes("intensiveCare") &&
+      formData?.append(
+        "doctor_proposedLineOfTreatment_Intensive_Care",
+        diagnosisDetails?.proposedLineOfTreatment?.includes("intensiveCare")
+          ? "Yes"
+          : "No"
+      );
+    diagnosisDetails?.proposedLineOfTreatment?.includes("investigation") &&
+      formData?.append(
+        "doctor_proposedLineOfTreatment_Investigation",
+        diagnosisDetails?.proposedLineOfTreatment?.includes("investigation")
+          ? "Yes"
+          : "No"
+      );
+    diagnosisDetails?.proposedLineOfTreatment?.includes(
+      "nonAllopaticTreatment"
+    ) &&
+      formData?.append(
+        "doctor_proposedLineOfTreatment_Allopathic_Treatment",
+        diagnosisDetails?.proposedLineOfTreatment?.includes(
+          "nonAllopaticTreatment"
+        )
+          ? "Yes"
+          : "No"
+      );
+    diagnosisDetails?.accident &&
+      formData?.append("doctor_inCaseOfAccident", diagnosisDetails?.accident);
+    // diagnosisDetails?.surgeryName && formData?.append(
     //   "doctor_injuryorDiseaseCausedDueToSubstance",
     //   diagnosisDetails?.gender
     // );
-    formData?.append("doctor_testAlcohol", diagnosisDetails?.alcoholConsumer);
-    // formData?.append("doctor_firNo", diagnosisDetails?.gender);
-    formData?.append(
-      "doctor_inCaseMaternityG",
-      diagnosisDetails?.maternity?.includes("g") ? "yes" : "no"
-    );
-    formData?.append(
-      "doctor_inCaseMaternityP",
-      diagnosisDetails?.maternity?.includes("p") ? "yes" : "no"
-    );
-    formData?.append(
-      "doctor_inCaseMaternityL",
-      diagnosisDetails?.maternity?.includes("l") ? "yes" : "no"
-    );
-    formData?.append(
-      "doctor_inCaseMaternityA",
-      diagnosisDetails?.maternity?.includes("a") ? "yes" : "no"
-    );
+    diagnosisDetails?.alcoholConsumer &&
+      formData?.append("doctor_testAlcohol", diagnosisDetails?.alcoholConsumer);
+    // diagnosisDetails?.surgeryName && formData?.append("doctor_firNo", diagnosisDetails?.gender);
+    diagnosisDetails?.maternity?.includes("g") &&
+      formData?.append(
+        "doctor_inCaseMaternityG",
+        diagnosisDetails?.maternity?.includes("g") ? "Yes" : "No"
+      );
+    diagnosisDetails?.maternity?.includes("p") &&
+      formData?.append(
+        "doctor_inCaseMaternityP",
+        diagnosisDetails?.maternity?.includes("p") ? "Yes" : "No"
+      );
+    diagnosisDetails?.maternity?.includes("l") &&
+      formData?.append(
+        "doctor_inCaseMaternityL",
+        diagnosisDetails?.maternity?.includes("l") ? "Yes" : "No"
+      );
+    diagnosisDetails?.maternity?.includes("a") &&
+      formData?.append(
+        "doctor_inCaseMaternityA",
+        diagnosisDetails?.maternity?.includes("a") ? "Yes" : "No"
+      );
 
     dispatch(setLoading(true));
     try {
@@ -207,6 +242,10 @@ const StepThree = ({
       }));
     }
   };
+
+  useEffect(() => {
+    console.log(newCaseData);
+  }, [newCaseData]);
 
   return (
     <div className="mb-8">
@@ -614,6 +653,21 @@ const StepThree = ({
 
       <div className="p-6 flex items-center justify-between">
         <NextButton iconLeft={true} text="Back" handleClick={prevStep} />
+        <div className="flex items-center flex-wrap">
+          <NextButton
+            text="View ReteList"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+          />
+          <NextButton
+            text="View Documents"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+          />
+          <NextButton
+            text="Send Mail"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+            handleClick={toggleModal}
+          />
+        </div>
         <NextButton iconRight={true} handleClick={saveDataToDb} />
       </div>
     </div>

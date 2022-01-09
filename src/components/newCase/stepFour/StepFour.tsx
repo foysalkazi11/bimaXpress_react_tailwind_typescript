@@ -9,7 +9,7 @@ import { setLoading } from "../../../redux/slices/utilitySlice";
 import axiosConfig from "../../../config/axiosConfig";
 import notification from "../../theme/utility/notification";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 const roomType = [
   {
@@ -37,6 +37,9 @@ type StepFourProps = {
   nextStep: () => void;
   yearList: { label: string; value: string }[];
   months: { label: string; value: string }[];
+  total?: any;
+  param: string | undefined;
+  toggleModal?: () => void;
 };
 
 const StepFour = ({
@@ -45,13 +48,15 @@ const StepFour = ({
   setNewCaseData,
   months,
   yearList,
+  total,
+  param,
+  toggleModal,
 }: StepFourProps) => {
   const { admissionDetails } = newCaseData;
   const [totalCost, setTotalCost] = useState(0);
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state?.user);
   const { newCaseNum } = useAppSelector((state) => state?.case);
-  const navigate = useNavigate();
 
   const saveDataToDb = async () => {
     const POST_URL = `/preauthdata?email=${user}&casenumber=${newCaseNum}`;
@@ -76,86 +81,107 @@ const StepFour = ({
     // formData?.append("dateOfAdmission", admissionDetails?.dateOfAdmission);
     // formData?.append("timeOfAdmission", admissionDetails?.timeOfAdmission);
     // formData?.append("total", admissionDetails?.totalCost);
-    formData?.append(
-      "admission_isThisAEmergencyPlannedHospitalization",
-      admissionDetails?.emergencyOrPlanedHospitalizedEvent
-    );
-    formData?.append("admission_roomType", admissionDetails?.roomType);
-    formData?.append(
-      "admission_mandatoryPastHistoryMonth",
-      admissionDetails?.diabetes_month
-    );
-    formData?.append(
-      "admission_mandatoryPastHistoryYear",
-      admissionDetails?.diabetes_year
-    );
-    formData?.append(
-      "admission_heartDiseaseMonth",
-      admissionDetails?.heart_disease_month
-    );
-    formData?.append(
-      "admission_heartDiseaseYear",
-      admissionDetails?.heart_disease_year
-    );
-    formData?.append(
-      "admission_hypertensionMonth",
-      admissionDetails?.hypertension_month
-    );
-    formData?.append(
-      "admission_hypertensionYear",
-      admissionDetails?.hypertension_year
-    );
-    formData?.append(
-      "admission_HyperlipidemiasMonth",
-      admissionDetails?.hyperlipidemias_month
-    );
-    formData?.append(
-      "admission_HyperlipidemiasYear",
-      admissionDetails?.hyperlipidemias_year
-    );
-    formData?.append(
-      "admission_osteoarthritisMonth",
-      admissionDetails?.osteoarthritis_month
-    );
-    formData?.append(
-      "admission_osteoarthritisYear",
-      admissionDetails?.osteoarthritis_year
-    );
-    formData?.append(
-      "admission_asthmaOrCOPDOrBronchitisMonth",
-      admissionDetails?.asthma_COPD_bronchitis_month
-    );
-    formData?.append(
-      "admission_asthmaOrCOPDOrBronchitisYear",
-      admissionDetails?.asthma_COPD_bronchitis_year
-    );
-    formData?.append("admission_cancerMonth", admissionDetails?.cancer_month);
-    formData?.append("admission_cancerYear", admissionDetails?.cancer_year);
-    formData?.append(
-      "admission_alcoholOrDrugAbuseMonth",
-      admissionDetails?.alcohol_drag_abuse_month
-    );
-    formData?.append(
-      "admission_alcoholOrDrugAbuseYear",
-      admissionDetails?.alcohol_drag_abuse_year
-    );
-    formData?.append(
-      "admission_anyHIVOrSTDOrRelatedAlimentsMonth",
-      admissionDetails?.HIV_STD_related_ailments_months
-    );
-    formData?.append(
-      "admission_anyHIVOrSTDOrRelatedAlimentsYear",
-      admissionDetails?.HIV_STD_related_ailments_year
-    );
-    // formData?.append(
+    admissionDetails?.emergencyOrPlanedHospitalizedEvent &&
+      formData?.append(
+        "admission_isThisAEmergencyPlannedHospitalization",
+        admissionDetails?.emergencyOrPlanedHospitalizedEvent
+      );
+    admissionDetails?.roomType &&
+      formData?.append("admission_roomType", admissionDetails?.roomType);
+    admissionDetails?.diabetes_month &&
+      formData?.append(
+        "admission_mandatoryPastHistoryMonth",
+        admissionDetails?.diabetes_month
+      );
+    admissionDetails?.diabetes_year &&
+      formData?.append(
+        "admission_mandatoryPastHistoryYear",
+        admissionDetails?.diabetes_year
+      );
+    admissionDetails?.heart_disease_month &&
+      formData?.append(
+        "admission_heartDiseaseMonth",
+        admissionDetails?.heart_disease_month
+      );
+    admissionDetails?.heart_disease_year &&
+      formData?.append(
+        "admission_heartDiseaseYear",
+        admissionDetails?.heart_disease_year
+      );
+    admissionDetails?.hypertension_month &&
+      formData?.append(
+        "admission_hypertensionMonth",
+        admissionDetails?.hypertension_month
+      );
+    admissionDetails?.hypertension_year &&
+      formData?.append(
+        "admission_hypertensionYear",
+        admissionDetails?.hypertension_year
+      );
+    admissionDetails?.hyperlipidemias_month &&
+      formData?.append(
+        "admission_HyperlipidemiasMonth",
+        admissionDetails?.hyperlipidemias_month
+      );
+    admissionDetails?.hyperlipidemias_year &&
+      formData?.append(
+        "admission_HyperlipidemiasYear",
+        admissionDetails?.hyperlipidemias_year
+      );
+    admissionDetails?.osteoarthritis_month &&
+      formData?.append(
+        "admission_osteoarthritisMonth",
+        admissionDetails?.osteoarthritis_month
+      );
+    admissionDetails?.osteoarthritis_year &&
+      formData?.append(
+        "admission_osteoarthritisYear",
+        admissionDetails?.osteoarthritis_year
+      );
+    admissionDetails?.asthma_COPD_bronchitis_month &&
+      formData?.append(
+        "admission_asthmaOrCOPDOrBronchitisMonth",
+        admissionDetails?.asthma_COPD_bronchitis_month
+      );
+    admissionDetails?.asthma_COPD_bronchitis_year &&
+      formData?.append(
+        "admission_asthmaOrCOPDOrBronchitisYear",
+        admissionDetails?.asthma_COPD_bronchitis_year
+      );
+    admissionDetails?.cancer_month &&
+      formData?.append("admission_cancerMonth", admissionDetails?.cancer_month);
+    admissionDetails?.cancer_year &&
+      formData?.append("admission_cancerYear", admissionDetails?.cancer_year);
+    admissionDetails?.alcohol_drag_abuse_month &&
+      formData?.append(
+        "admission_alcoholOrDrugAbuseMonth",
+        admissionDetails?.alcohol_drag_abuse_month
+      );
+    admissionDetails?.alcohol_drag_abuse_year &&
+      formData?.append(
+        "admission_alcoholOrDrugAbuseYear",
+        admissionDetails?.alcohol_drag_abuse_year
+      );
+    admissionDetails?.HIV_STD_related_ailments_months &&
+      formData?.append(
+        "admission_anyHIVOrSTDOrRelatedAlimentsMonth",
+        admissionDetails?.HIV_STD_related_ailments_months
+      );
+    admissionDetails?.HIV_STD_related_ailments_year &&
+      formData?.append(
+        "admission_anyHIVOrSTDOrRelatedAlimentsYear",
+        admissionDetails?.HIV_STD_related_ailments_year
+      );
+    // admissionDetails?.roomType && formData?.append(
     //   "admission_anyOtherAliments",
     //   admissionDetails?.natureOfIllness
     // );
 
-    formData?.append(
-      "admission_isThisAEmergencyPlannedHospitalization",
-      admissionDetails?.emergencyOrPlanedHospitalizedEvent
-    );
+    admissionDetails?.emergencyOrPlanedHospitalizedEvent &&
+      formData?.append(
+        "admission_isThisAEmergencyPlannedHospitalization",
+        admissionDetails?.emergencyOrPlanedHospitalizedEvent
+      );
 
     dispatch(setLoading(true));
     try {
@@ -163,7 +189,7 @@ const StepFour = ({
 
       dispatch(setLoading(false));
       notification("info", "Save successfully");
-      navigate("/");
+
       // nextStep();
     } catch (error) {
       dispatch(setLoading(false));
@@ -223,9 +249,12 @@ const StepFour = ({
         Number(admissionDetails?.professional_fees);
       setTotalCost(totalSum);
     }
-    console.log(newCaseData);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newCaseData]);
+
+  useEffect(() => {
+    console.log(newCaseData);
   }, [newCaseData]);
 
   return (
@@ -645,9 +674,28 @@ const StepFour = ({
           <p className=" border-b-2 border-fontColor-darkGray py-1 w-full text-base text-fontColor-light ">
             {totalCost}
           </p>
-          <div className="flex pt-8">
-            <NextButton text="Save" handleClick={saveDataToDb} />
-          </div>
+        </div>
+      </div>
+      <div className="flex justify-between items-center flex-wrap px-8  pb-4">
+        <NextButton
+          text="Save"
+          handleClick={saveDataToDb}
+          style={{ marginBottom: "16px" }}
+        />
+        <div className="flex items-center flex-wrap">
+          <NextButton
+            text="View Retelist"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+          />
+          <NextButton
+            text="View Documents"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+          />
+          <NextButton
+            text="Send Mail"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+            handleClick={toggleModal}
+          />
         </div>
       </div>
     </div>
