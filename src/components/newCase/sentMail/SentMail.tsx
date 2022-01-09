@@ -50,7 +50,6 @@ const SentMail = ({
     body: "",
     file: {},
   });
-  console.log("dddddddd", newCaseData);
 
   const navigate = useNavigate();
 
@@ -118,9 +117,8 @@ const SentMail = ({
       formData?.append("sender_msg", bodyRef?.current?.innerHTML);
       try {
         const url = await imageUpload();
-        console.log(url);
         //@ts-ignore
-        formData.append("files", { name: url });
+        formData.append("files", url);
         await axiosConfig.post(URL, formData);
         await axiosConfig.post(URLINCEMENT, formStatus);
         await axiosConfig.post(URLCHANGESTATUS, formNewStatus);
