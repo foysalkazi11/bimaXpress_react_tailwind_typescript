@@ -20,6 +20,7 @@ import LoginPage from "./components/auth/login.page";
 // import SignPage from "./components/auth/signup.page";
 import { useAppSelector } from "./redux/hooks";
 import SummeryModal from "./components/drafts/Summary/SummeryModal";
+import PreauthForm from "./components/preauthForm/PreauthForm";
 
 function App() {
   const { user } = useAppSelector((state) => state?.user);
@@ -45,6 +46,7 @@ function App() {
               <Route path="/caseData/:case" element={<Drafts />} />
               <Route path="/mail" element={<Mail />} />
               <Route path="/summery" element={<SummeryModal />} />
+              <Route path="/preauthform" element={<PreauthForm />} />
               <Route
                 path="/empanelledCompanies"
                 element={<EmpanelledCompanies />}

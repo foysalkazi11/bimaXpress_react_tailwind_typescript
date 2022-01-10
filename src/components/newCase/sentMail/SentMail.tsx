@@ -29,6 +29,8 @@ const SentMail = ({
   closeModal = () => {},
   newCaseData,
 }: ComposeModalProps) => {
+  console.log("newCaseData", newCaseData?.patientDetails?.patientName);
+
   const [mail, setMail] = useState<{
     to: string;
     cc: string;
@@ -38,7 +40,7 @@ const SentMail = ({
     bccList: string[];
     sub: string;
     body: any;
-    file: {};
+    file: [];
   }>({
     to: "",
     cc: "",
@@ -48,12 +50,12 @@ const SentMail = ({
     bccList: [],
     sub: "",
     body: "",
-    file: {},
+    file: [],
   });
 
   const navigate = useNavigate();
 
-  const dummyText = ` <div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dear Sir/Ma'am,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find pre auth request for ${newCaseData?.patientDetails?.patientName} admitted on ${newCaseData?.admissionDetails?.dateOfAdmission}.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Also find details of patient below:</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Patient name: ${newCaseData?.patientDetails?.patientName}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Date of admission : ${newCaseData?.admissionDetails?.dateOfAdmission}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Health-id card no : ${newCaseData?.patientDetails?.policyNumber}</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find the attached preauth documents below.</div>`;
+  const dummyText = ` <div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dear Sir/Ma'am,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find pre auth request for ${newCaseData?.patientDetails?.patientName} admitted on ${newCaseData?.admissionDetails?.dateOfAdmission}.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Also find details of patient below:</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Patient name: ${newCaseData?.patientDetails?.patientName}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Date of admission : ${newCaseData?.admissionDetails?.dateOfAdmission}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Health-id card no : ${newCaseData?.patientDetails?.policyNumber?.[0]}</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find the attached preauth documents below.</div>`;
   const { user } = useAppSelector((state) => state?.user);
   const { allCompaniesList } = useAppSelector(
     (state) => state?.empanelledCompanies
@@ -70,81 +72,99 @@ const SentMail = ({
   const imageUpload = async () => {
     const IMAGEUPLOAD = `/imageupload?email=${user}&casenumber=${newCaseNum}`;
     const imageFormData = new FormData();
+    let name: string | Blob | any[] = [];
+
+    mail?.file.forEach((img) => {
+      //@ts-ignore
+      name.push(img?.name);
+
+      imageFormData.append("image", img);
+    });
     //@ts-ignore
-    imageFormData?.append("imagename", mail?.file?.name);
-    //@ts-ignore
-    imageFormData?.append("image", mail?.file);
+    imageFormData?.append("imagename", name);
+
     const { data } = await axiosConfig.post(IMAGEUPLOAD, imageFormData);
     return data?.data;
   };
 
+  const removeImage = (name: string) => {
+    setMail((pre: any) => ({
+      ...pre,
+      //@ts-ignore
+      file: pre?.file?.filter((files) => files?.name !== name),
+    }));
+  };
+
   const uploadFile = async () => {
     //@ts-ignore
-    if (mail?.file?.name) {
+    const email = JSON.parse(companyInfo?.replace(/'/g, '"'))?.email;
+
+    dispatch(setLoading(true));
+
+    const URL = `/sendEmail?email=${user}`;
+    const URLINCEMENT = `/incrementcounter?email=${user}`;
+    const URLCHANGESTATUS = `/changeformstatus?email=${user}&casenumber=${newCaseNum}`;
+
+    const formStatus = new FormData();
+    formStatus?.append(
+      "companyname",
+      newCaseData?.detailsOfTPA?.insuranceCompany
+    );
+    formStatus?.append("lastformstatus", "draft");
+    formStatus?.append("newformstatus", "Unprocessed");
+    const formNewStatus = new FormData();
+    formNewStatus?.append("newformstatus", "Unprocessed");
+
+    const formData = new FormData();
+    formData?.append("reciever", email ? email : "");
+    formData?.append(
+      "Cc",
       //@ts-ignore
-      const email = JSON.parse(companyInfo?.replace(/'/g, '"'))?.email;
-
-      dispatch(setLoading(true));
-
-      const URL = `/sendEmail?email=${user}`;
-      const URLINCEMENT = `/incrementcounter?email=${user}`;
-      const URLCHANGESTATUS = `/changeformstatus?email=${user}&casenumber=${newCaseNum}`;
-
-      const formStatus = new FormData();
-      formStatus?.append(
-        "companyname",
-        newCaseData?.detailsOfTPA?.insuranceCompany
-      );
-      formStatus?.append("lastformstatus", "draft");
-      formStatus?.append("newformstatus", "Unprocessed");
-      const formNewStatus = new FormData();
-      formNewStatus?.append("newformstatus", "Unprocessed");
-
-      const formData = new FormData();
-      formData?.append("reciever", email ? email : "");
-      formData?.append(
-        "Cc",
-        //@ts-ignore
-        mail?.ccList?.length ? mail?.ccList : ""
-      );
-      formData?.append(
-        "Bcc",
-        //@ts-ignore
-        mail?.bccList?.length ? mail?.bccList : ""
-      );
-      formData?.append("sub", mail?.sub);
+      mail?.ccList?.length ? mail?.ccList : ""
+    );
+    formData?.append(
+      "Bcc",
       //@ts-ignore
-      formData?.append("sender_msg", bodyRef?.current?.innerHTML);
-      try {
-        const url = await imageUpload();
-        //@ts-ignore
-        formData.append("files", url);
+      mail?.bccList?.length ? mail?.bccList : ""
+    );
+    formData?.append("sub", mail?.sub);
+    //@ts-ignore
+    formData?.append("sender_msg", bodyRef?.current?.innerHTML);
+    try {
+      if (mail?.file?.length) {
+        await imageUpload();
+        mail?.file.forEach((img) => {
+          formData.append("files", img);
+        });
         await axiosConfig.post(URL, formData);
         await axiosConfig.post(URLINCEMENT, formStatus);
         await axiosConfig.post(URLCHANGESTATUS, formNewStatus);
-
-        dispatch(setLoading(false));
-        notification("info", `Email sent successfully`);
-        closeModal();
-        setMail({
-          to: "",
-          cc: "",
-          bcc: "",
-          toList: [],
-          ccList: [],
-          bccList: [],
-          sub: "",
-          body: "",
-          file: [],
-        });
-        navigate("/");
-      } catch (error) {
-        dispatch(setLoading(false));
-        //@ts-ignore
-        notification("error", error?.message);
+      } else {
+        formData.append("files", "");
+        await axiosConfig.post(URL, formData);
+        await axiosConfig.post(URLINCEMENT, formStatus);
+        await axiosConfig.post(URLCHANGESTATUS, formNewStatus);
       }
-    } else {
-      notification("error", "Please upload documents");
+
+      dispatch(setLoading(false));
+      notification("info", `Email sent successfully`);
+      closeModal();
+      setMail({
+        to: "",
+        cc: "",
+        bcc: "",
+        toList: [],
+        ccList: [],
+        bccList: [],
+        sub: "",
+        body: "",
+        file: [],
+      });
+      navigate("/");
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
     }
   };
 
@@ -161,7 +181,7 @@ const SentMail = ({
         setMail((pre) => ({
           ...pre,
           //@ts-ignore
-          [name]: e?.target?.files[0],
+          [name]: [...pre[name], ...e?.target?.files],
         }));
       } else {
         setMail((pre) => ({ ...pre, [name]: value }));
@@ -170,7 +190,8 @@ const SentMail = ({
   };
 
   useEffect(() => {
-    console.log(mail);
+    //@ts-ignore
+    console.log(mail.file);
   }, [mail]);
 
   const handleKeypress = (
@@ -211,7 +232,7 @@ const SentMail = ({
       bcc: "",
       ccList: [],
       bccList: [],
-      sub: `Pre-authorization request for ${newCaseData?.patientDetails?.patientName}  ${newCaseData?.patientDetails?.insuredCardNumber}/ ${newCaseData?.patientDetails?.policyNumber}`,
+      sub: `Pre-authorization request for ${newCaseData?.patientDetails?.patientName}  ${newCaseData?.patientDetails?.insuredCardNumber?.[0]}/ ${newCaseData?.patientDetails?.policyNumber?.[0]}`,
       file: [],
       toList: [],
       body: dummyText,
@@ -289,30 +310,39 @@ const SentMail = ({
         style={{ minHeight: "250px" }}
         contentEditable={true}
         ref={bodyRef}
+        suppressContentEditableWarning={true}
       >
         {ReactHtmlParser(mail?.body)}
       </div>
-      {/* @ts-ignore */}
-      {mail?.file?.name ? (
-        <div
-          className="bg-fontColor-gray text-sm flex items-center justify-between  h-8 px-2 mr-2 rounded-sm mx-4 mt-4 overflow-hidden"
-          style={{ width: "100%", maxWidth: "145px" }}
-        >
-          <p
-            style={{
-              width: "100%",
-              maxWidth: "125px",
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {/* @ts-ignore */}
-            {mail?.file?.name}
-          </p>
-          <IoClose />
-        </div>
-      ) : null}
+
+      <div className="flex items-center flex-wrap">
+        {mail?.file?.length
+          ? mail?.file?.map((file, index) => {
+              return (
+                <div
+                  className="bg-fontColor-gray text-sm flex items-center justify-between  h-8 px-2 mr-2 rounded-sm mx-4 mt-4 overflow-hidden "
+                  style={{ width: "100%", maxWidth: "145px" }}
+                  key={index}
+                >
+                  <p
+                    style={{
+                      width: "100%",
+                      maxWidth: "125px",
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {/* @ts-ignore */}
+                    {file?.name}
+                  </p>
+                  {/* @ts-ignore */}
+                  <IoClose onClick={() => removeImage(file?.name)} />
+                </div>
+              );
+            })
+          : null}
+      </div>
       <div className=" flex items-center py-8 p px-4">
         <button
           className="w-28 h-10 bg-primary-dark text-sm text-fontColor border-none outline-none rounded mr-3"
@@ -331,6 +361,7 @@ const SentMail = ({
             className="absolute border-none outline-none cursor-pointer opacity-0 w-full h-full top-0 left-0 "
             name="file"
             onChange={handleChange}
+            multiple
           />
         </div>
         <div

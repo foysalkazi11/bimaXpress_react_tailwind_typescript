@@ -173,10 +173,16 @@ const StepOne = ({
               text="View ReteList"
               style={{ marginRight: "16px", marginBottom: "16px" }}
             />
-            <NextButton
-              text="Generate Pre Auth Form"
-              style={{ marginRight: "16px", marginBottom: "16px" }}
-            />
+            <a
+              href={`http://localhost:3000/preauthform`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <NextButton
+                text="Generate Pre Auth Form"
+                style={{ marginRight: "16px", marginBottom: "16px" }}
+              />
+            </a>
 
             <NextButton
               text="View Documents"
