@@ -26,9 +26,9 @@ const roomType = [
 
 const inputStyle = {
   height: "40px",
-  border: "none !important",
-  borderBottom: "2px solid #707070",
-  borderRadius: 0,
+  // border: "none !important",
+  // borderBottom: "2px solid #707070",
+  // borderRadius: 0,
 };
 
 type StepFourProps = {
@@ -57,6 +57,7 @@ const StepFour = ({
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state?.user);
   const { newCaseNum } = useAppSelector((state) => state?.case);
+  console.log(admissionDetails);
 
   const saveDataToDb = async () => {
     const POST_URL = `/preauthdata?email=${user}&casenumber=${newCaseNum}`;
@@ -78,9 +79,17 @@ const StepFour = ({
     // ]
 
     const formData = new FormData();
-    // formData?.append("dateOfAdmission", admissionDetails?.dateOfAdmission);
-    // formData?.append("timeOfAdmission", admissionDetails?.timeOfAdmission);
-    // formData?.append("total", admissionDetails?.totalCost);
+    formData?.append("admission_ICU_charge", admissionDetails?.ICU_charge);
+    formData?.append("admission_OT_charge", admissionDetails?.OT_charge);
+    formData?.append(
+      "admission_dateOfAdmission",
+      admissionDetails?.dateOfAdmission
+    );
+    formData?.append(
+      "admission_timeOfAdmission",
+      admissionDetails?.timeOfAdmission
+    );
+    formData?.append("admission_total", admissionDetails?.totalCost);
     admissionDetails?.emergencyOrPlanedHospitalizedEvent &&
       formData?.append(
         "admission_isThisAEmergencyPlannedHospitalization",
@@ -241,20 +250,17 @@ const StepFour = ({
       admissionDetails?.professional_fees
     ) {
       const totalSum =
-        Number(admissionDetails?.ICU_charge) +
-        Number(admissionDetails?.OT_charge) +
-        Number(admissionDetails?.cost_for_investigation_and_diagnosis) +
-        Number(admissionDetails?.expenses) +
-        Number(admissionDetails?.others) +
-        Number(admissionDetails?.professional_fees);
+        Number(admissionDetails?.ICU_charge || 0) +
+        Number(admissionDetails?.OT_charge || 0) +
+        Number(admissionDetails?.cost_for_investigation_and_diagnosis || 0) +
+        Number(admissionDetails?.expenses || 0) +
+        Number(admissionDetails?.others || 0) +
+        Number(admissionDetails?.professional_fees || 0);
       setTotalCost(totalSum);
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [newCaseData]);
-
-  useEffect(() => {
     console.log(newCaseData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newCaseData]);
 
   return (
