@@ -17,6 +17,7 @@ import logo from "../../assets/images/logo.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setCurrentMenu } from "../../redux/slices/homeSlice";
+import { setCurrentMailList } from "../../redux/slices/mailSlice";
 
 const homeMenu = {
   name: "Home",
@@ -29,21 +30,21 @@ const emailMenu = {
   icon: <AiOutlineMail className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />,
   pageLink: "/mail",
 };
+
+const inboxMail = {
+  name: "Inbox",
+  amount: 200,
+  icon: <MdOutlineInbox className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />,
+  pageLink: "#",
+};
+const sentMail = {
+  name: "Sent",
+  amount: 120,
+  icon: <FiSend className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />,
+  pageLink: "#",
+};
+
 const innerMailMenu = [
-  {
-    name: "Inbox",
-    amount: 200,
-    icon: (
-      <MdOutlineInbox className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />
-    ),
-    pageLink: "#",
-  },
-  {
-    name: "Sent",
-    amount: 120,
-    icon: <FiSend className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />,
-    pageLink: "#",
-  },
   {
     name: "Drafts",
     amount: 10,
@@ -127,9 +128,12 @@ const sideBarMenu = [
 const SiderBar = () => {
   const [activeMenu, setActiveMenu] = useState(7);
   const [openEmailMenu, setOpenEmailMenu] = useState(false);
-  const [activeMailMenu, setActiveMailMenu] = useState(0);
+  const [activeMailMenu, setActiveMailMenu] = useState(3);
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state?.user);
+  const { inboxMailList, sentMailList } = useAppSelector(
+    (state) => state?.mail
+  );
   const navigate = useNavigate();
 
   const handleEmailMenu = (num: number, name: string, link: string) => {
@@ -194,6 +198,58 @@ const SiderBar = () => {
         </div>
         {openEmailMenu ? (
           <div className="border-b border-fontColor-darkGray">
+            <Link
+              to={inboxMail?.pageLink}
+              className={`flex items-center justify-between p-3 my-2 rounded cursor-pointer  ${
+                3 === activeMailMenu ? "bg-primary-light" : ""
+              }`}
+              onClick={() => {
+                setActiveMailMenu(3);
+                dispatch(setCurrentMailList("inbox"));
+              }}
+            >
+              <div className="flex">
+                {inboxMail?.icon}
+                <p className="text-fontColor font-semibold text-sm">
+                  {inboxMail?.name}
+                </p>
+              </div>
+              <p
+                className={`text-sm font-semibold  ${
+                  3 === activeMailMenu
+                    ? "px-2 rounded-xl bg-fontColor text-primary-dark"
+                    : "text-fontColor"
+                }`}
+              >
+                {inboxMailList?.length}
+              </p>
+            </Link>
+            <Link
+              to={sentMail?.pageLink}
+              className={`flex items-center justify-between p-3 my-2 rounded cursor-pointer  ${
+                4 === activeMailMenu ? "bg-primary-light" : ""
+              }`}
+              onClick={() => {
+                setActiveMailMenu(4);
+                dispatch(setCurrentMailList("sent"));
+              }}
+            >
+              <div className="flex">
+                {sentMail?.icon}
+                <p className="text-fontColor font-semibold text-sm">
+                  {sentMail?.name}
+                </p>
+              </div>
+              <p
+                className={`text-sm font-semibold  ${
+                  4 === activeMailMenu
+                    ? "px-2 rounded-xl bg-fontColor text-primary-dark"
+                    : "text-fontColor"
+                }`}
+              >
+                {sentMailList?.length}
+              </p>
+            </Link>
             {innerMailMenu?.map((menu, index) => {
               return (
                 <Link

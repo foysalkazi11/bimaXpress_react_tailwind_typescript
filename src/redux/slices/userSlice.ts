@@ -7,7 +7,7 @@ type SideTrayState = {
 };
 
 const initialState: SideTrayState = {
-  user: "abnew@gmail.com",
+  user: "",
   role: "admin",
   userData: {},
 };

@@ -1,23 +1,30 @@
 import React from "react";
-import MailDescripationHeader from "../mailDescripationHeader/MailDescripationHeader";
+// import MailDescripationHeader from "../mailDescripationHeader/MailDescripationHeader";
 import corner_up_left_alt from "../../../assets/icon/corner-up-left-alt.svg";
 import corner_up_right_alt from "../../../assets/icon/corner_up_right_alt.svg";
-import styles from "./MailDescripation.module.css";
-import downArrow from "../../../assets/icon/downArrow.svg";
+// import styles from "./MailDescripation.module.css";
+// import downArrow from "../../../assets/icon/downArrow.svg";
 import { useAppDispatch } from "../../../redux/hooks";
 import { setComposeMailStatus } from "../../../redux/slices/mailSlice";
+import { RiSpamLine } from "react-icons/ri";
+import deleteIcon from "../../../assets/icon/delete_icon.svg";
+import ReactHtmlParser from "react-html-parser";
+// import parse from "html-react-parser";
 
 type MailDescripationProps = {
   openApproveModal: boolean;
   handleOpenApproveModal: () => void;
   openModal: () => void;
+  selectedMail: object;
 };
 const MailDescripation = ({
   openApproveModal = false,
   handleOpenApproveModal = () => {},
   openModal,
+  selectedMail,
 }: MailDescripationProps) => {
   const dispatch = useAppDispatch();
+  console.log(selectedMail);
 
   const handleReplyMail = () => {
     dispatch(setComposeMailStatus("reply"));
@@ -31,24 +38,37 @@ const MailDescripation = ({
     <div>
       <div className="flex justify-between items-start">
         <div>
-          <p className="text-lg text-fontColor">Kaspersky Malware Protection</p>
+          {/* @ts-ignore */}
+          <p className="text-lg text-fontColor">{selectedMail?.name}</p>
           <p className="text-xs text-fontColor-darkGray">
-            to: bimxpress2000@outlook.in
+            {/* @ts-ignore */}
+            to: {selectedMail?.to}
           </p>
         </div>
-        <MailDescripationHeader />
+        <div className="flex items-center justify-end">
+          <div className="flex items-center">
+            <p className="text-xs text-fontColor opacity-80 mx-2">
+              {/* @ts-ignore */}
+              {selectedMail?.date}
+            </p>
+            <img src={deleteIcon} alt="icon" className="px-2" />
+            <img src={corner_up_right_alt} alt="icon" className="px-2" />
+            <img src={corner_up_left_alt} alt="icon" className="px-2" />
+            <RiSpamLine className="mx-2 text-fontColor text-2xl" />
+          </div>
+        </div>
       </div>
       <div className="my-6">
         <h2 className="text-2xl text-fontColor font-semibold">
-          Internet of Things
+          {/* @ts-ignore */}
+          {selectedMail?.subject}
         </h2>
-        <p className="mt-4 text-lg text-fontColor-gray font-thin">Hey</p>
+        {/* <p className="mt-4 text-lg text-fontColor-gray font-thin">Hey</p> */}
         <p className="mt-6 text-lg text-fontColor-gray font-thin tracking-wide">
-          Hey Forget about spam, advertising mailings, hacking and attacking
-          robots. Keep your real mailbox clean and secure. Temp Mail provides
-          temporary, secure.
+          {/* @ts-ignore */}
+          {ReactHtmlParser(selectedMail?.message)}
         </p>
-        <p className="mt-6 text-lg text-fontColor-gray font-thin tracking-wide">
+        {/* <p className="mt-6 text-lg text-fontColor-gray font-thin tracking-wide">
           We all know that Internet / Technologies / Automation is present and
           future.
         </p>
@@ -66,7 +86,7 @@ const MailDescripation = ({
         </p>
         <p className="mt-6 text-lg text-fontColor-gray font-thin tracking-wide">
           while learning and working with DigitalMentorWorld.
-        </p>
+        </p> */}
         <div className="mt-8 flex items-center justify-between">
           <div className="flex">
             <button
@@ -88,7 +108,8 @@ const MailDescripation = ({
               </p>
             </button>
           </div>
-          <div className={styles.approvebtn} onClick={handleOpenApproveModal}>
+          <div></div>
+          {/* <div className={styles.approvebtn} onClick={handleOpenApproveModal}>
             <p className="text-sm text-fontColor-darkGray font-medium">
               Approve
             </p>
@@ -97,7 +118,7 @@ const MailDescripation = ({
               alt="icon"
               className={styles.approvebtnArrow}
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
