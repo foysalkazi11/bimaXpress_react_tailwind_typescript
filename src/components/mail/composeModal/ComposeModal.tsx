@@ -17,17 +17,16 @@ import { setLoading } from "../../../redux/slices/utilitySlice";
 import ReactHtmlParser from "react-html-parser";
 const emailRegex = /^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/;
 
-const dummyText =
-  "Forget about spam, advertising mailings, hacking and attacking robots. Keep your real mailbox clean and secure. Temp Mail provides temporary, secure.Forget about spam, advertising mailings, hacking and attacking robots. Keep your real mailbox clean and secure. Temp Mail provides temporary, secure.";
-
 type ComposeModalProps = {
   isOpen?: boolean;
   closeModal?: () => void;
+  selectedMail: object;
 };
 
 const ComposeModal = ({
   isOpen = false,
   closeModal = () => {},
+  selectedMail,
 }: ComposeModalProps) => {
   const [mail, setMail] = useState<{
     to: string;
@@ -53,7 +52,6 @@ const ComposeModal = ({
   const { user } = useAppSelector((state) => state?.user);
   const { composeMailStatus } = useAppSelector((state) => state?.mail);
   const dispatch = useAppDispatch();
-  const replayMail = "bhimxpress2000@outlook.in";
 
   const bodyRef = useRef(null);
 
@@ -72,14 +70,26 @@ const ComposeModal = ({
         : "forwardMail"
     }?email=${user}`;
     const formData = new FormData();
-    formData?.append("reciever", mail?.to?.toString());
-    formData?.append("Cc", mail?.cc?.toString());
-    formData?.append("Bcc", mail?.bcc?.toString());
+    //@ts-ignore
+    formData?.append("reciever", mail?.toList);
+    //@ts-ignore
+    formData?.append("Cc", mail?.ccList);
+    //@ts-ignore
+    formData?.append("Bcc", mail?.bccList);
     formData?.append("sub", mail?.sub);
     //@ts-ignore
     formData?.append("sender_msg", bodyRef?.current?.innerHTML);
     try {
-      await axiosConfig.post(URL, formData);
+      if (mail?.file?.length) {
+        mail?.file.forEach((img) => {
+          formData.append("files", img);
+        });
+        await axiosConfig.post(URL, formData);
+      } else {
+        formData.append("files", "");
+        await axiosConfig.post(URL, formData);
+      }
+
       dispatch(setLoading(false));
       notification(
         "info",
@@ -120,16 +130,24 @@ const ComposeModal = ({
     if (value !== ",") {
       if (name === "file") {
         //@ts-ignore
-        setMail((pre) => ({ ...pre, [name]: [...pre[name], value] }));
+        setMail((pre) => ({
+          ...pre,
+          //@ts-ignore
+          [name]: [...pre[name], ...e?.target?.files],
+        }));
       } else {
         setMail((pre) => ({ ...pre, [name]: value }));
       }
     }
   };
 
-  useEffect(() => {
-    console.log(mail);
-  }, [mail]);
+  const removeEmail = (val: string, listName: string) => {
+    setMail((pre) => ({
+      ...pre,
+      //@ts-ignore
+      [listName]: [...pre[listName]]?.filter((mail) => mail !== val),
+    }));
+  };
 
   const handleKeypress = (
     e: React.KeyboardEvent,
@@ -149,11 +167,11 @@ const ComposeModal = ({
     }
   };
 
-  const removeEmail = (val: string, listName: string) => {
-    setMail((pre) => ({
+  const removeImage = (name: string) => {
+    setMail((pre: any) => ({
       ...pre,
       //@ts-ignore
-      [listName]: [...pre[listName]]?.filter((mail) => mail !== val),
+      file: pre?.file?.filter((files) => files?.name !== name),
     }));
   };
 
@@ -170,11 +188,13 @@ const ComposeModal = ({
         bcc: "",
         ccList: [],
         bccList: [],
-        sub: "",
+        //@ts-ignore
+        sub: `Re : ${selectedMail?.subject}`,
         file: [],
         //@ts-ignore
-        toList: [...pre?.toList, replayMail],
-        body: dummyText,
+        toList: [...pre?.toList, selectedMail?.from],
+        //@ts-ignore
+        body: selectedMail?.message,
       }));
     } else if (composeMailStatus === "forward") {
       setMail((pre) => ({
@@ -184,10 +204,12 @@ const ComposeModal = ({
         bcc: "",
         ccList: [],
         bccList: [],
-        sub: "",
+        //@ts-ignore
+        sub: `Re : ${selectedMail?.subject}`,
         file: [],
         toList: [],
-        body: dummyText,
+        //@ts-ignore
+        body: selectedMail?.message,
       }));
     } else {
       setMail({
@@ -202,6 +224,7 @@ const ComposeModal = ({
         body: "",
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [composeMailStatus]);
 
   return (
@@ -344,6 +367,35 @@ const ComposeModal = ({
       >
         {ReactHtmlParser(mail?.body)}
       </div>
+
+      <div className="flex items-center flex-wrap">
+        {mail?.file?.length
+          ? mail?.file?.map((file, index) => {
+              return (
+                <div
+                  className="bg-fontColor-gray text-sm flex items-center justify-between  h-8 px-2 mr-2 rounded-sm mx-4 mt-4 overflow-hidden "
+                  style={{ width: "100%", maxWidth: "145px" }}
+                  key={index}
+                >
+                  <p
+                    style={{
+                      width: "100%",
+                      maxWidth: "125px",
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {/* @ts-ignore */}
+                    {file?.name}
+                  </p>
+                  {/* @ts-ignore */}
+                  <IoClose onClick={() => removeImage(file?.name)} />
+                </div>
+              );
+            })
+          : null}
+      </div>
       <div className=" flex items-center py-8 p px-4">
         <button
           className="w-28 h-10 bg-primary-dark text-sm text-fontColor border-none outline-none rounded mr-3"
@@ -359,7 +411,7 @@ const ComposeModal = ({
           />
           <input
             type="file"
-            accept="image/*"
+            multiple
             className="absolute border-none outline-none cursor-pointer opacity-0 w-full h-full top-0 left-0 "
             name="file"
             onChange={handleChange}
