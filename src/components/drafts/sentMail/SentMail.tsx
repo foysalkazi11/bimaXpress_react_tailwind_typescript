@@ -29,6 +29,10 @@ const SentMail = ({
   closeModal = () => {},
   newCaseData,
 }: ComposeModalProps) => {
+  //@ts-ignore
+  const { patient_details, hospital_details, caseNumber } = newCaseData;
+  console.log("case", newCaseData);
+
   const [mail, setMail] = useState<{
     to: string;
     cc: string;
@@ -53,17 +57,17 @@ const SentMail = ({
 
   const navigate = useNavigate();
 
-  const dummyText = ` <div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dear Sir/Ma'am,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find pre auth request for ${newCaseData?.patientDetails?.patientName} admitted on ${newCaseData?.admissionDetails?.dateOfAdmission}.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Also find details of patient below:</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Patient name: ${newCaseData?.patientDetails?.patientName}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Date of admission : ${newCaseData?.admissionDetails?.dateOfAdmission}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Health-id card no : ${newCaseData?.patientDetails?.policyNumber?.[0]}</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find the attached preauth documents below.</div>`;
+  const dummyText = ` <div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dear Sir/Ma'am,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find pre auth request for ${patient_details?.Name} admitted on  ${hospital_details?.Date_of_Admission}.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Also find details of patient below:</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Patient name: ${patient_details?.Name}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Date of admission : ${hospital_details?.Date_of_Admission}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Health-id card no : ${patient_details?.Policy_Id}</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find the attached preauth documents below.</div>`;
   const { user } = useAppSelector((state) => state?.user);
   const { allCompaniesList } = useAppSelector(
     (state) => state?.empanelledCompanies
   );
-  const { newCaseNum } = useAppSelector((state) => state?.case);
+
   const dispatch = useAppDispatch();
 
   const companyInfo =
     //@ts-ignore
-    allCompaniesList[newCaseData?.detailsOfTPA?.insuranceCompany];
+    allCompaniesList[patient_details?.Insurance_Company];
 
   const bodyRef = useRef(null);
 
@@ -101,8 +105,8 @@ const SentMail = ({
 
     const URL = `/sendEmail?email=${user}`;
     const URLINCEMENT = `/incrementcounter?email=${user}`;
-    const URLCHANGESTATUS = `/changeformstatus?email=${user}&casenumber=${newCaseNum}`;
-    const URLFORMCREATIONAUDITTRIAL = `/formcreationaudittrail?email=${user}&casenumber=${newCaseNum}`;
+    const URLCHANGESTATUS = `/changeformstatus?email=${user}&casenumber=${caseNumber}`;
+    const URLFORMCREATIONAUDITTRIAL = `/queryrespondedaudittrail?email=${user}&casenumber=${caseNumber}`;
 
     const formCreationAuditForm = new FormData();
     formCreationAuditForm?.append("amount", "");
@@ -110,30 +114,23 @@ const SentMail = ({
     formCreationAuditForm?.append("imgurl", "");
 
     const formStatus = new FormData();
-    formStatus?.append(
-      "companyname",
-      newCaseData?.detailsOfTPA?.insuranceCompany
-    );
-    formStatus?.append("lastformstatus", "draft");
-    formStatus?.append("newformstatus", "Unprocessed");
+    formStatus?.append("companyname", patient_details?.Insurance_Company);
+    formStatus?.append("lastformstatus", "Unprocessed");
+    formStatus?.append("newformstatus", "query");
     const formNewStatus = new FormData();
-    formNewStatus?.append("newformstatus", "Unprocessed");
+    formNewStatus?.append("newformstatus", "query");
 
     const formData = new FormData();
     formData?.append("reciever", email ? email : "");
-    formData?.append(
-      "Cc",
-      //@ts-ignore
-      mail?.ccList?.length ? mail?.ccList : ""
-    );
-    formData?.append(
-      "Bcc",
-      //@ts-ignore
-      mail?.bccList?.length ? mail?.bccList : ""
-    );
+    mail?.ccList?.forEach((mail) => {
+      formData.append("Cc", mail);
+    });
+    mail?.bccList?.forEach((mail) => {
+      formData.append("Bcc", mail);
+    });
     formData?.append("sub", mail?.sub);
     //@ts-ignore
-    formData?.append("sender_msg", bodyRef?.current?.innerHTML);
+    formData?.append("sender_msg", bodyRef?.current?.innerText);
     try {
       if (mail?.file?.length) {
         // await imageUpload();
@@ -244,7 +241,7 @@ const SentMail = ({
       bcc: "",
       ccList: [],
       bccList: [],
-      sub: `Pre-authorization request for ${newCaseData?.patientDetails?.patientName}  ${newCaseData?.patientDetails?.insuredCardNumber?.[0]}/ ${newCaseData?.patientDetails?.policyNumber?.[0]}`,
+      sub: `Query Reply for  ${patient_details?.Name} claim no: ${patient_details?.Policy_Id}`,
       file: [],
       toList: [],
       body: dummyText,
