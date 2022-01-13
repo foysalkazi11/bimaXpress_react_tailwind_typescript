@@ -70,15 +70,18 @@ const ComposeModal = ({
         : "forwardMail"
     }?email=${user}`;
     const formData = new FormData();
-    //@ts-ignore
-    formData?.append("reciever", mail?.toList);
-    //@ts-ignore
-    formData?.append("Cc", mail?.ccList);
-    //@ts-ignore
-    formData?.append("Bcc", mail?.bccList);
+    mail?.toList?.forEach((mail) => {
+      formData.append("reciever", mail);
+    });
+    mail?.ccList?.forEach((mail) => {
+      formData.append("Cc", mail);
+    });
+    mail?.bccList?.forEach((mail) => {
+      formData.append("Bcc", mail);
+    });
     formData?.append("sub", mail?.sub);
     //@ts-ignore
-    formData?.append("sender_msg", bodyRef?.current?.innerHTML);
+    formData?.append("sender_msg", bodyRef?.current?.innerText);
     try {
       if (mail?.file?.length) {
         mail?.file.forEach((img) => {

@@ -20,7 +20,9 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import axiosConfig from "../../config/axiosConfig";
 import { setCaseData } from "../../redux/slices/homeSlice";
 import notification from "../theme/utility/notification";
-// import SummeryModal from "./Summary/SummeryModal";
+import SummeryModal from "./Summary/SummeryModal";
+import NewAction from "./newAction/NewAction";
+import SentMail from "./sentMail/SentMail";
 
 const insuranceCompany = [
   { label: "Health India Insurance", value: "health_india_insurance" },
@@ -53,13 +55,21 @@ const Drafts = () => {
   const { user } = useAppSelector((state) => state?.user);
   const { caseData } = useAppSelector((state) => state?.home);
   const navigate = useNavigate();
-  console.log(param?.case);
+  const [summeryData, setSummeryData] = useState({});
+  const [action, setAction] = useState("");
 
-  // const [openSummeryModal, setOpenSummeryModal] = useState<boolean>(false);
-
-  // const toggleSummeryModal = () => {
-  //   setOpenSummeryModal((pre) => !pre);
-  // };
+  const [openSummeryModal, setOpenSummeryModal] = useState<boolean>(false);
+  const toggleSummeryModal = () => {
+    setOpenSummeryModal((pre) => !pre);
+  };
+  const [openNewActionModal, setOpenNewActionModal] = useState<boolean>(false);
+  const toggleNewActionModal = () => {
+    setOpenNewActionModal((pre) => !pre);
+  };
+  const [openSentmailModal, setOpenSentmailModal] = useState<boolean>(false);
+  const toggleSentmailModal = () => {
+    setOpenSentmailModal((pre) => !pre);
+  };
 
   const fetchAnalyst = async () => {
     dispatch(setLoading(true));
@@ -88,8 +98,16 @@ const Drafts = () => {
       //@ts-ignore
       const obj = caseData[value] || {};
       console.log(obj);
+      setSummeryData(obj);
+      toggleSummeryModal();
     }
   };
+
+  useEffect(() => {
+    if (action === "query") {
+      toggleSentmailModal();
+    }
+  }, [action]);
 
   useEffect(() => {
     const res = Object.entries(caseData)?.map(
@@ -305,7 +323,25 @@ const Drafts = () => {
         canPreviousPage={canPreviousPage}
       />
 
-      {/* <SummeryModal closeModal={toggleSummeryModal} isOpen={openSummeryModal} /> */}
+      <SummeryModal
+        summeryData={summeryData}
+        closeModal={toggleSummeryModal}
+        isOpen={openSummeryModal}
+        toggleNewActionModal={toggleNewActionModal}
+      />
+
+      <NewAction
+        closeModal={toggleNewActionModal}
+        isOpen={openNewActionModal}
+        selectValue={action}
+        setSelectValue={setAction}
+        toggleSummeryModal={toggleSummeryModal}
+      />
+      <SentMail
+        newCaseData={summeryData}
+        closeModal={toggleSentmailModal}
+        isOpen={openSentmailModal}
+      />
     </div>
   );
 };

@@ -5,32 +5,34 @@ import ActionTaken from "../actionTaken/ActionTaken";
 import Details from "../Details/Details";
 import styles from "./SummeryModal.module.css";
 
-// type SummeryModalProps = {
-//   isOpen: boolean;
-//   closeModal: () => void;
-// };
+type SummeryModalProps = {
+  isOpen: boolean;
+  closeModal: () => void;
+  summeryData: object;
+  toggleNewActionModal: () => void;
+};
 
-const SummeryModal = () => {
-  const [openSummeryModal, setOpenSummeryModal] = useState<boolean>(true);
+const SummeryModal = ({
+  closeModal,
+  isOpen,
+  summeryData,
+  toggleNewActionModal,
+}: SummeryModalProps) => {
   const [activeMenu, setActiveMenu] = useState(0);
-
-  const toggleSummeryModal = () => {
-    setOpenSummeryModal((pre) => !pre);
-  };
 
   return (
     <Modal
-      isOpen={openSummeryModal}
+      isOpen={isOpen}
       className={styles.approveModalContainer}
       overlayClassName={styles.overlayContainer}
-      onRequestClose={toggleSummeryModal}
+      onRequestClose={closeModal}
       shouldCloseOnOverlayClick={true}
     >
       <p className="text-lg text-fontColor mb-2">Summery</p>
       <div className={`${styles.summerModalContainer} relative`}>
         <IoClose
           className=" absolute top-4 right-6 text-2xl text-fontColor cursor-pointer"
-          onClick={toggleSummeryModal}
+          onClick={closeModal}
         />
         <div className="flex items-center">
           <p
@@ -50,7 +52,16 @@ const SummeryModal = () => {
             Action Taken
           </p>
         </div>
-        {activeMenu === 0 ? <Details /> : <ActionTaken />}
+        {activeMenu === 0 ? (
+          <Details summeryData={summeryData} />
+        ) : (
+          <ActionTaken
+            //@ts-ignore
+            audit_trail={summeryData?.audit_trail}
+            toggleNewActionModal={toggleNewActionModal}
+            toggleSummeryModal={closeModal}
+          />
+        )}
       </div>
     </Modal>
   );

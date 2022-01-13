@@ -1,41 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import FormButton from "../../theme/button/FormButton";
-import { VscFilePdf } from "react-icons/vsc";
+import { IoDocumentsOutline } from "react-icons/io5";
 import { Row, useTable } from "react-table";
 import styles from "./ActionTaken.module.css";
+import { format } from "date-fns";
 
 interface ColumnDetails {
   [key: string]: any;
 }
+type ActionTakenProps = {
+  audit_trail?: [];
+  toggleNewActionModal: () => void;
+  toggleSummeryModal: () => void;
+};
 
-const ActionTaken = () => {
-  const data = React.useMemo<ColumnDetails[]>(
-    () => [
-      {
-        actionTaken: "Form creation",
-        last_action_date: "28 Nov 2021",
-        summery: "PreAuth creation",
-        amount: 2000,
-        documents: (
-          <div className="flex">
-            <VscFilePdf className="mr-2 text-2xl" /> documents
-          </div>
-        ),
-      },
-      {
-        actionTaken: "Form creation",
-        last_action_date: "28 Nov 2021",
-        summery: "PreAuth creation",
-        amount: 2000,
-        documents: (
-          <div className="flex">
-            <VscFilePdf className="mr-2 text-2xl" /> documents
-          </div>
-        ),
-      },
-    ],
-    []
-  );
+const ActionTaken = ({
+  audit_trail,
+  toggleNewActionModal,
+  toggleSummeryModal,
+}: ActionTakenProps) => {
+  // const [aditTrailData, setAditTrailData] = useState<any>([]);
+  const [tableRow, setTableRow] = useState<ColumnDetails[]>([]);
+
+  const data = React.useMemo<ColumnDetails[]>(() => tableRow, [tableRow]);
 
   const columns = React.useMemo(
     () => [
@@ -63,12 +50,43 @@ const ActionTaken = () => {
     []
   );
 
+  useEffect(() => {
+    let array: any[] = [];
+    if (audit_trail?.length) {
+      audit_trail?.forEach((item) => {
+        const res = JSON.parse(JSON.stringify(item)).split("+");
+        array.push(res);
+      });
+    }
+
+    // setAditTrailData(array);
+
+    const res = array?.map((item, index) => ({
+      actionTaken: item[0],
+      last_action_date: format(new Date(item[1]), "do MMMM Y"),
+      summery: item[2],
+      amount: item[3],
+      documents: <IoDocumentsOutline className="mr-2 text-2xl" />,
+      doc: item[4],
+      index: index,
+    }));
+    setTableRow(res);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data });
   return (
     <div className="mt-6">
       <div className="flex justify-end">
-        <FormButton text="Add Action" iconPlus={true} />
+        <FormButton
+          text="Add Action"
+          iconPlus={true}
+          handleClick={() => {
+            // toggleSummeryModal();
+            toggleNewActionModal();
+          }}
+        />
       </div>
 
       <div>
