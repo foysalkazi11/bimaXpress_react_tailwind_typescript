@@ -9,17 +9,15 @@ import fci from "../../assets/icon/fci.svg";
 import query from "../../assets/icon/noun_query_3407971.svg";
 import process from "../../assets/icon/process.svg";
 import reject from "../../assets/icon/reject.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { To, useNavigate } from "react-router-dom";
 import axiosConfig from "../../config/axiosConfig";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import notification from "../theme/utility/notification";
 import { setLoading } from "../../redux/slices/utilitySlice";
-import { setCounter } from "../../redux/slices/homeSlice";
+import { setCounter, setCurrentBucket } from "../../redux/slices/homeSlice";
 
 const Home = () => {
-  const [menuList, setMenuList] = useState<
-    { name: any; icon: any; amount: any; pageLink: any }[]
-  >([]);
+  const [menuList, setMenuList] = useState<any>([]);
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state?.user);
   const { counter } = useAppSelector((state) => state?.home);
@@ -42,6 +40,11 @@ const Home = () => {
     }
   };
 
+  const GoDraftPage = (pageLink: string | To, value: string) => {
+    dispatch(setCurrentBucket(value));
+    navigate(pageLink);
+  };
+
   useEffect(() => {
     if (!user) {
       navigate("/login");
@@ -59,6 +62,7 @@ const Home = () => {
         setMenuList([
           {
             name: "Draft",
+            value: "draft",
             icon: draft,
             //@ts-ignore
             amount: counter?.draft,
@@ -66,6 +70,7 @@ const Home = () => {
           },
           {
             name: "Unprocessed",
+            value: "Unprocessed",
             icon: process,
             //@ts-ignore
             amount: counter?.Unprocessed,
@@ -73,6 +78,7 @@ const Home = () => {
           },
           {
             name: "Queries",
+            value: "query",
             icon: query,
             //@ts-ignore
             amount: counter?.query,
@@ -80,6 +86,7 @@ const Home = () => {
           },
           {
             name: "Approved",
+            value: "Approved",
             icon: approved,
             //@ts-ignore
             amount: counter?.Approved,
@@ -87,6 +94,7 @@ const Home = () => {
           },
           {
             name: "Rejected",
+            value: "Reject",
             icon: reject,
             //@ts-ignore
             amount: counter?.Reject,
@@ -94,6 +102,7 @@ const Home = () => {
           },
           {
             name: "Enhance",
+            value: "Enhance",
             icon: enhance,
             //@ts-ignore
             amount: counter?.Enhance,
@@ -101,6 +110,7 @@ const Home = () => {
           },
           {
             name: "FCI",
+            value: "fci",
             icon: fci,
             //@ts-ignore
             amount: counter?.fci,
@@ -109,6 +119,7 @@ const Home = () => {
 
           {
             name: "Discharge Approved",
+            value: "Discharge_Approved",
             icon: dischargedApproved,
             //@ts-ignore
             amount: counter?.Discharge_Approved,
@@ -116,6 +127,7 @@ const Home = () => {
           },
           {
             name: "Settle",
+            value: "Settled",
             icon: approved,
             //@ts-ignore
             amount: counter?.Settled,
@@ -129,20 +141,35 @@ const Home = () => {
 
   return (
     <div className="p-10 flex flex-wrap mx-auto">
-      {menuList?.map((menu, index) => {
-        return (
-          <>
-            <Link to={menu?.pageLink} key={index} className="pr-8 pb-8">
-              <HomeCard
-                name={menu?.name}
-                icon={menu?.icon}
-                amount={menu?.amount}
+      {menuList?.map(
+        (
+          menu: {
+            pageLink: To;
+            name: string;
+            icon: any;
+            amount: number;
+            value: string;
+          },
+          index: React.Key | null | undefined
+        ) => {
+          return (
+            <>
+              <div
                 key={index}
-              />
-            </Link>
-          </>
-        );
-      })}
+                className="pr-8 pb-8"
+                onClick={() => GoDraftPage(menu?.pageLink, menu?.value)}
+              >
+                <HomeCard
+                  name={menu?.name}
+                  icon={menu?.icon}
+                  amount={menu?.amount}
+                  key={index}
+                />
+              </div>
+            </>
+          );
+        }
+      )}
     </div>
   );
 };

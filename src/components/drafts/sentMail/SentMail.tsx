@@ -30,7 +30,7 @@ const SentMail = ({
   newCaseData,
 }: ComposeModalProps) => {
   //@ts-ignore
-  const { patient_details, hospital_details, caseNumber } = newCaseData;
+  // const { patient_details, hospital_details, caseNumber } = newCaseData;
   console.log("case", newCaseData);
 
   const [mail, setMail] = useState<{
@@ -54,10 +54,10 @@ const SentMail = ({
     body: "",
     file: [],
   });
+  const [reciverEmail, setReciverEmail] = useState("");
 
   const navigate = useNavigate();
 
-  const dummyText = ` <div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dear Sir/Ma'am,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find pre auth request for ${patient_details?.Name} admitted on  ${hospital_details?.Date_of_Admission}.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Also find details of patient below:</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Patient name: ${patient_details?.Name}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Date of admission : ${hospital_details?.Date_of_Admission}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Health-id card no : ${patient_details?.Policy_Id}</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find the attached preauth documents below.</div>`;
   const { user } = useAppSelector((state) => state?.user);
   const { allCompaniesList } = useAppSelector(
     (state) => state?.empanelledCompanies
@@ -65,29 +65,26 @@ const SentMail = ({
 
   const dispatch = useAppDispatch();
 
-  const companyInfo =
-    //@ts-ignore
-    allCompaniesList[patient_details?.Insurance_Company];
-
   const bodyRef = useRef(null);
 
-  // const imageUpload = async () => {
-  //   const IMAGEUPLOAD = `/imageupload?email=${user}&casenumber=${newCaseNum}`;
-  //   const imageFormData = new FormData();
-  //   let name: string | Blob | any[] = [];
+  const imageUpload = async () => {
+    const IMAGEUPLOAD = `/imageupload?email=${user}&casenumber=${newCaseData?.caseNumber}`;
+    const imageFormData = new FormData();
+    let name: string | Blob | any[] = [];
 
-  //   mail?.file.forEach((img) => {
-  //     //@ts-ignore
-  //     name.push(img?.name);
+    mail?.file.forEach((img) => {
+      //@ts-ignore
+      name.push(img?.name);
 
-  //     imageFormData.append("image", img);
-  //   });
-  //   //@ts-ignore
-  //   imageFormData?.append("imagename", name);
+      imageFormData.append("image", img);
+    });
+    //@ts-ignore
+    imageFormData?.append("imagename", name);
+    imageFormData?.append("arrayname", "urlid");
 
-  //   const { data } = await axiosConfig.post(IMAGEUPLOAD, imageFormData);
-  //   return data?.data;
-  // };
+    const { data } = await axiosConfig.post(IMAGEUPLOAD, imageFormData);
+    return data?.data;
+  };
 
   const removeImage = (name: string) => {
     setMail((pre: any) => ({
@@ -98,45 +95,53 @@ const SentMail = ({
   };
 
   const uploadFile = async () => {
-    //@ts-ignore
-    const email = JSON.parse(companyInfo?.replace(/'/g, '"'))?.email;
-
     dispatch(setLoading(true));
 
     const URL = `/sendEmail?email=${user}`;
     const URLINCEMENT = `/incrementcounter?email=${user}`;
-    const URLCHANGESTATUS = `/changeformstatus?email=${user}&casenumber=${caseNumber}`;
-    const URLFORMCREATIONAUDITTRIAL = `/queryrespondedaudittrail?email=${user}&casenumber=${caseNumber}`;
+    const URLCHANGESTATUS = `/changeformstatus?email=${user}&casenumber=${newCaseData?.caseNumber}`;
+    const URLFORMCREATIONAUDITTRIAL = `/queryrespondedaudittrail?email=${user}&casenumber=${newCaseData?.caseNumber}`;
 
     const formCreationAuditForm = new FormData();
-    formCreationAuditForm?.append("amount", "");
-    formCreationAuditForm?.append("date", "");
-    formCreationAuditForm?.append("imgurl", "");
+    formCreationAuditForm?.append(
+      "amount",
+      newCaseData?.hospital_details?.total || 0
+    );
+    formCreationAuditForm?.append("date", new Date()?.toISOString() || "");
 
     const formStatus = new FormData();
-    formStatus?.append("companyname", patient_details?.Insurance_Company);
+    formStatus?.append(
+      "companyname",
+      newCaseData?.patient_details?.Insurance_Company
+    );
     formStatus?.append("lastformstatus", "Unprocessed");
     formStatus?.append("newformstatus", "query");
     const formNewStatus = new FormData();
     formNewStatus?.append("newformstatus", "query");
 
     const formData = new FormData();
-    formData?.append("reciever", email ? email : "");
-    mail?.ccList?.forEach((mail) => {
-      formData.append("Cc", mail);
-    });
-    mail?.bccList?.forEach((mail) => {
-      formData.append("Bcc", mail);
-    });
+    formData?.append("reciever", reciverEmail ? reciverEmail : "");
+    mail?.ccList?.length
+      ? mail?.ccList?.forEach((mail) => {
+          formData.append("Cc", mail);
+        })
+      : formData.append("Cc", "");
+
+    mail?.bccList.length
+      ? mail?.bccList?.forEach((mail) => {
+          formData.append("Bcc", mail);
+        })
+      : formData.append("Bcc", "");
     formData?.append("sub", mail?.sub);
     //@ts-ignore
     formData?.append("sender_msg", bodyRef?.current?.innerText);
     try {
       if (mail?.file?.length) {
-        // await imageUpload();
+        const image = await imageUpload();
         mail?.file.forEach((img) => {
           formData.append("files", img);
         });
+        formCreationAuditForm?.append("imgurl", image || "N/A");
         await axiosConfig.post(URL, formData);
         await axiosConfig.post(URLINCEMENT, formStatus);
         await axiosConfig.post(URLCHANGESTATUS, formNewStatus);
@@ -146,6 +151,7 @@ const SentMail = ({
         );
       } else {
         formData.append("files", "");
+        formCreationAuditForm?.append("imgurl", "N/A");
         await axiosConfig.post(URL, formData);
         await axiosConfig.post(URLINCEMENT, formStatus);
         await axiosConfig.post(URLCHANGESTATUS, formNewStatus);
@@ -198,11 +204,6 @@ const SentMail = ({
     }
   };
 
-  useEffect(() => {
-    //@ts-ignore
-    console.log(mail.file);
-  }, [mail]);
-
   const handleKeypress = (
     e: React.KeyboardEvent,
     name: string,
@@ -241,13 +242,22 @@ const SentMail = ({
       bcc: "",
       ccList: [],
       bccList: [],
-      sub: `Query Reply for  ${patient_details?.Name} claim no: ${patient_details?.Policy_Id}`,
+      sub: `Query Reply for  ${newCaseData?.patient_details?.Name} claim no: ${newCaseData?.patient_details?.Policy_Id}`,
       file: [],
       toList: [],
-      body: dummyText,
+      body: ` <div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dear Sir/Ma'am,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find pre auth request for ${newCaseData?.patient_details?.Name} admitted on  ${newCaseData?.hospital_details?.Date_of_Admission}.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Also find details of patient below:</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Patient name: ${newCaseData?.patient_details?.Name}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Date of admission : ${newCaseData?.hospital_details?.Date_of_Admission}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Health-id card no : ${newCaseData?.patient_details?.Policy_Id}</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find the attached preauth documents below.</div>`,
     }));
+
+    const companyInfo =
+      //@ts-ignore
+      allCompaniesList[newCaseData?.patient_details?.Insurance_Company];
+    if (companyInfo) {
+      const email = JSON.parse(companyInfo?.replace(/'/g, '"'))?.email;
+      setReciverEmail(email);
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [newCaseData]);
 
   return (
     <Modal
