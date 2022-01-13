@@ -4,12 +4,14 @@ type homeSliceState = {
   counter: object;
   caseData: object;
   currentMenu: string;
+  currentBucket: string;
 };
 
 const initialState: homeSliceState = {
   counter: {},
   caseData: {},
   currentMenu: "Home",
+  currentBucket: "",
 };
 
 export const homeSlice = createSlice({
@@ -25,9 +27,13 @@ export const homeSlice = createSlice({
     setCurrentMenu: (state, action: PayloadAction<string>) => {
       state.currentMenu = action?.payload;
     },
+    setCurrentBucket: (state, action: PayloadAction<string>) => {
+      state.currentBucket = action?.payload;
+    },
   },
 });
 
-export const { setCounter, setCaseData, setCurrentMenu } = homeSlice?.actions;
+export const { setCounter, setCaseData, setCurrentMenu, setCurrentBucket } =
+  homeSlice?.actions;
 
 export default homeSlice?.reducer;

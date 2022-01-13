@@ -23,6 +23,7 @@ import notification from "../theme/utility/notification";
 import SummeryModal from "./Summary/SummeryModal";
 import NewAction from "./newAction/NewAction";
 import SentMail from "./sentMail/SentMail";
+import ApproveModal from "./approveModal/ApproveModal";
 
 const insuranceCompany = [
   { label: "Health India Insurance", value: "health_india_insurance" },
@@ -70,6 +71,10 @@ const Drafts = () => {
   const toggleSentmailModal = () => {
     setOpenSentmailModal((pre) => !pre);
   };
+  const [openApproveModal, setOpenApproveModal] = useState<boolean>(false);
+  const toggleApproveModal = () => {
+    setOpenApproveModal((pre) => !pre);
+  };
 
   const fetchAnalyst = async () => {
     dispatch(setLoading(true));
@@ -106,6 +111,13 @@ const Drafts = () => {
   useEffect(() => {
     if (action === "query") {
       toggleSentmailModal();
+    }
+    if (
+      action === "Approved" ||
+      action === "Reject" ||
+      action === "Discharge_Approved"
+    ) {
+      toggleApproveModal();
     }
   }, [action]);
 
@@ -341,6 +353,12 @@ const Drafts = () => {
         newCaseData={summeryData}
         closeModal={toggleSentmailModal}
         isOpen={openSentmailModal}
+      />
+      <ApproveModal
+        closeModal={toggleApproveModal}
+        isOpen={openApproveModal}
+        newCaseData={summeryData}
+        action={action}
       />
     </div>
   );
