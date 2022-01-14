@@ -1,31 +1,27 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import React, { useEffect, useState } from "react";
-import Modal from "react-modal";
-import styles from "./ApproveModal.module.css";
+import styles from "./ApproveAndReject.module.css";
 import { IoClose } from "react-icons/io5";
-import paperclip from "../../../assets/icon/paperclip.svg";
-import Input from "../../theme/input/Input";
-import InputDate from "../../theme/inputDate/InputDate";
-import PlanSelectButton from "../../theme/button/PlanSelectButton";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { setLoading } from "../../../redux/slices/utilitySlice";
+import paperclip from "../../../../assets/icon/paperclip.svg";
+import Input from "../../../theme/input/Input";
+// import InputDate from "../../../theme/inputDate/InputDate";
+import PlanSelectButton from "../../../theme/button/PlanSelectButton";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import { setLoading } from "../../../../redux/slices/utilitySlice";
 import { useNavigate } from "react-router-dom";
-import axiosConfig from "../../../config/axiosConfig";
-import notification from "../../theme/utility/notification";
-Modal.setAppElement("#root");
+import axiosConfig from "../../../../config/axiosConfig";
+import notification from "../../../theme/utility/notification";
 
 type ApproveModalProps = {
-  isOpen?: boolean;
-  closeModal?: () => void;
   newCaseData?: any;
+  status?: string;
   action?: string;
 };
 
 const ApproveModal = ({
-  isOpen = false,
-  closeModal = () => {},
-  newCaseData,
-  action,
+  newCaseData = {},
+  status = "",
+  action = "",
 }: ApproveModalProps) => {
   const [data, setData] = useState<any>({ file: [], amount: "", date: "" });
   const dispatch = useAppDispatch();
@@ -55,16 +51,22 @@ const ApproveModal = ({
   const uploadFile = async () => {
     dispatch(setLoading(true));
 
-    const api = {
-      Reject: "Rejectaudittrail",
-      Approved: "Approvedrequestaudittrail",
-      Discharge_Approved: "dischargeapprovedrespondedaudittrail",
+    const enhanceApi = {
+      rejected: "enhancerejectaudittrail",
+      approved: "enhanceapprovedaudittrail",
+    };
+    const fciApi = {
+      rejected: "fcirejectedaudittrail",
+      approved: "fciapprovedaudittrail",
     };
 
     const URLINCEMENT = `/incrementcounter?email=${user}`;
     const URLCHANGESTATUS = `/changeformstatus?email=${user}&casenumber=${newCaseData?.caseNumber}`;
-    //@ts-ignore
-    const URLFORMCREATIONAUDITTRIAL = `/${api[action]}?email=${user}&casenumber=${newCaseData?.caseNumber}`;
+
+    const URLFORMCREATIONAUDITTRIAL = `/${
+      //@ts-ignore
+      action === "Enhance" ? enhanceApi[status] : fciApi[status]
+    }?email=${user}&casenumber=${newCaseData?.caseNumber}`;
 
     const formCreationAuditForm = new FormData();
     formCreationAuditForm?.append("amount", data?.amount || 0);
@@ -106,8 +108,7 @@ const ApproveModal = ({
       }
 
       dispatch(setLoading(false));
-      notification("info", `Case moved ${action} successfully`);
-      closeModal();
+      notification("info", `Email sent successfully`);
 
       navigate("/");
     } catch (error) {
@@ -144,18 +145,12 @@ const ApproveModal = ({
     setData((pre: any) => ({ ...pre, file: [], amount: "", date: "" }));
   }, []);
   return (
-    <Modal
-      isOpen={isOpen}
-      className={styles.approveModalContainer}
-      overlayClassName={styles.overlayContainer}
-      onRequestClose={closeModal}
-      shouldCloseOnOverlayClick={true}
-    >
+    <div className={styles.approveModalContainer}>
       <div className="px-10 py-8 relative">
-        <IoClose
+        {/* <IoClose
           className="absolute top-2 right-2 text-2xl text-fontColor cursor-pointer"
           onClick={closeModal}
-        />
+        /> */}
 
         <div className="w-full h-auto border-2 border-fontColor rounded-lg text-center">
           <p className="text-sm text-fontColor-gray pt-4">
@@ -209,24 +204,7 @@ const ApproveModal = ({
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4 mt-4">
-          {/* <div className="col-span-1">
-            <Input
-              value={data?.claimNumber}
-              name="claimNumber"
-              handleChange={handleChange}
-              label="Enter claim number"
-              labelStyle={{ color: "#c8c8c8" }}
-              style={{
-                height: "40px",
-                border: "none",
-                outline: "none",
-                backgroundColor: "#FFFFFF17",
-
-                borderRadius: "5px",
-              }}
-            />
-          </div> */}
-          {action !== "Reject" ? (
+          {status === "approved" ? (
             <>
               <div className="col-span-1">
                 <Input
@@ -242,50 +220,11 @@ const ApproveModal = ({
                     outline: "none",
                     backgroundColor: "#FFFFFF17",
                     borderRadius: "5px",
-                  }}
-                />
-              </div>
-              <div className="col-span-1">
-                <InputDate
-                  value={data?.date}
-                  name="date"
-                  handleChange={handleChange}
-                  labelStyle={{ color: "#c8c8c8" }}
-                  label="Select date"
-                  style={{
-                    height: "40px",
-                    border: "none",
-                    outline: "none",
-                    backgroundColor: "#FFFFFF17",
-                    minWidth: "100%",
-                    borderRadius: "5px",
-                    marginTop: "4px",
                   }}
                 />
               </div>
             </>
           ) : null}
-          {/* {action !== "Discharge_Approved" ? (
-            <>
-              <div className="col-span-1">
-                <Input
-                  value={data?.amount}
-                  name="amount"
-                  handleChange={handleChange}
-                  label="Amount"
-                  labelStyle={{ color: "#c8c8c8" }}
-                  type="number"
-                  style={{
-                    height: "40px",
-                    border: "none",
-                    outline: "none",
-                    backgroundColor: "#FFFFFF17",
-                    borderRadius: "5px",
-                  }}
-                />
-              </div>
-            </>
-          ) : null} */}
         </div>
         <div className="flex justify-center mt-8">
           <PlanSelectButton
@@ -295,7 +234,7 @@ const ApproveModal = ({
           />
         </div>
       </div>
-    </Modal>
+    </div>
   );
 };
 

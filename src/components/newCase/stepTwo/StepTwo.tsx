@@ -4,10 +4,11 @@ import Input from "../../theme/input/Input";
 // import InputContained from "../../theme/inputContained/InputContained";
 import InputRadio from "../../theme/inputRadio/InputRadio";
 import NextButton from "../../theme/nextButton/NextButton";
-import NewCaseSelect from "../../theme/select/newCaseSelect/NewCaseSelect";
+// import NewCaseSelect from "../../theme/select/newCaseSelect/NewCaseSelect";
 import axiosConfig from "../../../config/axiosConfig";
 import notification from "../../theme/utility/notification";
 import { setLoading } from "../../../redux/slices/utilitySlice";
+import InputDate from "../../theme/inputDate/InputDate";
 
 type StepTwoProps = {
   newCaseData: any;
@@ -38,6 +39,7 @@ const StepTwo = ({
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state?.user);
   const { newCaseNum } = useAppSelector((state) => state?.case);
+  console.log(newCaseNum);
 
   const saveDataToDb = async () => {
     const POST_URL = `/preauthdata?email=${user}&casenumber=${newCaseNum}`;
@@ -65,6 +67,16 @@ const StepTwo = ({
 
     const formData = new FormData();
     patientDetails?.city && formData?.append("city", patientDetails?.city);
+    patientDetails?.PhysicianYesPhysicianCurrentAddress &&
+      formData?.append(
+        "patient_details_currentAddress",
+        patientDetails?.PhysicianYesPhysicianCurrentAddress
+      );
+    patientDetails?.Give_Company_details &&
+      formData?.append(
+        "patient_details_Give_details",
+        patientDetails?.Give_Company_details
+      );
     patientDetails?.previousHealthInsurance &&
       formData?.append(
         "patient_details_HealthInsurance",
@@ -139,30 +151,30 @@ const StepTwo = ({
     }));
   };
 
-  const handleDateOfBirth = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | any> | any,
-    key: string
-  ) => {
-    const { name, value } = e.target;
-    let day = patientDetails?.[name]?.slice(0, 2);
-    let month = patientDetails?.[name]?.slice(3, 5);
-    let year = patientDetails?.[name]?.slice(6);
-    if (key === "day") {
-      day = value;
-    } else if (key === "month") {
-      month = value;
-    } else {
-      year = value;
-    }
+  // const handleDateOfBirth = (
+  //   e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | any> | any,
+  //   key: string
+  // ) => {
+  //   const { name, value } = e.target;
+  //   let day = patientDetails?.[name]?.slice(0, 2);
+  //   let month = patientDetails?.[name]?.slice(3, 5);
+  //   let year = patientDetails?.[name]?.slice(6);
+  //   if (key === "day") {
+  //     day = value;
+  //   } else if (key === "month") {
+  //     month = value;
+  //   } else {
+  //     year = value;
+  //   }
 
-    setNewCaseData((pre: any) => ({
-      ...pre,
-      patientDetails: {
-        ...pre?.patientDetails,
-        [name]: `${day || "00"}/${month || "00"}/${year}`,
-      },
-    }));
-  };
+  //   setNewCaseData((pre: any) => ({
+  //     ...pre,
+  //     patientDetails: {
+  //       ...pre?.patientDetails,
+  //       [name]: `${day || "00"}/${month || "00"}/${year}`,
+  //     },
+  //   }));
+  // };
 
   useEffect(() => {
     console.log(newCaseData);
@@ -217,7 +229,15 @@ const StepTwo = ({
           </div>
 
           <div className="mt-6 ">
-            <p className="pb-4 text-sm text-fontColor-light">Date of birth</p>
+            <InputDate
+              handleChange={handleChange}
+              name="DOB"
+              value={patientDetails?.DOB || ""}
+              label="Date of birth"
+              style={{ maxWidth: "220px" }}
+            />
+
+            {/* <p className="pb-4 text-sm text-fontColor-light">Date of birth</p>
             <div className="flex items-center">
               <div className="pr-4">
                 <NewCaseSelect
@@ -249,7 +269,7 @@ const StepTwo = ({
                   style={{ minWidth: "80px" }}
                 />
               </div>
-            </div>
+            </div> */}
           </div>
 
           <div className="mt-6">
@@ -288,7 +308,7 @@ const StepTwo = ({
               handleChange={handleChange}
               name="insuredCardNumber"
               value={patientDetails?.insuredCardNumber || ""}
-              label="Insured card number"
+              label="Insured Member ID Card No"
               labelStyle={{ paddingBottom: "12px" }}
               style={{ height: "40px" }}
             />
@@ -303,7 +323,7 @@ const StepTwo = ({
               handleChange={handleChange}
               name="policyNumber"
               value={patientDetails?.policyNumber || ""}
-              label="Policy number"
+              label="Policy Number / Corporate Name"
               labelStyle={{ paddingBottom: "12px" }}
               style={{ height: "40px" }}
             />
@@ -346,6 +366,31 @@ const StepTwo = ({
             </div>
           </div>
 
+          {patientDetails?.previousHealthInsurance === "yes" ? (
+            <>
+              <div className="mt-6">
+                <Input
+                  handleChange={handleChange}
+                  name="HealthInsuranceYesCompanyName"
+                  value={patientDetails?.HealthInsuranceYesCompanyName || ""}
+                  label="Company name"
+                  labelStyle={{ paddingBottom: "12px" }}
+                  style={{ height: "40px" }}
+                />
+              </div>
+              <div className="mt-6">
+                <Input
+                  handleChange={handleChange}
+                  name="Give_Company_details"
+                  value={patientDetails?.Give_Company_details || ""}
+                  label="Give Details"
+                  labelStyle={{ paddingBottom: "12px" }}
+                  style={{ height: "40px" }}
+                />
+              </div>
+            </>
+          ) : null}
+
           <div className="mt-8">
             <p className="pb-4 text-sm text-fontColor-light">
               Do you have family physician ?
@@ -372,7 +417,44 @@ const StepTwo = ({
             </div>
           </div>
 
-          <div className="mt-6">
+          {patientDetails?.familyPhysician === "yes" ? (
+            <>
+              <div className="mt-6">
+                <Input
+                  handleChange={handleChange}
+                  name="PhysicianYesPhysicianName"
+                  value={patientDetails?.PhysicianYesPhysicianName || ""}
+                  label="Physician name"
+                  labelStyle={{ paddingBottom: "12px" }}
+                  style={{ height: "40px" }}
+                />
+              </div>
+              <div className="mt-6">
+                <Input
+                  handleChange={handleChange}
+                  name="PhysicianYesPhysicianContactNum"
+                  value={patientDetails?.PhysicianYesPhysicianContactNum || ""}
+                  label="Physician Contract Number"
+                  labelStyle={{ paddingBottom: "12px" }}
+                  style={{ height: "40px" }}
+                />
+              </div>
+              <div className="mt-6">
+                <Input
+                  handleChange={handleChange}
+                  name="PhysicianYesPhysicianCurrentAddress"
+                  value={
+                    patientDetails?.PhysicianYesPhysicianCurrentAddress || ""
+                  }
+                  label="Physician Current Address"
+                  labelStyle={{ paddingBottom: "12px" }}
+                  style={{ height: "40px" }}
+                />
+              </div>
+            </>
+          ) : null}
+
+          {/* <div className="mt-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-1">
                 <NewCaseSelect
@@ -395,9 +477,23 @@ const StepTwo = ({
                 />
               </div>
             </div>
-          </div>
+          </div> */}
 
-          <div className="mt-6">
+          <div className="my-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-1">
+                <Input
+                  handleChange={handleChange}
+                  name="City"
+                  value={patientDetails?.City || ""}
+                  label="City"
+                  labelStyle={{ paddingBottom: "12px" }}
+                  style={{ height: "40px" }}
+                />
+              </div>
+            </div>
+          </div>
+          {/* <div className="mt-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-1">
                 <Input
@@ -410,7 +506,7 @@ const StepTwo = ({
                 />
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
