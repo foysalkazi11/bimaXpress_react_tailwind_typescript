@@ -9,7 +9,7 @@ type HomeCardProps = {
 
 const HomeCard = ({ icon, name, amount }: HomeCardProps) => {
   return (
-    <div className={`${styles.card}`}>
+    <div className={`${styles.card} cursor-pointer`}>
       <div className="flex">
         <img src={icon} alt="icon" className="text-lg text-fontColor mr-4" />
         <p className="text-base text-fontColor">{name}</p>
