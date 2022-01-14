@@ -18,6 +18,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setCurrentMenu } from "../../redux/slices/homeSlice";
 import { setCurrentMailList } from "../../redux/slices/mailSlice";
+import expandmoreIcon from "../../assets/icon/expand_more.svg";
+import menuIcon from "../../assets/icon/menu_black.svg";
+import { setCollapseState } from "../../redux/slices/leftBarSlice";
 
 const homeMenu = {
   name: "Home",
@@ -157,12 +160,45 @@ const SiderBar = () => {
       navigate("/login");
     }
   };
+
+  const { collapsed } = useAppSelector((state) => state?.leftBarSlice);
   return (
     <>
-      <div className="mb-16 flex justify-center">
-        <img src={logo} alt="logo" />
+      <div className="flex justify-center relative z-50 h-24 p-3 w-full bg-primary-dark">
+        <div className="w-auto h-10">
+          <img src={logo} alt="logo" />
+        </div>
+
+        <div
+          className={`flex ml-auto mb-8 absolute overflow-hidden top-14 rounded-full h-10 w-10 md:hidden`}
+        >
+          <div
+            className={`w-full h-full grid items-center justify-center bg-primary-light`}
+          >
+            {collapsed ? (
+              <img
+              className="cursor animate-bounce"
+              src={expandmoreIcon}
+              alt=""
+              onClick={() => dispatch(setCollapseState(!collapsed))}
+              />
+              ) : (
+                <img
+                className="pointer"
+                src={menuIcon}
+                alt=""
+                onClick={() => dispatch(setCollapseState(!collapsed))}
+              />
+            )}
+          </div>
+        </div>
       </div>
-      <div>
+      <div className={"bg-primary-dark p-3"}>
+      <div
+        className={
+          collapsed ? "mt-120-neg duration-2000 md:mt-0" : "mt-0 duration-2000"
+        }
+      >
         <div
           className={`flex items-center p-3 my-4 rounded cursor-pointer ${
             activeMenu === 7 ? "bg-primary-light" : ""
@@ -285,7 +321,7 @@ const SiderBar = () => {
           return (
             <div
               key={index}
-              className={`flex items-center p-3 my-4 rounded cursor-pointer  ${
+              className={`flex items-center p-3 my-4 rounded cursor-pointer${
                 index === activeMenu ? "bg-primary-light" : ""
               } `}
               onClick={() =>
@@ -300,7 +336,7 @@ const SiderBar = () => {
           );
         })}
       </div>
-    </>
+      </div></>
   );
 };
 

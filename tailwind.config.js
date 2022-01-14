@@ -2,7 +2,28 @@ module.exports = {
   purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
   darkMode: false, // or 'media' or 'class'
   theme: {
+
+    transitionDuration: {
+      '0': '0ms',
+      '2000': '2000ms',
+      '9000': '9000ms',
+    },
     extend: {
+      margin: {
+        '120-neg': '-48rem',
+      },
+      translate: {
+        "n-x-50": "-1/2",
+        "n-y-50": "-1/2",
+      },
+      aspectRatio: {
+        auto: "auto",
+        square: "1 / 1",
+        video: "16 / 9",
+      },
+      gridTemplateColumns: {
+        "auto-fit": "repeat(auto-fit,minmax(170px,1fr))",
+      },
       colors: {
         primary: {
           lightest: "#808080",

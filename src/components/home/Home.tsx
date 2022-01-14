@@ -140,7 +140,7 @@ const Home = () => {
   }, [counter]);
 
   return (
-    <div className="p-10 flex flex-wrap mx-auto">
+    <div className="p-10 grid grid-cols-auto-fit gap-10">
       {menuList?.map(
         (
           menu: {
@@ -156,7 +156,7 @@ const Home = () => {
             <>
               <div
                 key={index}
-                className="pr-8 pb-8"
+                className="grid justify-center"
                 onClick={() => GoDraftPage(menu?.pageLink, menu?.value)}
               >
                 <HomeCard

@@ -20,10 +20,10 @@ const Layout = ({ children }: LayoutProps) => {
   }, [user]);
 
   return (
-    <div className="grid grid-cols-12 mx-auto h-full min-h-screen w-full">
+    <div className="grid grid-cols-12 mx-auto h-full min-h-screen w-full max-w-screen-xl">
       {user ? (
         <>
-          <div className="col-span-12 md:col-span-3 bg-primary-dark p-3 border-r border-gray-500 ">
+          <div className="col-span-12 md:col-span-3 bg-primary-dark border-r border-gray-500 ">
             <SiderBar />
           </div>
           <div className=" col-span-12 md:col-span-9 bg-primary-light">
