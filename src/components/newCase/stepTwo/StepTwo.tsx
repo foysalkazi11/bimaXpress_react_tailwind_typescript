@@ -521,6 +521,13 @@ const StepTwo = ({
             text="View Documents"
             style={{ marginRight: "16px", marginBottom: "16px" }}
           />
+          {param ? (
+            <NextButton
+              text="Generate Pre Auth Form"
+              style={{ marginRight: "16px", marginBottom: "16px" }}
+            />
+          ) : null}
+
           <NextButton
             text="Send Mail"
             style={{ marginRight: "16px", marginBottom: "16px" }}

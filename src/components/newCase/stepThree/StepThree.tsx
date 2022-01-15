@@ -34,13 +34,47 @@ const StepThree = ({
 
   const saveDataToDb = async () => {
     const POST_URL = `/preauthdata?email=${user}&casenumber=${newCaseNum}`;
-    // const array = [
-
-    //   "expectedDeliveryDate",
-
-    // ]
 
     const formData = new FormData();
+
+    diagnosisDetails?.expectedDeliveryDate &&
+      formData?.append(
+        "doctor_expectedDateOfDelivery",
+        diagnosisDetails?.expectedDeliveryDate
+      );
+    diagnosisDetails?.maternityG &&
+      formData?.append("doctor_inCaseMaternityG", diagnosisDetails?.maternityG);
+    diagnosisDetails?.maternityP &&
+      formData?.append("doctor_inCaseMaternityP", diagnosisDetails?.maternityP);
+    diagnosisDetails?.maternityL &&
+      formData?.append("doctor_inCaseMaternityL", diagnosisDetails?.maternityL);
+    diagnosisDetails?.maternityA &&
+      formData?.append("doctor_inCaseMaternityA", diagnosisDetails?.maternityA);
+    diagnosisDetails?.doctor_proposedLineOfTreatment_Surgical_Managment &&
+      formData?.append(
+        "doctor_proposedLineOfTreatment_Surgical_Managment",
+        diagnosisDetails?.doctor_proposedLineOfTreatment_Surgical_Managment
+      );
+    diagnosisDetails?.doctor_proposedLineOfTreatment_Medical_Managment &&
+      formData?.append(
+        "doctor_proposedLineOfTreatment_Medical_Managment",
+        diagnosisDetails?.doctor_proposedLineOfTreatment_Medical_Managment
+      );
+    diagnosisDetails?.doctor_proposedLineOfTreatment_Investigation &&
+      formData?.append(
+        "doctor_proposedLineOfTreatment_Investigation",
+        diagnosisDetails?.doctor_proposedLineOfTreatment_Investigation
+      );
+    diagnosisDetails?.doctor_proposedLineOfTreatment_Intensive_Care &&
+      formData?.append(
+        "doctor_proposedLineOfTreatment_Intensive_Care",
+        diagnosisDetails?.doctor_proposedLineOfTreatment_Intensive_Care
+      );
+    diagnosisDetails?.doctor_proposedLineOfTreatment_Allopathic_Treatment &&
+      formData?.append(
+        "doctor_proposedLineOfTreatment_Allopathic_Treatment",
+        diagnosisDetails?.doctor_proposedLineOfTreatment_Allopathic_Treatment
+      );
     diagnosisDetails?.surgeryName &&
       formData?.append(
         "If_Surgical_Name_of_Surgery",
@@ -52,10 +86,7 @@ const StepThree = ({
         diagnosisDetails?.contractNumber
       );
     diagnosisDetails?.doctorsName &&
-      formData?.append(
-        "PhysicianYesPhysicianName",
-        diagnosisDetails?.doctorsName
-      );
+      formData?.append("doctor_name", diagnosisDetails?.doctorsName);
     diagnosisDetails?.ICD &&
       formData?.append("ICD_Code_10_PCS", diagnosisDetails?.ICD);
     diagnosisDetails?.proposedLineOfTreatmentInvestigationDetails &&
@@ -205,34 +236,16 @@ const StepThree = ({
   ) => {
     const { name, value, type, checked } = e.target;
 
-    const handleCheck = (pre: any, val: any) => {
-      if (pre) {
-        return [...pre, val];
-      } else {
-        return [val];
-      }
-    };
-
     if (type === "checkbox") {
       if (checked) {
         setNewCaseData((pre: any) => ({
           ...pre,
-          diagnosisDetails: {
-            ...pre?.diagnosisDetails,
-            [name]: handleCheck(pre?.diagnosisDetails[name], value),
-          },
+          diagnosisDetails: { ...pre?.diagnosisDetails, [name]: value },
         }));
       } else {
         setNewCaseData((pre: any) => ({
           ...pre,
-          diagnosisDetails: {
-            ...pre?.diagnosisDetails,
-            [name]: [
-              ...pre?.diagnosisDetails[name]?.filter(
-                (item: any) => item !== value
-              ),
-            ],
-          },
+          diagnosisDetails: { ...pre?.diagnosisDetails, [name]: "" },
         }));
       }
     } else {
@@ -308,7 +321,7 @@ const StepThree = ({
               label="Date of first consultation"
             />
           </div>
-          <div className="mt-6">
+          {/* <div className="mt-6">
             <p className="pb-4 text-sm text-fontColor-light">
               Do you have past history of present ailment ?
             </p>
@@ -332,26 +345,21 @@ const StepThree = ({
                 />
               </div>
             </div>
-            {diagnosisDetails?.historyOfPresentAilment === "yes" ? (
-              // <p className=" border-b-2 border-fontColor-darkGray py-1 mt-4 w-full text-base text-fontColor-light ">
-              //   Yes, I'm having the past history of present ailment
-              // </p>
-              <div className="pt-4">
-                <Input
-                  handleChange={handleChange}
-                  name="historyOfPresentAilmentDis"
-                  value={diagnosisDetails?.historyOfPresentAilmentDis || ""}
-                  style={{
-                    height: "40px",
-                    border: "none",
-                    borderBottom: "2px solid #707070",
-                    borderRadius: 0,
-                  }}
-                  placeHolder="Yes, I'm having the past history of present ailment"
-                />
-              </div>
-            ) : null}
+          
+          </div> */}
+
+          <div className="mt-6">
+            <Input
+              handleChange={handleChange}
+              name="historyOfPresentAilment"
+              value={diagnosisDetails?.historyOfPresentAilment || ""}
+              label="Past History Of Present Ailment , If Any"
+              style={{ height: "40px" }}
+              labelStyle={{ paddingBottom: "12px" }}
+              placeHolder="Yes, I'm having the past history of present ailment"
+            />
           </div>
+
           <div className="mt-6">
             <InputContained
               handleChange={handleChange}
@@ -370,51 +378,66 @@ const StepThree = ({
               <div className="col-span-1">
                 <InputCheckbox
                   handleChange={handleChange}
-                  name="proposedLineOfTreatment"
-                  value="medicalManageemnt"
+                  name="doctor_proposedLineOfTreatment_Medical_Managment"
+                  value="yes"
                   checkboxLabel="Medical manageemnt"
-                  fieldName={diagnosisDetails?.proposedLineOfTreatment || []}
+                  fieldName={
+                    diagnosisDetails?.doctor_proposedLineOfTreatment_Medical_Managment ||
+                    ""
+                  }
                 />
               </div>
               <div className="col-span-1">
                 <InputCheckbox
                   handleChange={handleChange}
-                  name="proposedLineOfTreatment"
-                  value="surgicalManagement"
+                  name="doctor_proposedLineOfTreatment_Surgical_Managment"
+                  value="yes"
                   checkboxLabel="Surgical management"
-                  fieldName={diagnosisDetails?.proposedLineOfTreatment || []}
+                  fieldName={
+                    diagnosisDetails?.doctor_proposedLineOfTreatment_Surgical_Managment ||
+                    ""
+                  }
                 />
               </div>
               <div className="col-span-1">
                 <InputCheckbox
                   handleChange={handleChange}
-                  name="proposedLineOfTreatment"
-                  value="intensiveCare"
+                  name="doctor_proposedLineOfTreatment_Intensive_Care"
+                  value="yes"
                   checkboxLabel="Intensive care"
-                  fieldName={diagnosisDetails?.proposedLineOfTreatment || []}
+                  fieldName={
+                    diagnosisDetails?.doctor_proposedLineOfTreatment_Intensive_Care ||
+                    ""
+                  }
                 />
               </div>
               <div className="col-span-1">
                 <InputCheckbox
                   handleChange={handleChange}
-                  name="proposedLineOfTreatment"
-                  value="investigation"
+                  name="doctor_proposedLineOfTreatment_Investigation"
+                  value="yes"
                   checkboxLabel="Investigation"
-                  fieldName={diagnosisDetails?.proposedLineOfTreatment || []}
+                  fieldName={
+                    diagnosisDetails?.doctor_proposedLineOfTreatment_Investigation ||
+                    ""
+                  }
                 />
               </div>
               <div className="col-span-1">
                 <InputCheckbox
                   handleChange={handleChange}
-                  name="proposedLineOfTreatment"
-                  value="nonAllopaticTreatment"
+                  name="doctor_proposedLineOfTreatment_Allopathic_Treatment"
+                  value="yes"
                   checkboxLabel="Non allopatic treatment"
-                  fieldName={diagnosisDetails?.proposedLineOfTreatment || []}
+                  fieldName={
+                    diagnosisDetails?.doctor_proposedLineOfTreatment_Allopathic_Treatment ||
+                    ""
+                  }
                 />
               </div>
             </div>
 
-            <div className="pt-4">
+            <div className="mt-6">
               <Input
                 handleChange={handleChange}
                 name="proposedLineOfTreatmentInvestigationDetails"
@@ -422,12 +445,9 @@ const StepThree = ({
                   diagnosisDetails?.proposedLineOfTreatmentInvestigationDetails ||
                   ""
                 }
-                style={{
-                  height: "40px",
-                  border: "none",
-                  borderBottom: "2px solid #707070",
-                  borderRadius: 0,
-                }}
+                label="If Investigation & /Or Medical Management Provide Details"
+                style={{ height: "40px" }}
+                labelStyle={{ paddingBottom: "12px" }}
                 placeHolder="If investigation / medical management provide details"
               />
             </div>
@@ -451,7 +471,7 @@ const StepThree = ({
               handleChange={handleChange}
               name="surgeryName"
               value={diagnosisDetails?.surgeryName || ""}
-              label="Surgery name"
+              label="If Surgical Name Of Surgery"
               style={{ height: "40px" }}
               labelStyle={{ paddingBottom: "12px" }}
             />
@@ -480,7 +500,7 @@ const StepThree = ({
               handleChange={handleChange}
               name="injuryCause"
               value={diagnosisDetails?.injuryCause || ""}
-              label="Injury cause"
+              label="How Did Injury Occur"
               style={{ height: "40px" }}
               labelStyle={{ paddingBottom: "12px" }}
             />
@@ -546,19 +566,35 @@ const StepThree = ({
               </div>
             </div>
           </div>
+          {diagnosisDetails?.repotedToPolice === "yes" ? (
+            <div className="mt-6">
+              <Input
+                handleChange={handleChange}
+                name="FIR_Number"
+                value={diagnosisDetails?.FIR_Number || ""}
+                label="FIR Number"
+                style={{ height: "40px" }}
+                labelStyle={{ paddingBottom: "12px" }}
+              />
+            </div>
+          ) : null}
 
           <div className="mt-6">
             <p className="pb-4 text-sm text-fontColor-light">
-              Are you an alcohol consumer ?
+              Injury/Disease Caused Due To Substance Abuse / Alcohol Consumption
+              ?
             </p>
             <div className="flex items-center">
               <div className="mr-8">
                 <InputRadio
                   handleChange={handleChange}
-                  name="alcoholConsumer"
+                  name="Injury_Disease_Caused_Due_To_Substance_Abuse_Alcohol_Consumption_"
                   value="yes"
                   radioLabel="Yes"
-                  fieldName={diagnosisDetails?.alcoholConsumer || ""}
+                  fieldName={
+                    diagnosisDetails?.Injury_Disease_Caused_Due_To_Substance_Abuse_Alcohol_Consumption_ ||
+                    ""
+                  }
                 />
               </div>
               <div className="mr-8">
@@ -604,37 +640,37 @@ const StepThree = ({
               <div className="mr-8">
                 <InputCheckbox
                   handleChange={handleChange}
-                  name="maternity"
-                  value="g"
+                  name="maternityG"
+                  value="yes"
                   checkboxLabel="G"
-                  fieldName={diagnosisDetails?.maternity || []}
+                  fieldName={diagnosisDetails?.maternityG || ""}
                 />
               </div>
               <div className="mr-8">
                 <InputCheckbox
                   handleChange={handleChange}
-                  name="maternity"
-                  value="p"
+                  name="maternityP"
+                  value="yes"
                   checkboxLabel="P"
-                  fieldName={diagnosisDetails?.maternity || []}
+                  fieldName={diagnosisDetails?.maternityP || ""}
                 />
               </div>
               <div className="mr-8">
                 <InputCheckbox
                   handleChange={handleChange}
-                  name="maternity"
-                  value="l"
+                  name="maternityL"
+                  value="yes"
                   checkboxLabel="L"
-                  fieldName={diagnosisDetails?.maternity || []}
+                  fieldName={diagnosisDetails?.maternityL || ""}
                 />
               </div>
               <div className="mr-8">
                 <InputCheckbox
                   handleChange={handleChange}
-                  name="maternity"
-                  value="a"
+                  name="maternityA"
+                  value="yes"
                   checkboxLabel="A"
-                  fieldName={diagnosisDetails?.maternity || []}
+                  fieldName={diagnosisDetails?.maternityA || ""}
                 />
               </div>
             </div>
@@ -675,3 +711,35 @@ const StepThree = ({
 };
 
 export default StepThree;
+
+// const handleCheck = (pre: any, val: any) => {
+//   if (pre) {
+//     return [...pre, val];
+//   } else {
+//     return [val];
+//   }
+// };
+
+// if (type === "checkbox") {
+//   if (checked) {
+//     setNewCaseData((pre: any) => ({
+//       ...pre,
+//       diagnosisDetails: {
+//         ...pre?.diagnosisDetails,
+//         [name]: handleCheck(pre?.diagnosisDetails[name], value),
+//       },
+//     }));
+//   } else {
+//     setNewCaseData((pre: any) => ({
+//       ...pre,
+//       diagnosisDetails: {
+//         ...pre?.diagnosisDetails,
+//         [name]: [
+//           ...pre?.diagnosisDetails[name]?.filter(
+//             (item: any) => item !== value
+//           ),
+//         ],
+//       },
+//     }));
+//   }
+// }

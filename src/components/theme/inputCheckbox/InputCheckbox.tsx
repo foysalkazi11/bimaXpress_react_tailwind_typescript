@@ -30,7 +30,7 @@ const InputCheckbox = ({
           name={name}
           value={value}
           onChange={handleChange}
-          checked={fieldName?.includes(value)}
+          checked={fieldName === "yes"}
         />
         <span className={styles.checkmark}></span>
       </label>
