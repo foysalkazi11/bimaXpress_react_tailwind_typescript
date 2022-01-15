@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import Modal from "react-modal";
 import styles from "./SentMail.module.scss";
 import { IoClose } from "react-icons/io5";
-import paperclip_black from "../../../assets/icon/paperclip_black.svg";
 import bold from "../../../assets/icon/bold.svg";
 import italic from "../../../assets/icon/italic.svg";
 import underline from "../../../assets/icon/underline.svg";
@@ -16,6 +15,8 @@ import notification from "../../theme/utility/notification";
 import { setLoading } from "../../../redux/slices/utilitySlice";
 import ReactHtmlParser from "react-html-parser";
 import { useNavigate } from "react-router-dom";
+// import paperclip from "../../../assets/icon/paperclip.svg";
+import { FiPaperclip } from "react-icons/fi";
 const emailRegex = /^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/;
 
 type ComposeModalProps = {
@@ -39,6 +40,11 @@ const SentMail = ({
     sub: string;
     body: any;
     file: [];
+    UrluploadPatientsHealthIDCard: [];
+    Urlidproof: [];
+    UrluploadConsultation: [];
+    UrluploadSignedPreAuth: [];
+    UrlotherDocuments: [];
   }>({
     to: "",
     cc: "",
@@ -49,11 +55,15 @@ const SentMail = ({
     sub: "",
     body: "",
     file: [],
+    UrluploadPatientsHealthIDCard: [],
+    Urlidproof: [],
+    UrluploadConsultation: [],
+    UrluploadSignedPreAuth: [],
+    UrlotherDocuments: [],
   });
 
   const navigate = useNavigate();
 
-  const dummyText = ` <div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dear Sir/Ma'am,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find pre auth request for ${newCaseData?.patientDetails?.patientName} admitted on ${newCaseData?.admissionDetails?.dateOfAdmission}.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Also find details of patient below:</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Patient name: ${newCaseData?.patientDetails?.patientName}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Date of admission : ${newCaseData?.admissionDetails?.dateOfAdmission}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Health-id card no : ${newCaseData?.patientDetails?.policyNumber?.[0]}</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find the attached preauth documents below.</div>`;
   const { user } = useAppSelector((state) => state?.user);
   const { allCompaniesList } = useAppSelector(
     (state) => state?.empanelledCompanies
@@ -133,7 +143,7 @@ const SentMail = ({
     );
     formData?.append("sub", mail?.sub);
     //@ts-ignore
-    formData?.append("sender_msg", bodyRef?.current?.innerHTML);
+    formData?.append("sender_msg", bodyRef?.current?.innerText);
     try {
       if (mail?.file?.length) {
         // await imageUpload();
@@ -171,6 +181,11 @@ const SentMail = ({
         sub: "",
         body: "",
         file: [],
+        UrluploadPatientsHealthIDCard: [],
+        Urlidproof: [],
+        UrluploadConsultation: [],
+        UrluploadSignedPreAuth: [],
+        UrlotherDocuments: [],
       });
       navigate("/");
     } catch (error) {
@@ -185,10 +200,10 @@ const SentMail = ({
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e?.target;
+    const { name, value, type } = e?.target;
 
     if (value !== ",") {
-      if (name === "file") {
+      if (type === "file") {
         //@ts-ignore
         setMail((pre) => ({
           ...pre,
@@ -244,13 +259,13 @@ const SentMail = ({
       bcc: "",
       ccList: [],
       bccList: [],
-      sub: `Pre-authorization request for ${newCaseData?.patientDetails?.patientName}  ${newCaseData?.patientDetails?.insuredCardNumber?.[0]}/ ${newCaseData?.patientDetails?.policyNumber?.[0]}`,
+      sub: `Pre-authorization request for ${newCaseData?.patientDetails?.patientName}  ${newCaseData?.patientDetails?.insuredCardNumber}/ ${newCaseData?.patientDetails?.policyNumber}`,
       file: [],
       toList: [],
-      body: dummyText,
+      body: ` <div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dear Sir/Ma'am,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find pre auth request for ${newCaseData?.patientDetails?.patientName} admitted on ${newCaseData?.admissionDetails?.dateOfAdmission}.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Also find details of patient below:</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Patient name: ${newCaseData?.patientDetails?.patientName}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Date of admission : ${newCaseData?.admissionDetails?.dateOfAdmission}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Health-id card no : ${newCaseData?.patientDetails?.policyNumber}</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find the attached preauth documents below.</div>`,
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [newCaseData]);
 
   return (
     <Modal
@@ -355,6 +370,98 @@ const SentMail = ({
             })
           : null}
       </div>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-6 m-4">
+        <div className="col-span-1 flex justify-center">
+          <div
+            className="relative flex items-center justify-center border-2 border-fontColor-darkGray rounded-lg  h-10 px-2"
+            style={{ minWidth: "150px" }}
+          >
+            <FiPaperclip className="mr-2" />
+            <p className="text-fborder-fontColor-darkGray-gray font-normal ">
+              Auth Form
+            </p>
+            <input
+              type="file"
+              className="absolute border-none outline-none cursor-pointer opacity-0 w-44 h-10 top-0 left-0 z-10"
+              name="UrluploadSignedPreAuth"
+              onChange={handleChange}
+              multiple
+            />
+          </div>
+        </div>
+        <div className="col-span-1 flex justify-center">
+          <div
+            className="relative flex items-center justify-center border-2 border-fontColor-darkGray rounded-lg  h-10 px-2"
+            style={{ minWidth: "150px" }}
+          >
+            <FiPaperclip className="mr-2" />
+            <p className="text-fborder-fontColor-darkGray-gray font-normal ">
+              Consultation Papers
+            </p>
+            <input
+              type="file"
+              className="absolute border-none outline-none cursor-pointer opacity-0 w-44 h-10 top-0 left-0 z-10"
+              name="UrluploadConsultation"
+              onChange={handleChange}
+              multiple
+            />
+          </div>
+        </div>
+        <div className="col-span-1 flex justify-center">
+          <div
+            className="relative flex items-center justify-center border-2 border-fontColor-darkGray rounded-lg  h-10 px-2"
+            style={{ minWidth: "150px" }}
+          >
+            <FiPaperclip className="mr-2" />
+            <p className="text-fborder-fontColor-darkGray-gray font-normal ">
+              Health Id Card
+            </p>
+            <input
+              type="file"
+              className="absolute border-none outline-none cursor-pointer opacity-0 w-44 h-10 top-0 left-0 z-10"
+              name="UrluploadPatientsHealthIDCard"
+              onChange={handleChange}
+              multiple
+            />
+          </div>
+        </div>
+        <div className="col-span-1 flex justify-center">
+          <div
+            className="relative flex items-center justify-center border-2 border-fontColor-darkGray rounded-lg  h-10 px-2"
+            style={{ minWidth: "150px" }}
+          >
+            <FiPaperclip className="mr-2" />
+            <p className="text-fborder-fontColor-darkGray-gray font-normal ">
+              ID Proof
+            </p>
+            <input
+              type="file"
+              className="absolute border-none outline-none cursor-pointer opacity-0 w-44 h-10 top-0 left-0 z-10"
+              name="Urlidproof"
+              onChange={handleChange}
+              multiple
+            />
+          </div>
+        </div>
+        <div className="col-span-1 flex justify-center">
+          <div
+            className="relative flex items-center justify-center border-2 border-fontColor-darkGray rounded-lg  h-10 px-2"
+            style={{ minWidth: "150px" }}
+          >
+            <FiPaperclip className="mr-2" />
+            <p className="text-fborder-fontColor-darkGray-gray font-normal ">
+              Other Documents
+            </p>
+            <input
+              type="file"
+              className="absolute border-none outline-none cursor-pointer opacity-0 w-44 h-10 top-0 left-0 z-10"
+              name="UrlotherDocuments"
+              onChange={handleChange}
+              multiple
+            />
+          </div>
+        </div>
+      </div>
       <div className=" flex items-center py-8 p px-4">
         <button
           className="w-28 h-10 bg-primary-dark text-sm text-fontColor border-none outline-none rounded mr-3"
@@ -362,7 +469,7 @@ const SentMail = ({
         >
           Send
         </button>
-        <div className="relative w-8 h-8 cursor-pointer">
+        {/* <div className="relative w-8 h-8 cursor-pointer">
           <img
             src={paperclip_black}
             alt="icon"
@@ -375,7 +482,7 @@ const SentMail = ({
             onChange={handleChange}
             multiple
           />
-        </div>
+        </div> */}
         <div
           className="flex items-center p-3 rounded"
           style={{ backgroundColor: "#EEEEEE" }}

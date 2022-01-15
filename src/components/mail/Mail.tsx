@@ -179,6 +179,7 @@ const Mail = () => {
                         // dangerouslySetInnerHTML={{ __html: mail?.message }}
                       >
                         {/* @ts-ignore */}
+                        {/* <div dangerouslySetInnerHTML={mail?.message}></div> */}
                         {parse(mail?.message)}
                       </p>
                     </div>

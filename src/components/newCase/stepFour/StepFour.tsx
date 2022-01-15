@@ -63,33 +63,47 @@ const StepFour = ({
     const POST_URL = `/preauthdata?email=${user}&casenumber=${newCaseNum}`;
     // const array = [
 
-    // "ICU_charge",
-    // "OT_charge",
-    // "cost_for_investigation_and_diagnosis",
-    // "dateOfAdmission",
-    // "daysInHospital",
-    // "daysInICU",
-    // "expenses",
     // "others",
-    // "professional_fees",
-    // "timeOfAdmission",
 
-    // "timeOfAdmissionAMOrPM",
+    // "timeOfAdmission",
 
     // ]
 
     const formData = new FormData();
-    formData?.append("admission_ICU_charge", admissionDetails?.ICU_charge);
-    formData?.append("admission_OT_charge", admissionDetails?.OT_charge);
-    formData?.append(
-      "admission_dateOfAdmission",
-      admissionDetails?.dateOfAdmission
-    );
-    formData?.append(
-      "admission_timeOfAdmission",
-      admissionDetails?.timeOfAdmission
-    );
-    formData?.append("admission_total", admissionDetails?.totalCost);
+    admissionDetails?.others &&
+      formData?.append(
+        "admission_madicineConsumablesCostOfImplats_admission_Consumables",
+        admissionDetails?.others
+      );
+    admissionDetails?.daysInHospital &&
+      formData?.append(
+        "admission_expectedNoOfDays",
+        admissionDetails?.daysInHospital
+      );
+    admissionDetails?.daysInICU &&
+      formData?.append("admission_daysInICU", admissionDetails?.daysInICU);
+    admissionDetails?.expenses &&
+      formData?.append("admission_nursingCharges", admissionDetails?.expenses);
+    admissionDetails?.cost_for_investigation_and_diagnosis &&
+      formData?.append(
+        "admission_expectedCostForInvestigation",
+        admissionDetails?.cost_for_investigation_and_diagnosis
+      );
+    admissionDetails?.professional_fees &&
+      formData?.append(
+        "ProfessionalFeesSurgeon_PhysicianCharge_admission_Anesthetist",
+        admissionDetails?.professional_fees
+      );
+    admissionDetails?.ICU_charge &&
+      formData?.append("admission_icuCharge", admissionDetails?.ICU_charge);
+    admissionDetails?.OT_charge &&
+      formData?.append("admission_otCharge", admissionDetails?.OT_charge);
+    admissionDetails?.dateOfAdmission &&
+      formData?.append("admission_date", admissionDetails?.dateOfAdmission);
+    admissionDetails?.timeOfAdmission &&
+      formData?.append("admission_time", admissionDetails?.timeOfAdmission);
+    //@ts-ignore
+    totalCost && formData?.append("admission_sumTotalExpected", totalCost);
     admissionDetails?.emergencyOrPlanedHospitalizedEvent &&
       formData?.append(
         "admission_isThisAEmergencyPlannedHospitalization",
@@ -186,12 +200,6 @@ const StepFour = ({
     //   admissionDetails?.natureOfIllness
     // );
 
-    admissionDetails?.emergencyOrPlanedHospitalizedEvent &&
-      formData?.append(
-        "admission_isThisAEmergencyPlannedHospitalization",
-        admissionDetails?.emergencyOrPlanedHospitalizedEvent
-      );
-
     dispatch(setLoading(true));
     try {
       await axiosConfig.post(POST_URL, formData);
@@ -257,6 +265,10 @@ const StepFour = ({
         Number(admissionDetails?.others || 0) +
         Number(admissionDetails?.professional_fees || 0);
       setTotalCost(totalSum);
+      // setNewCaseData((pre: any) => ({
+      //   ...pre,
+      //   admissionDetails: { ...pre?.admissionDetails, totalCost: totalSum },
+      // }));
     }
 
     console.log(newCaseData);
@@ -292,7 +304,7 @@ const StepFour = ({
                     style={{ width: "180px" }}
                   />
                 </div>
-                <div className="mr-2">
+                {/* <div className="mr-2">
                   <InputRadio
                     handleChange={handleChange}
                     name="timeOfAdmissionAMOrPM"
@@ -308,7 +320,7 @@ const StepFour = ({
                   value="pm"
                   radioLabel="pm"
                   fieldName={admissionDetails?.timeOfAdmissionAMOrPM || ""}
-                />
+                /> */}
               </div>
             </div>
 
