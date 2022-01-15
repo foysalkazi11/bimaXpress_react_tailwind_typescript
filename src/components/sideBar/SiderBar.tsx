@@ -177,14 +177,14 @@ const SiderBar = () => {
           >
             {collapsed ? (
               <img
-              className="cursor animate-bounce"
+              className="cursor-pointer"
               src={expandmoreIcon}
               alt=""
               onClick={() => dispatch(setCollapseState(!collapsed))}
               />
               ) : (
                 <img
-                className="pointer"
+                className="cursor-pointer"
                 src={menuIcon}
                 alt=""
                 onClick={() => dispatch(setCollapseState(!collapsed))}
@@ -196,7 +196,7 @@ const SiderBar = () => {
       <div className={"bg-primary-dark p-3"}>
       <div
         className={
-          collapsed ? "mt-120-neg duration-2000 md:mt-0" : "mt-0 duration-2000"
+          collapsed ? "mt-120-neg duration-4000 md:mt-0" : "mt-0 duration-2000"
         }
       >
         <div

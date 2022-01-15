@@ -24,7 +24,7 @@ const ReactTable = (props: any) => {
   } = props;
   return (
     <>
-      <table {...getTableProps()} className="w-full mt-8 overflow-x-scroll">
+      <table {...getTableProps()} className="w-full mt-8">
         <thead>
           {headerGroups.map(
             (headerGroup: {
