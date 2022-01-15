@@ -249,8 +249,8 @@ const StepThree = ({
 
   return (
     <div className="mb-8">
-      <div className="flex justify-between border-b border-fontColor-darkGray">
-        <div className=" flex-1 p-6 pb-12">
+      <div className="flex flex-col lg:flex-row justify-between border-b border-fontColor-darkGray">
+        <div className=" lg:w-1/2 p-6 pb-12">
           <div>
             <Input
               handleChange={handleChange}
@@ -445,7 +445,7 @@ const StepThree = ({
 
         <div className="border-r border-fontColor-darkGray"></div>
 
-        <div className=" flex-1 p-6 pb-0">
+        <div className=" lg:w-1/2 p-6 pb-0">
           <div>
             <Input
               handleChange={handleChange}

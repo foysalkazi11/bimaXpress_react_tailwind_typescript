@@ -265,9 +265,9 @@ const StepFour = ({
 
   return (
     <div className="pb-8">
-      <div className="border-b border-fontColor-darkGray">
-        <div className="flex justify-between">
-          <div className=" flex-1 p-6 pb-12">
+      <div className="border-b border-fontColor-darkGray w-full relative">
+        <div className="flex justify-between flex-col lg:flex-row">
+          <div className=" lg:1/2 p-6 pb-12">
             <div>
               <p className="pb-4 text-sm text-fontColor-light">
                 Date & Time of admission
@@ -441,7 +441,7 @@ const StepFour = ({
           </div>
           <div className="border-r border-fontColor-darkGray"></div>
 
-          <div className="flex-1 p-6 pb-12">
+          <div className="lg:1/2 p-6 pb-12">
             <p className=" text-base text-fontColor-light opacity-50">
               Mandatory past history of any chronic illness
             </p>

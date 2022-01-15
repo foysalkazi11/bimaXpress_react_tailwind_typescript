@@ -9,7 +9,7 @@ import {
   setAllCompaniesList,
   setEmpanelledCompaniesListList,
 } from "../../../redux/slices/empanelledCompaniesSlice";
-
+import styles from './stepOne.module.css';
 type StepOneProps = {
   newCaseData: any;
   setNewCaseData: any;
@@ -138,10 +138,9 @@ const StepOne = ({
   return (
     <div className=" relative m-8">
       <div
-        className="grid grid-cols-2 gap-8 "
-        style={{ minHeight: "calc(100vh - 300px)" }}
+        className={`grid gap-8 sm:grid-cols-2 ${styles.elementDiv}`}
       >
-        <div className="col-span-1">
+        <div className="col-span-1 ">
           <NewCaseSelect
             options={insuranceCompany}
             name="insuranceCompany"
@@ -151,7 +150,7 @@ const StepOne = ({
             value={detailsOfTPA?.insuranceCompany || ""}
           />
         </div>
-        <div className="col-span-1">
+        <div className="col-span-1 mb-8">
           <NewCaseSelect
             options={TPA}
             name="TPA"

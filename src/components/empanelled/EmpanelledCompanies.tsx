@@ -137,7 +137,7 @@ const EmpanelledCompanies = () => {
   }, [setPageSize]);
 
   return (
-    <div className="py-6 px-10 w-full flex flex-col">
+    <div className="py-6 px-10 w-full flex flex-col overflow-x-scroll">
       <p className="text-base text-fontColor-gray ">
         Find details about the insurance companies
       </p>

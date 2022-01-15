@@ -182,8 +182,8 @@ const StepTwo = ({
 
   return (
     <div className="h-full relative">
-      <div className="flex justify-between border-b border-fontColor-darkGray">
-        <div className=" flex-1 p-6 pb-12">
+      <div className="flex justify-between border-b border-fontColor-darkGray flex-col sm:flex-row">
+        <div className="sm:w-1/2 p-6 pb-12">
           <div>
             <Input
               handleChange={handleChange}
@@ -197,8 +197,8 @@ const StepTwo = ({
 
           <div className="mt-6">
             <p className="pb-4 text-sm text-fontColor-light">Gender</p>
-            <div className="flex items-center">
-              <div className="mr-8">
+            <div className="flex flex-col lg:flex-row">
+              <div className="mr-8 ">
                 <InputRadio
                   handleChange={handleChange}
                   name="gender"
@@ -207,7 +207,7 @@ const StepTwo = ({
                   fieldName={patientDetails?.gender || ""}
                 />
               </div>
-              <div className="mr-8">
+              <div className="mr-8 my-3 lg:my-0">
                 <InputRadio
                   handleChange={handleChange}
                   name="gender"
@@ -216,7 +216,7 @@ const StepTwo = ({
                   fieldName={patientDetails?.gender || ""}
                 />
               </div>
-              <div className="mr-8">
+              <div className="mr-8 ">
                 <InputRadio
                   handleChange={handleChange}
                   name="gender"
@@ -317,7 +317,7 @@ const StepTwo = ({
 
         <div className="border-r border-fontColor-darkGray"></div>
 
-        <div className=" flex-1 p-6 pb-0">
+        <div className=" sm:w-1/2 p-6 pb-0">
           <div>
             <Input
               handleChange={handleChange}
@@ -512,7 +512,7 @@ const StepTwo = ({
 
       <div className="mt-18 flex items-center justify-between flex-wrap p-6">
         <NextButton iconLeft={true} text="Back" handleClick={prevStep} />
-        <div className="flex items-center flex-wrap">
+        <div className="flex items-end flex-wrap mt-5 md:mt-0">
           <NextButton
             text="View ReteList"
             style={{ marginRight: "16px", marginBottom: "16px" }}

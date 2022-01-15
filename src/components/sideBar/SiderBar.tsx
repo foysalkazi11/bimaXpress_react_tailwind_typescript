@@ -18,7 +18,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setCurrentMenu } from "../../redux/slices/homeSlice";
 import { setCurrentMailList } from "../../redux/slices/mailSlice";
-import expandmoreIcon from "../../assets/icon/expand_more.svg";
 import menuIcon from "../../assets/icon/menu_black.svg";
 import { setCollapseState } from "../../redux/slices/leftBarSlice";
 

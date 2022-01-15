@@ -2,16 +2,18 @@ module.exports = {
   purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
   darkMode: false, // or 'media' or 'class'
   theme: {
-
     transitionDuration: {
-      '0': '0ms',
-      '2000': '2000ms',
-      '4000': '4000ms',
-      '9000': '9000ms',
+      0: "0ms",
+      2000: "2000ms",
+      4000: "4000ms",
+      9000: "9000ms",
     },
     extend: {
+      minHeight: {
+        'calc-30': 'calc(100vh - 300px)',
+      },
       margin: {
-        '120-neg': '-70rem',
+        "120-neg": "-70rem",
       },
       translate: {
         "n-x-50": "-1/2",

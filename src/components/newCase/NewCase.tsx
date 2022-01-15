@@ -417,7 +417,7 @@ const NewCase = () => {
   return (
     <div>
       <div className="p-6">
-        <ProgessBar steps={steps} prevStep={setStep} />{" "}
+        <ProgessBar steps={steps} prevStep={setStep} />
       </div>
       <div className="flex flex-col border-t border-fontColor-darkGray">
         {renderUI()}

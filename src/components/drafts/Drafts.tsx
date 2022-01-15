@@ -25,6 +25,7 @@ import NewAction from "./newAction/NewAction";
 import SentMail from "./sentMail/SentMail";
 import ApproveModal from "./approveModal/ApproveModal";
 import EnchanceAndFciModal from "./enhanceAndFci/EnchanceAndFci";
+import styles from "./Drafts.module.css";
 
 const insuranceCompany = [
   { label: "Health India Insurance", value: "health_india_insurance" },
@@ -272,7 +273,9 @@ const Drafts = () => {
   }, [setPageSize]);
 
   return (
-    <div className="py-6 px-10 w-auto flex flex-col overflow-x-scroll">
+    <div
+      className={`py-6 px-10 w-auto flex flex-col overflow-x-scroll ${styles.scrollBarDesign}`}
+    >
       <div className="flex items-center justify-between flex-wrap">
         <div className="flex items-center mt-6">
           <div className="mr-4 ">
