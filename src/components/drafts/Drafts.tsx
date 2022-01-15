@@ -24,6 +24,7 @@ import SummeryModal from "./Summary/SummeryModal";
 import NewAction from "./newAction/NewAction";
 import SentMail from "./sentMail/SentMail";
 import ApproveModal from "./approveModal/ApproveModal";
+import EnchanceAndFciModal from "./enhanceAndFci/EnchanceAndFci";
 
 const insuranceCompany = [
   { label: "Health India Insurance", value: "health_india_insurance" },
@@ -75,6 +76,11 @@ const Drafts = () => {
   const toggleApproveModal = () => {
     setOpenApproveModal((pre) => !pre);
   };
+  const [openEnhanceAndFciModal, setOpenEnhanceAndFciModal] =
+    useState<boolean>(false);
+  const toggleEnhanceAndFciModal = () => {
+    setOpenEnhanceAndFciModal((pre) => !pre);
+  };
 
   const fetchAnalyst = async () => {
     dispatch(setLoading(true));
@@ -119,6 +125,9 @@ const Drafts = () => {
     ) {
       toggleApproveModal();
     }
+    if (action === "Enhance" || action === "fci") {
+      toggleEnhanceAndFciModal();
+    }
   }, [action]);
 
   useEffect(() => {
@@ -141,7 +150,12 @@ const Drafts = () => {
         claimAmount: total,
         insuranceTPA: Tpa_Company,
         action: (
-          <img src={download} alt="icon" onClick={() => showDetails(key)} />
+          <img
+            src={download}
+            alt="icon"
+            onClick={() => showDetails(key)}
+            className="cursor-pointer"
+          />
         ),
       })
     );
@@ -348,17 +362,26 @@ const Drafts = () => {
         selectValue={action}
         setSelectValue={setAction}
         toggleSummeryModal={toggleSummeryModal}
+        newCaseData={summeryData}
+        action={action}
       />
 
       <SentMail
         newCaseData={summeryData}
         closeModal={toggleSentmailModal}
         isOpen={openSentmailModal}
+        action={action}
       />
 
       <ApproveModal
         closeModal={toggleApproveModal}
         isOpen={openApproveModal}
+        newCaseData={summeryData}
+        action={action}
+      />
+      <EnchanceAndFciModal
+        closeModal={toggleEnhanceAndFciModal}
+        isOpen={openEnhanceAndFciModal}
         newCaseData={summeryData}
         action={action}
       />

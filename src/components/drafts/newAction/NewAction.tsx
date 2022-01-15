@@ -3,6 +3,12 @@ import left_arrow from "../../../assets/icon/left_arrow.svg";
 import NewCaseSelect from "../../theme/select/newCaseSelect/NewCaseSelect";
 import styles from "./newAction.module.css";
 import Modal from "react-modal";
+import PlanSelectButton from "../../theme/button/PlanSelectButton";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { setLoading } from "../../../redux/slices/utilitySlice";
+import axiosConfig from "../../../config/axiosConfig";
+import notification from "../../theme/utility/notification";
+import { useNavigate } from "react-router-dom";
 
 const actions = [
   {
@@ -45,6 +51,8 @@ type NewActionProps = {
   selectValue: string;
   setSelectValue: any;
   toggleSummeryModal: () => void;
+  newCaseData: any;
+  action: string;
 };
 
 const NewAction = ({
@@ -53,7 +61,47 @@ const NewAction = ({
   selectValue,
   setSelectValue,
   toggleSummeryModal,
+  newCaseData,
+  action,
 }: NewActionProps) => {
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state?.user);
+  const { currentBucket } = useAppSelector((state) => state?.home);
+  const navigate = useNavigate();
+
+  const updateCase = async () => {
+    dispatch(setLoading(true));
+
+    const URLINCEMENT = `/incrementcounter?email=${user}`;
+    const URLCHANGESTATUS = `/changeformstatus?email=${user}&casenumber=${newCaseData?.caseNumber}`;
+
+    const formStatus = new FormData();
+    formStatus?.append(
+      "companyname",
+      newCaseData?.patient_details?.Insurance_Company
+    );
+    formStatus?.append("lastformstatus", currentBucket);
+    //@ts-ignore
+    formStatus?.append("newformstatus", action);
+    const formNewStatus = new FormData();
+    //@ts-ignore
+    formNewStatus?.append("newformstatus", action);
+
+    try {
+      await axiosConfig.post(URLINCEMENT, formStatus);
+      await axiosConfig.post(URLCHANGESTATUS, formNewStatus);
+
+      dispatch(setLoading(false));
+      notification("info", `Case moved ${action} successfully`);
+      closeModal();
+
+      navigate("/");
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
   return (
     <Modal
       isOpen={isOpen}
@@ -83,6 +131,15 @@ const NewAction = ({
               value={selectValue}
             />
           </div>
+          {selectValue === "Unprocessed" || selectValue === "Settled" ? (
+            <div className="flex justify-center mt-8">
+              <PlanSelectButton
+                text="Submit"
+                style={{ width: "180px" }}
+                handleClick={updateCase}
+              />
+            </div>
+          ) : null}
         </div>
       </div>
     </Modal>

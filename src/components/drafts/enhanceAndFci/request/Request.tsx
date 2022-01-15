@@ -1,36 +1,29 @@
 import React, { useState, useRef, useEffect } from "react";
-import Modal from "react-modal";
-import styles from "./SentMail.module.scss";
+import styles from "./Request.module.css";
 import { IoClose } from "react-icons/io5";
-import paperclip_black from "../../../assets/icon/paperclip_black.svg";
-import bold from "../../../assets/icon/bold.svg";
-import italic from "../../../assets/icon/italic.svg";
-import underline from "../../../assets/icon/underline.svg";
-import align_center_alt from "../../../assets/icon/align-center-alt.svg";
-import align_left from "../../../assets/icon/align_left.svg";
-import align_right from "../../../assets/icon/align_right.svg";
+import paperclip_black from "../../../../assets/icon/paperclip_black.svg";
+import bold from "../../../../assets/icon/bold.svg";
+import italic from "../../../../assets/icon/italic.svg";
+import underline from "../../../../assets/icon/underline.svg";
+import align_center_alt from "../../../../assets/icon/align-center-alt.svg";
+import align_left from "../../../../assets/icon/align_left.svg";
+import align_right from "../../../../assets/icon/align_right.svg";
 import { MdOutlineClose } from "react-icons/md";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import axiosConfig from "../../../config/axiosConfig";
-import notification from "../../theme/utility/notification";
-import { setLoading } from "../../../redux/slices/utilitySlice";
+import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
+import axiosConfig from "../../../../config/axiosConfig";
+import notification from "../../../theme/utility/notification";
+import { setLoading } from "../../../../redux/slices/utilitySlice";
 import ReactHtmlParser from "react-html-parser";
 import { useNavigate } from "react-router-dom";
+import Input from "../../../theme/input/Input";
 const emailRegex = /^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/;
 
 type ComposeModalProps = {
-  isOpen?: boolean;
-  closeModal?: () => void;
-  newCaseData: any;
+  newCaseData?: any;
   action?: string;
 };
 
-const SentMail = ({
-  isOpen = false,
-  closeModal = () => {},
-  newCaseData,
-  action = "",
-}: ComposeModalProps) => {
+const SentMail = ({ newCaseData = {}, action = "" }: ComposeModalProps) => {
   const { currentBucket } = useAppSelector((state) => state?.home);
 
   const [mail, setMail] = useState<{
@@ -42,6 +35,8 @@ const SentMail = ({
     bccList: string[];
     sub: string;
     body: any;
+    amount: number | string;
+    date: string;
     file: [];
   }>({
     to: "",
@@ -53,6 +48,8 @@ const SentMail = ({
     sub: "",
     body: "",
     file: [],
+    amount: "",
+    date: "",
   });
   const [reciverEmail, setReciverEmail] = useState("");
 
@@ -100,14 +97,20 @@ const SentMail = ({
     const URL = `/sendEmail?email=${user}`;
     const URLINCEMENT = `/incrementcounter?email=${user}`;
     const URLCHANGESTATUS = `/changeformstatus?email=${user}&casenumber=${newCaseData?.caseNumber}`;
-    const URLFORMCREATIONAUDITTRIAL = `/queryrespondedaudittrail?email=${user}&casenumber=${newCaseData?.caseNumber}`;
+    const URLFORMCREATIONAUDITTRIAL = `/${
+      action === "Enhance" ? "enhancerequestaudittrail" : "fcirequestaudittrail"
+    }?email=${user}&casenumber=${newCaseData?.caseNumber}`;
 
     const formCreationAuditForm = new FormData();
     formCreationAuditForm?.append(
       "amount",
-      newCaseData?.hospital_details?.total || 0
+      //@ts-ignore
+      mail?.amount || 0
     );
-    formCreationAuditForm?.append("date", new Date()?.toISOString() || "");
+    formCreationAuditForm?.append(
+      "date",
+      mail?.date || new Date()?.toISOString()
+    );
 
     const formStatus = new FormData();
     formStatus?.append(
@@ -163,7 +166,7 @@ const SentMail = ({
 
       dispatch(setLoading(false));
       notification("info", `Case moved ${action} successfully`);
-      closeModal();
+
       setMail({
         to: "",
         cc: "",
@@ -174,6 +177,8 @@ const SentMail = ({
         sub: "",
         body: "",
         file: [],
+        amount: "",
+        date: "",
       });
       navigate("/");
     } catch (error) {
@@ -187,7 +192,9 @@ const SentMail = ({
     document.execCommand(command, false, undefined);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLDataElement | any>
+  ) => {
     const { name, value } = e?.target;
 
     if (value !== ",") {
@@ -242,10 +249,24 @@ const SentMail = ({
       bcc: "",
       ccList: [],
       bccList: [],
-      sub: `Query Reply for  ${newCaseData?.patient_details?.Name} claim no: ${newCaseData?.patient_details?.Policy_Id}`,
+      sub: `${
+        action === "Enhance" ? "Enhance" : "Final discharge approval"
+      } request for  ${newCaseData?.patient_details?.Name} claim no: ${
+        newCaseData?.patient_details?.Policy_Id
+      }`,
       file: [],
       toList: [],
-      body: ` <div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dear Sir/Ma'am,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find pre auth request for ${newCaseData?.patient_details?.Name} admitted on  ${newCaseData?.hospital_details?.Date_of_Admission}.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Also find details of patient below:</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Patient name: ${newCaseData?.patient_details?.Name}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Date of admission : ${newCaseData?.hospital_details?.Date_of_Admission}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Health-id card no : ${newCaseData?.patient_details?.Policy_Id}</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find the attached preauth documents below.</div>`,
+      body: ` <div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dear Sir/Ma'am,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find details of patient below:</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Patient name: ${
+        newCaseData?.patient_details?.Name
+      }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; claim no: ${
+        newCaseData?.patient_details?.Policy_Id
+      }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Date of admission : ${
+        newCaseData?.hospital_details?.Date_of_Admission
+      }</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Health-id card no : ${
+        newCaseData?.patient_details?.Policy_Id
+      }</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find the attached documents below following to the ${
+        action === "Enhance" ? "Enhance" : "Final discharge approval"
+      }</div>`,
     }));
 
     const companyInfo =
@@ -260,28 +281,15 @@ const SentMail = ({
   }, [newCaseData]);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      className={styles.approveModalContainer}
-      overlayClassName={styles.overlayContainer}
-      onRequestClose={closeModal}
-      shouldCloseOnOverlayClick={true}
-    >
+    <div className={styles.requetModalContainer}>
       <div
-        className={`flex items-center justify-between h-10 w-full bg-primary px-4 border-none outline-none ${styles.composeModalHeader}`}
+        className={`flex items-center justify-center h-10 w-full bg-primary px-4 border-none outline-none ${styles.composeModalHeader}`}
       >
         <div></div>
         <p className="text-base text-fontColor tracking-wide capitalize">
           Sent Mail
         </p>
-        <IoClose
-          className=" text-2xl text-fontColor cursor-pointer"
-          onClick={closeModal}
-        />
       </div>
-      {/* <p className="px-4 py-2 text-sm text-primary font-medium">
-        bhimxpress2000@outlook.in
-      </p> */}
 
       <div className="px-4 py-2 text-sm text-fontColor-darkGray border-t border-fontColor-gray tracking-wide flex items-center flex-wrap">
         <p className="mr-2 mb-1">Cc</p>
@@ -334,6 +342,40 @@ const SentMail = ({
         {ReactHtmlParser(mail?.body)}
       </div>
 
+      <div className="grid grid-cols-2 gap-4 mt-4 px-4">
+        <div className="col-span-1">
+          <Input
+            value={mail?.amount}
+            name="amount"
+            handleChange={handleChange}
+            label="Amount*"
+            labelStyle={{ color: "#2B2B2B" }}
+            type="number"
+            style={{
+              height: "40px",
+              border: "1px solid #2B2B2B",
+              outline: "none",
+              backgroundColor: "#FFFFFF17",
+              borderRadius: "5px",
+              color: "#2B2B2B",
+            }}
+          />
+        </div>
+        <div className="col-span-1">
+          <div>
+            <p className="pb-4 text-sm text-primary">Select date</p>
+
+            <input
+              type="date"
+              name="date"
+              placeholder="Select date"
+              value={mail?.date}
+              onChange={handleChange}
+              className={styles.inputDate}
+            />
+          </div>
+        </div>
+      </div>
       <div className="flex items-center flex-wrap">
         {mail?.file?.length
           ? mail?.file?.map((file, index) => {
@@ -434,7 +476,7 @@ const SentMail = ({
           />
         </div>
       </div>
-    </Modal>
+    </div>
   );
 };
 
