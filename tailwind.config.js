@@ -11,7 +11,7 @@ module.exports = {
     },
     extend: {
       margin: {
-        '120-neg': '-60rem',
+        '120-neg': '-70rem',
       },
       translate: {
         "n-x-50": "-1/2",
