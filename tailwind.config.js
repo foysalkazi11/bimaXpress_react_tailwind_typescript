@@ -6,11 +6,12 @@ module.exports = {
     transitionDuration: {
       '0': '0ms',
       '2000': '2000ms',
+      '4000': '4000ms',
       '9000': '9000ms',
     },
     extend: {
       margin: {
-        '120-neg': '-48rem',
+        '120-neg': '-70rem',
       },
       translate: {
         "n-x-50": "-1/2",

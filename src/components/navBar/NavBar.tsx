@@ -8,7 +8,7 @@ const NavBar = () => {
   const { user, userData, role } = useAppSelector((state) => state?.user);
 
   return (
-    <div className="flex items-center justify-between bg-primary px-4 py-3  border-b border-fontColor-darkGray">
+    <div className="flex items-center justify-between bg-primary px-4 py-3  mb-auto border-b border-fontColor-darkGray">
       <p className="text-lg text-fontColor ">{currentMenu}</p>
       <div className="flex items-center">
         <BiLink className="mr-3 text-fontColor text-lg" />

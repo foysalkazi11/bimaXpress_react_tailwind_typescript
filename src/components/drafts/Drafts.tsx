@@ -272,8 +272,8 @@ const Drafts = () => {
   }, [setPageSize]);
 
   return (
-    <div className="py-6 px-10 w-full flex flex-col">
-      <div className="flex items-center justify-between  flex-wrap ">
+    <div className="py-6 px-10 w-auto flex flex-col overflow-x-scroll">
+      <div className="flex items-center justify-between flex-wrap">
         <div className="flex items-center mt-6">
           <div className="mr-4 ">
             <TableSearch
@@ -365,12 +365,14 @@ const Drafts = () => {
         newCaseData={summeryData}
         action={action}
       />
+
       <SentMail
         newCaseData={summeryData}
         closeModal={toggleSentmailModal}
         isOpen={openSentmailModal}
         action={action}
       />
+
       <ApproveModal
         closeModal={toggleApproveModal}
         isOpen={openApproveModal}
