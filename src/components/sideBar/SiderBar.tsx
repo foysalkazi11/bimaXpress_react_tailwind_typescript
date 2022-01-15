@@ -164,7 +164,7 @@ const SiderBar = () => {
   const { collapsed } = useAppSelector((state) => state?.leftBarSlice);
   return (
     <>
-      <div className="flex justify-center relative z-50 h-24 p-3 w-full bg-primary-dark">
+      <div className="flex justify-center relative h-24 p-3 w-full bg-primary-dark">
         <div className="w-auto h-10">
           <img src={logo} alt="logo" />
         </div>
