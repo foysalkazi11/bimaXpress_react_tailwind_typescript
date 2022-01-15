@@ -175,21 +175,12 @@ const SiderBar = () => {
           <div
             className={`w-full h-full grid items-center justify-center bg-primary-light`}
           >
-            {collapsed ? (
-              <img
-                className="cursor-pointer"
-                src={expandmoreIcon}
-                alt=""
-                onClick={() => dispatch(setCollapseState(!collapsed))}
-              />
-            ) : (
-              <img
-                className="cursor-pointer"
-                src={menuIcon}
-                alt=""
-                onClick={() => dispatch(setCollapseState(!collapsed))}
-              />
-            )}
+            <img
+              className="cursor-pointer"
+              src={menuIcon}
+              alt=""
+              onClick={() => dispatch(setCollapseState(!collapsed))}
+            />
           </div>
         </div>
       </div>
