@@ -153,20 +153,18 @@ const Home = () => {
           index: React.Key | null | undefined
         ) => {
           return (
-            <>
-              <div
+            <div
+              key={index + "home"}
+              className="grid justify-center"
+              onClick={() => GoDraftPage(menu?.pageLink, menu?.value)}
+            >
+              <HomeCard
+                name={menu?.name}
+                icon={menu?.icon}
+                amount={menu?.amount}
                 key={index}
-                className="grid justify-center"
-                onClick={() => GoDraftPage(menu?.pageLink, menu?.value)}
-              >
-                <HomeCard
-                  name={menu?.name}
-                  icon={menu?.icon}
-                  amount={menu?.amount}
-                  key={index}
-                />
-              </div>
-            </>
+              />
+            </div>
           );
         }
       )}

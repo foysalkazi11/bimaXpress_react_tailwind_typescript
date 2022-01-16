@@ -18,7 +18,7 @@ const PlanSelectButton = ({
   if (outlined) {
     return (
       <button
-        className="w-full h-10 outline-none border border-fontColor text-base text-fontColor rounded  text-semibold"
+        className="w-full h-10 outline-none border border-fontColor text-sm text-fontColor rounded  text-semibold"
         disabled={disable}
         style={style}
         onClick={handleClick}
@@ -29,7 +29,7 @@ const PlanSelectButton = ({
   }
   return (
     <button
-      className="w-full h-10 outline-none bg-fontColor text-base text-primary-dark rounded font-bold"
+      className="w-full h-10 outline-none bg-fontColor text-sm text-primary-dark rounded font-bold"
       disabled={disable}
       style={style}
       onClick={handleClick}

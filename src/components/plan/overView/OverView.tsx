@@ -123,9 +123,9 @@ const OverView = () => {
                     Claims left :
                   </span>
                   <span className="mr-1 text-base text-fontColor font-semibold">
-                    {currentPlanDetails?.claimsleft}
+                    {currentPlanDetails?.claimsleft || '00'}
                   </span>
-                  <span className="text-xs text-fontColor">No's</span>
+                  <span className="text-xs pt-1 text-fontColor">No's</span>
                 </div>
               </div>
             </div>
@@ -136,7 +136,7 @@ const OverView = () => {
           <div className="col-span-4 mt-8 ml-2">
             <p className="text-xs text-fontColor-gray">Subscription ends on </p>
             <p className="text-sm text-fontColor font-semibold mt-1">
-              {currentPlanDetails?.planenddate}
+              {currentPlanDetails?.planenddate || 'N/A'}
               {/* {format(new Date(currentPlanDetails?.planenddate), "do MMMM Y")} */}
             </p>
 
@@ -151,9 +151,9 @@ const OverView = () => {
                     Claims token :
                   </span>
                   <span className="mr-1 text-base text-fontColor font-semibold">
-                    {currentPlanDetails?.claimstaken}
+                    {currentPlanDetails?.claimstaken || '00'}
                   </span>
-                  <span className="text-xs text-fontColor">No's</span>
+                  <span className="text-xs pt-1 text-fontColor">No's</span>
                 </div>
               </div>
             </div>
