@@ -136,7 +136,7 @@ const StepOne = ({
   };
 
   return (
-    <div className=" relative m-8">
+    <div className=" relative m-8 min-h-screen">
       <div
         className={`grid gap-8 sm:grid-cols-2 ${styles.elementDiv}`}
       >
@@ -163,7 +163,7 @@ const StepOne = ({
       </div>
 
       <div
-        className="flex items-center justify-between flex-wrap"
+        className="flex items-center justify-between flex-wrap absolute w-full"
         style={{ bottom: "30px" }}
       >
         {param ? (
