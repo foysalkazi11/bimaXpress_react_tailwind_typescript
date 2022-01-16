@@ -101,13 +101,13 @@ const OverView = () => {
           </div>
         </div>
 
-        <div className="flex flex-col md:grid grid-cols-12 gap-4 relative ">
+        <div className="flex flex-col md:grid grid-cols-12 relative">
           {/* first-4-col */}
-          <div className="col-span-4 mt-8">
+          <div className="col-span-4 mt-auto">
             <p className="text-xs text-fontColor-gray">
               Subscription started on
             </p>
-            <p className="text-xs md:text-sm text-fontColor font-semibold mt-1 bg-green-600">
+            <p className="text-xs md:text-sm text-fontColor font-semibold mt-1 ">
               {currentPlanDetails?.planstartdate}
               {/* {format(new Date(currentPlanDetails?.planstartdate), "do MMMM Y")} */}
             </p>
