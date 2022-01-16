@@ -694,13 +694,13 @@ const StepFour = ({
           </p>
         </div>
       </div>
-      <div className="flex justify-between items-center flex-wrap px-8  pb-4">
+      <div className="flex justify-between flex-col flex-wrap items-start sm:flex-row  sm:items-center px-8  pb-4">
         <NextButton
           text="Save"
           handleClick={saveDataToDb}
           style={{ marginBottom: "16px" }}
         />
-        <div className="flex items-center flex-wrap">
+        <div className="flex items-start sm:flex-row flex-col">
           <NextButton
             text="View Retelist"
             style={{ marginRight: "16px", marginBottom: "16px" }}
