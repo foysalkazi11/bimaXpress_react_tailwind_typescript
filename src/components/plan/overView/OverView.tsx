@@ -133,7 +133,7 @@ const OverView = () => {
 
           {/* second-4-col */}
 
-          <div className="col-span-4 mt-8">
+          <div className="col-span-4 mt-8 ml-2">
             <p className="text-xs text-fontColor-gray">Subscription ends on </p>
             <p className="text-sm text-fontColor font-semibold mt-1">
               {currentPlanDetails?.planenddate}
