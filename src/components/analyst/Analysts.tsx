@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setLoading } from "../../redux/slices/utilitySlice";
 import axiosConfig from "../../config/axiosConfig";
 import { setAnalystList } from "../../redux/slices/analystSlice";
+import notification from "../theme/utility/notification";
 
 interface ColumnDetails {
   [key: string]: any;
@@ -120,7 +121,7 @@ const Analyst = () => {
   }, [setPageSize]);
 
   return (
-    <div className="py-6 px-10 w-full flex flex-col">
+    <div className={`py-6 px-10 w-full flex flex-col overflow-x-scroll ${styles.scrollBarDesign}}`}>
       <p className="text-base text-fontColor-gray ">
         Find details about analyst and can update details
       </p>
@@ -144,7 +145,7 @@ const Analyst = () => {
         </Link>
       </div>
 
-      <table {...getTableProps()} className="w-full mt-8 overflow-x-scroll">
+      <table {...getTableProps()} className={`w-full mt-8 my-10`}>
         <thead>
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>

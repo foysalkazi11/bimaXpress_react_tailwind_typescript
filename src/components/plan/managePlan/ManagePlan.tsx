@@ -7,7 +7,7 @@ type ManagePlanProps = {
 
 const ManagePlan = ({ setRender }: ManagePlanProps) => {
   return (
-    <div>
+    <div className="w-full">
       <div className="pb-5">
         <p className="text-base text-fontColor">Manage Plans</p>
       </div>

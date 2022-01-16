@@ -1,8 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap");
 .authscreen {
-  background-color: #080710e9;
+  background-color: #2b2b2b;
   min-height: 100vh;
+  max-width: 100%;
   box-sizing: border-box;
+  position: relative;
   overflow: hidden;
 
   &__bottom {
@@ -122,7 +124,7 @@
 }
 
 @media screen and (max-width: 600px) {
-    .authscreen__form{
-        min-width: 70%;
-    }  
+  .authscreen__form{
+    max-width: calc(100% - 40px);
+}
 }

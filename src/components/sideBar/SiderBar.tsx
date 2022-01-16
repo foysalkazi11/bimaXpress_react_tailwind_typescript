@@ -14,7 +14,12 @@ import { FiSend } from "react-icons/fi";
 import { MdOutlineInbox } from "react-icons/md";
 import { SiSimpleanalytics } from "react-icons/si";
 import logo from "../../assets/images/logo.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { setCurrentMenu } from "../../redux/slices/homeSlice";
+import { setCurrentMailList } from "../../redux/slices/mailSlice";
+import menuIcon from "../../assets/icon/menu_black.svg";
+import { setCollapseState } from "../../redux/slices/leftBarSlice";
 
 const homeMenu = {
   name: "Home",
@@ -27,21 +32,21 @@ const emailMenu = {
   icon: <AiOutlineMail className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />,
   pageLink: "/mail",
 };
+
+const inboxMail = {
+  name: "Inbox",
+  amount: 200,
+  icon: <MdOutlineInbox className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />,
+  pageLink: "#",
+};
+const sentMail = {
+  name: "Sent",
+  amount: 120,
+  icon: <FiSend className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />,
+  pageLink: "#",
+};
+
 const innerMailMenu = [
-  {
-    name: "Inbox",
-    amount: 200,
-    icon: (
-      <MdOutlineInbox className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />
-    ),
-    pageLink: "#",
-  },
-  {
-    name: "Sent",
-    amount: 120,
-    icon: <FiSend className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />,
-    pageLink: "#",
-  },
   {
     name: "Drafts",
     amount: 10,
@@ -125,105 +130,205 @@ const sideBarMenu = [
 const SiderBar = () => {
   const [activeMenu, setActiveMenu] = useState(7);
   const [openEmailMenu, setOpenEmailMenu] = useState(false);
-  const [activeMailMenu, setActiveMailMenu] = useState(0);
+  const [activeMailMenu, setActiveMailMenu] = useState(3);
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state?.user);
+  const { inboxMailList, sentMailList } = useAppSelector(
+    (state) => state?.mail
+  );
+  const navigate = useNavigate();
 
-  const handleEmailMenu = (num: number) => {
-    setActiveMenu(num);
-    setOpenEmailMenu((pre) => !pre);
-  };
-  const handleActiveMenu = (num: number) => {
-    setActiveMenu(num);
-    if (openEmailMenu) {
-      setOpenEmailMenu(false);
+  const handleEmailMenu = (num: number, name: string, link: string) => {
+    if (user) {
+      setActiveMenu(num);
+      setOpenEmailMenu((pre) => !pre);
+      navigate(link);
+    } else {
+      navigate("/login");
     }
   };
+  const handleActiveMenu = (num: number, name: string, link: string) => {
+    dispatch(setCollapseState(!collapsed));
+    if (user) {
+      setActiveMenu(num);
+      dispatch(setCurrentMenu(name));
+      if (openEmailMenu) {
+        setOpenEmailMenu(false);
+      }
+      navigate(link);
+    } else {
+      navigate("/login");
+    }
+  };
+
+  const { collapsed } = useAppSelector((state) => state?.leftBarSlice);
   return (
     <>
-      <div className="mb-16 flex justify-center">
-        <img src={logo} alt="logo" />
+      <div className="flex justify-center relative h-24 p-3 w-full bg-primary-dark">
+        <div className="w-auto h-10">
+          <img src={logo} alt="logo" />
+        </div>
+
+        <div
+          className={`flex ml-auto mb-8 absolute overflow-hidden top-14 rounded-full h-10 w-10 md:hidden`}
+        >
+          <div
+            className={`w-full h-full grid items-center justify-center bg-primary-light`}
+          >
+            <img
+              className="cursor-pointer"
+              src={menuIcon}
+              alt=""
+              onClick={() => dispatch(setCollapseState(!collapsed))}
+            />
+          </div>
+        </div>
       </div>
-      <div>
-        <Link
-          to={homeMenu?.pageLink}
-          className={`flex items-center p-3 my-4 rounded ${
-            activeMenu === 7 ? "bg-primary-light" : ""
-          } `}
-          onClick={() => handleActiveMenu(7)}
+      <div className={"bg-primary-dark p-3"}>
+        <div
+          className={
+            collapsed
+              ? "mt-120-neg duration-4000 md:mt-0"
+              : "mt-0 duration-2000"
+          }
         >
-          {homeMenu?.icon}
-          <p className="text-fontColor font-semibold text-sm">
-            {homeMenu?.name}
-          </p>
-        </Link>
-        <Link
-          to={emailMenu?.pageLink}
-          className={`flex items-center justify-between p-3 my-4 rounded ${
-            activeMenu === 8 ? " bg-secondary-light" : ""
-          } `}
-          onClick={() => handleEmailMenu(8)}
-        >
-          <div className="flex">
-            {emailMenu?.icon}
+          <div
+            className={`flex items-center p-3 my-4 rounded cursor-pointer ${
+              activeMenu === 7 ? "bg-primary-light" : ""
+            } `}
+            onClick={() =>
+              handleActiveMenu(7, homeMenu?.name, homeMenu?.pageLink)
+            }
+          >
+            {homeMenu?.icon}
             <p className="text-fontColor font-semibold text-sm">
-              {emailMenu?.name}
+              {homeMenu?.name}
             </p>
           </div>
-          {openEmailMenu ? (
-            <IoIosArrowUp className="text-fontColor text-xl" />
-          ) : (
-            <IoIosArrowDown className="text-fontColor text-xl" />
-          )}
-        </Link>
-        {openEmailMenu ? (
-          <div className="border-b border-fontColor-darkGray">
-            {innerMailMenu?.map((menu, index) => {
-              return (
-                <Link
-                  to={menu?.pageLink}
-                  key={index}
-                  className={`flex items-center justify-between p-3 my-2 rounded ${
-                    index === activeMailMenu ? "bg-primary-light" : ""
-                  }`}
-                  onClick={() => setActiveMailMenu(index)}
-                >
-                  <div className="flex">
-                    {menu?.icon}
-                    <p className="text-fontColor font-semibold text-sm">
-                      {menu?.name}
-                    </p>
-                  </div>
-                  <p
-                    className={`text-sm font-semibold  ${
-                      index === activeMailMenu
-                        ? "px-2 rounded-xl bg-fontColor text-primary-dark"
-                        : "text-fontColor"
-                    }`}
-                  >
-                    {menu?.amount}
-                  </p>
-                </Link>
-              );
-            })}
-          </div>
-        ) : null}
-
-        {sideBarMenu?.map((menu, index) => {
-          return (
-            <Link
-              to={menu?.pageLink}
-              key={index}
-              className={`flex items-center p-3 my-4 rounded ${
-                index === activeMenu ? "bg-primary-light" : ""
-              } `}
-              onClick={() => handleActiveMenu(index)}
-            >
-              {menu?.icon}
+          <div
+            className={`flex items-center justify-between p-3 my-4 rounded cursor-pointer  ${
+              activeMenu === 8 ? " bg-secondary-light" : ""
+            } `}
+            onClick={() =>
+              handleEmailMenu(8, emailMenu?.name, emailMenu?.pageLink)
+            }
+          >
+            <div className="flex">
+              {emailMenu?.icon}
               <p className="text-fontColor font-semibold text-sm">
-                {menu?.name}
+                {emailMenu?.name}
               </p>
-            </Link>
-          );
-        })}
+            </div>
+            {openEmailMenu ? (
+              <IoIosArrowUp className="text-fontColor text-xl" />
+            ) : (
+              <IoIosArrowDown className="text-fontColor text-xl" />
+            )}
+          </div>
+          {openEmailMenu ? (
+            <div className="border-b border-fontColor-darkGray">
+              <Link
+                to={inboxMail?.pageLink}
+                className={`flex items-center justify-between p-3 my-2 rounded cursor-pointer  ${
+                  3 === activeMailMenu ? "bg-primary-light" : ""
+                }`}
+                onClick={() => {
+                  setActiveMailMenu(3);
+                  dispatch(setCurrentMailList("inbox"));
+                }}
+              >
+                <div className="flex">
+                  {inboxMail?.icon}
+                  <p className="text-fontColor font-semibold text-sm">
+                    {inboxMail?.name}
+                  </p>
+                </div>
+                <p
+                  className={`text-sm font-semibold  ${
+                    3 === activeMailMenu
+                      ? "px-2 rounded-xl bg-fontColor text-primary-dark"
+                      : "text-fontColor"
+                  }`}
+                >
+                  {inboxMailList?.length}
+                </p>
+              </Link>
+              <Link
+                to={sentMail?.pageLink}
+                className={`flex items-center justify-between p-3 my-2 rounded cursor-pointer  ${
+                  4 === activeMailMenu ? "bg-primary-light" : ""
+                }`}
+                onClick={() => {
+                  setActiveMailMenu(4);
+                  dispatch(setCurrentMailList("sent"));
+                }}
+              >
+                <div className="flex">
+                  {sentMail?.icon}
+                  <p className="text-fontColor font-semibold text-sm">
+                    {sentMail?.name}
+                  </p>
+                </div>
+                <p
+                  className={`text-sm font-semibold  ${
+                    4 === activeMailMenu
+                      ? "px-2 rounded-xl bg-fontColor text-primary-dark"
+                      : "text-fontColor"
+                  }`}
+                >
+                  {sentMailList?.length}
+                </p>
+              </Link>
+              {innerMailMenu?.map((menu, index) => {
+                return (
+                  <Link
+                    to={menu?.pageLink}
+                    key={index}
+                    className={`flex items-center justify-between p-3 my-2 rounded cursor-pointer  ${
+                      index === activeMailMenu ? "bg-primary-light" : ""
+                    }`}
+                    onClick={() => setActiveMailMenu(index)}
+                  >
+                    <div className="flex">
+                      {menu?.icon}
+                      <p className="text-fontColor font-semibold text-sm">
+                        {menu?.name}
+                      </p>
+                    </div>
+                    <p
+                      className={`text-sm font-semibold  ${
+                        index === activeMailMenu
+                          ? "px-2 rounded-xl bg-fontColor text-primary-dark"
+                          : "text-fontColor"
+                      }`}
+                    >
+                      {menu?.amount}
+                    </p>
+                  </Link>
+                );
+              })}
+            </div>
+          ) : null}
+
+          {sideBarMenu?.map((menu, index) => {
+            return (
+              <div
+                key={index}
+                className={`flex items-center p-3 my-4 rounded cursor-pointer${
+                  index === activeMenu ? "bg-primary-light" : ""
+                } `}
+                onClick={() =>
+                  handleActiveMenu(index, menu?.name, menu?.pageLink)
+                }
+              >
+                {menu?.icon}
+                <p className="text-fontColor font-semibold text-sm">
+                  {menu?.name}
+                </p>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </>
   );

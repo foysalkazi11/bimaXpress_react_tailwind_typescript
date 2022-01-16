@@ -9,7 +9,7 @@ function SignPage() {
 
   // HANDLE SIGNUP ON FORM SUBMISSION
   const handleSignup = () => {
-    navigate("/");
+    navigate("/login");
   };
 
   // HANDLE CLICK ON LOGIN LINK
@@ -21,15 +21,19 @@ function SignPage() {
     <AuthScreenWrapper title="SIGNUP" submit={handleSignup}>
       <div className="authscreen__login">
         <div className="input__group">
-          <input type="text" placeholder="Email or Phone" id="username" />
+          <input type="text" placeholder="Email" id="email" />
         </div>
         <div className="input__group">
-          <input type="text" placeholder="Email or Phone" id="username" />
+          <input type="password" placeholder="Password" id="password" />
         </div>
         <div className="input__group">
-          <input type="password" placeholder="Password" id="password"></input>
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            id="confirmpassword"
+          />
         </div>
-        <button>Log In</button>
+        <button>Sing Up</button>
       </div>
       <div className="authscreen__or">
         ALREADY HAVE AN ACCOUNT? <span onClick={handleRedirect}>LOGIN</span>

@@ -86,7 +86,7 @@ const OverView = () => {
     }
   }, [currentPlan]);
   return (
-    <div>
+    <div className="w-auto">
       <div className="pb-5">
         <p className="text-base text-fontColor">Overview</p>
       </div>
@@ -101,19 +101,19 @@ const OverView = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-12 gap-4">
+        <div className="flex flex-col md:grid grid-cols-12 relative">
           {/* first-4-col */}
-          <div className="col-span-4 mt-8 ">
+          <div className="col-span-4 mt-auto ml-2">
             <p className="text-xs text-fontColor-gray">
-              Subscription started on{" "}
+              Subscription started on
             </p>
-            <p className="text-sm text-fontColor font-semibold mt-1">
+            <p className="text-xs md:text-sm text-fontColor font-semibold mt-1 ">
               {currentPlanDetails?.planstartdate}
               {/* {format(new Date(currentPlanDetails?.planstartdate), "do MMMM Y")} */}
             </p>
 
             <div
-              className="mt-4 border border-fontColor rounded w-full h-10 flex items-center justify-center"
+              className="mt-4 border border-fontColor rounded w-full h-auto min-h-10 flex items-center justify-center"
               style={{ maxWidth: "200px" }}
             >
               <div className="flex items-center">
@@ -133,7 +133,7 @@ const OverView = () => {
 
           {/* second-4-col */}
 
-          <div className="col-span-4 mt-8 ">
+          <div className="col-span-4 mt-8 ml-2">
             <p className="text-xs text-fontColor-gray">Subscription ends on </p>
             <p className="text-sm text-fontColor font-semibold mt-1">
               {currentPlanDetails?.planenddate}
@@ -141,7 +141,7 @@ const OverView = () => {
             </p>
 
             <div
-              className="mt-4 border border-fontColor rounded w-full h-10 flex items-center justify-center"
+              className="mt-4 border border-fontColor rounded w-full h-auto min-h-10 flex items-center justify-center"
               style={{ maxWidth: "200px" }}
             >
               <div className="flex items-center">
@@ -160,7 +160,7 @@ const OverView = () => {
           </div>
 
           {/* third-4-col */}
-          <div className="col-span-4 flex items-center -mt-12">
+          <div className="col-span-4 hidden sm:flex items-center -mt-12 absolute right-4 top-4 sm:right-52 sm:top-32  md:right-20 md:top-20">
             <img src={rupi} alt="rupi icon" className="w-12" />
             {/* <p className="text-8xl text-fontColor-gray -mt-20">₹</p> */}
             <span className="text-5xl text-fontColor-gray font-thin">

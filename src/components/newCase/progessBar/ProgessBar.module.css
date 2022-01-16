@@ -1,15 +1,21 @@
-.progessBarContainer {
-}
+/* .progessBarContainer {
+
+} */
 
 .progressbar {
   display: flex;
   align-items: center;
-
+  overflow-x: scroll;
   border: none;
 }
+.progressbar::-webkit-scrollbar{
+ display: none;
+}
+
 .step {
   width: 32px;
   height: 32px;
+  aspect-ratio: 1;
   border: 2px solid #ffffff;
   opacity: 0.5;
   font-size: 14px;

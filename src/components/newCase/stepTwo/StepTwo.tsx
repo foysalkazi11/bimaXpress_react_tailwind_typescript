@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import Input from "../../theme/input/Input";
 // import InputContained from "../../theme/inputContained/InputContained";
 import InputRadio from "../../theme/inputRadio/InputRadio";
 import NextButton from "../../theme/nextButton/NextButton";
-import NewCaseSelect from "../../theme/select/newCaseSelect/NewCaseSelect";
+// import NewCaseSelect from "../../theme/select/newCaseSelect/NewCaseSelect";
+import axiosConfig from "../../../config/axiosConfig";
+import notification from "../../theme/utility/notification";
+import { setLoading } from "../../../redux/slices/utilitySlice";
+import InputDate from "../../theme/inputDate/InputDate";
 
 type StepTwoProps = {
   newCaseData: any;
@@ -14,6 +19,8 @@ type StepTwoProps = {
   yearList: { label: string; value: string }[];
   months: { label: string; value: string }[];
   days: { label: string; value: string }[];
+  param: string | undefined;
+  toggleModal?: () => void;
 };
 
 const StepTwo = ({
@@ -25,8 +32,113 @@ const StepTwo = ({
   days,
   months,
   yearList,
+  param,
+  toggleModal,
 }: StepTwoProps) => {
   const { patientDetails } = newCaseData;
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state?.user);
+  const { newCaseNum } = useAppSelector((state) => state?.case);
+  console.log(newCaseNum);
+
+  const saveDataToDb = async () => {
+    const POST_URL = `/preauthdata?email=${user}&casenumber=${newCaseNum}`;
+    // const array = [
+
+    //   "postalCode",
+    //   "state",
+
+    //   "contractNumber",
+    //   "doctorsName",
+    //   "expectedDeliveryDate",
+
+    //   "ICU_charge",
+    //   "OT_charge",
+    //   "cost_for_investigation_and_diagnosis",
+    //   "dateOfAdmission",
+    //   "daysInHospital",
+    //   "daysInICU",
+    //   "emergencyOrPlanedHospitalizedEvent",
+    //   "expenses",
+    //   "othersExpenses",
+    //   "professional_fees",
+    //   "timeOfAdmission",
+    // ]
+
+    const formData = new FormData();
+    patientDetails?.city && formData?.append("city", patientDetails?.city);
+    patientDetails?.PhysicianYesPhysicianCurrentAddress &&
+      formData?.append(
+        "patient_details_currentAddress",
+        patientDetails?.PhysicianYesPhysicianCurrentAddress
+      );
+    patientDetails?.Give_Company_details &&
+      formData?.append(
+        "patient_details_Give_details",
+        patientDetails?.Give_Company_details
+      );
+    patientDetails?.previousHealthInsurance &&
+      formData?.append(
+        "patient_details_HealthInsurance",
+        patientDetails?.previousHealthInsurance
+      );
+    patientDetails?.patientName &&
+      formData?.append("patient_details_name", patientDetails?.patientName);
+    patientDetails?.gender &&
+      formData?.append("patient_details_gender", patientDetails?.gender);
+    // formData?.append("patient_details_ageYear", patientDetails?.TPA);
+    // formData?.append("patient_details_ageMonth", patientDetails?.TPA);
+    patientDetails?.DOB &&
+      formData?.append("patient_details_date", patientDetails?.DOB);
+    patientDetails?.contractNumber &&
+      formData?.append(
+        "patient_details_contact_number",
+        patientDetails?.contractNumber
+      );
+    patientDetails?.relativeContractNumber &&
+      formData?.append(
+        "patient_details_numberOfAttendingRelative",
+        patientDetails?.relativeContractNumber
+      );
+    patientDetails?.insuredCardNumber &&
+      formData?.append(
+        "patient_details_insuredMemberIdCardNo",
+        patientDetails?.insuredCardNumber
+      );
+    patientDetails?.policyNumber &&
+      formData?.append(
+        "patient_details_policyNumberorCorporateName",
+        patientDetails?.policyNumber
+      );
+    patientDetails?.employeeId &&
+      formData?.append(
+        "patient_details_EmployeeId",
+        patientDetails?.employeeId
+      );
+    patientDetails?.occupation &&
+      formData?.append(
+        "patient_details_occupation",
+        patientDetails?.occupation
+      );
+    patientDetails?.familyPhysician &&
+      formData?.append(
+        "patient_details_familyPhysician",
+        patientDetails?.familyPhysician
+      );
+
+    dispatch(setLoading(true));
+    try {
+      await axiosConfig.post(POST_URL, formData);
+
+      dispatch(setLoading(false));
+      notification("info", "Save successfully");
+      nextStep();
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | any>
@@ -39,39 +151,39 @@ const StepTwo = ({
     }));
   };
 
-  const handleDateOfBirth = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | any> | any,
-    key: string
-  ) => {
-    const { name, value } = e.target;
-    let day = patientDetails?.[name]?.slice(0, 2);
-    let month = patientDetails?.[name]?.slice(3, 5);
-    let year = patientDetails?.[name]?.slice(6);
-    if (key === "day") {
-      day = value;
-    } else if (key === "month") {
-      month = value;
-    } else {
-      year = value;
-    }
+  // const handleDateOfBirth = (
+  //   e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | any> | any,
+  //   key: string
+  // ) => {
+  //   const { name, value } = e.target;
+  //   let day = patientDetails?.[name]?.slice(0, 2);
+  //   let month = patientDetails?.[name]?.slice(3, 5);
+  //   let year = patientDetails?.[name]?.slice(6);
+  //   if (key === "day") {
+  //     day = value;
+  //   } else if (key === "month") {
+  //     month = value;
+  //   } else {
+  //     year = value;
+  //   }
 
-    setNewCaseData((pre: any) => ({
-      ...pre,
-      patientDetails: {
-        ...pre?.patientDetails,
-        [name]: `${day || "00"}/${month || "00"}/${year}`,
-      },
-    }));
-  };
+  //   setNewCaseData((pre: any) => ({
+  //     ...pre,
+  //     patientDetails: {
+  //       ...pre?.patientDetails,
+  //       [name]: `${day || "00"}/${month || "00"}/${year}`,
+  //     },
+  //   }));
+  // };
 
-  React.useEffect(() => {
+  useEffect(() => {
     console.log(newCaseData);
   }, [newCaseData]);
 
   return (
     <div className="h-full relative">
-      <div className="flex justify-between border-b border-fontColor-darkGray">
-        <div className=" flex-1 p-6 pb-12">
+      <div className="flex justify-between border-b border-fontColor-darkGray flex-col sm:flex-row">
+        <div className="sm:w-1/2 p-6 pb-12">
           <div>
             <Input
               handleChange={handleChange}
@@ -85,8 +197,8 @@ const StepTwo = ({
 
           <div className="mt-6">
             <p className="pb-4 text-sm text-fontColor-light">Gender</p>
-            <div className="flex items-center">
-              <div className="mr-8">
+            <div className="flex flex-col lg:flex-row">
+              <div className="mr-8 ">
                 <InputRadio
                   handleChange={handleChange}
                   name="gender"
@@ -95,7 +207,7 @@ const StepTwo = ({
                   fieldName={patientDetails?.gender || ""}
                 />
               </div>
-              <div className="mr-8">
+              <div className="mr-8 my-3 lg:my-0">
                 <InputRadio
                   handleChange={handleChange}
                   name="gender"
@@ -104,7 +216,7 @@ const StepTwo = ({
                   fieldName={patientDetails?.gender || ""}
                 />
               </div>
-              <div className="mr-8">
+              <div className="mr-8 ">
                 <InputRadio
                   handleChange={handleChange}
                   name="gender"
@@ -117,7 +229,15 @@ const StepTwo = ({
           </div>
 
           <div className="mt-6 ">
-            <p className="pb-4 text-sm text-fontColor-light">Date of birth</p>
+            <InputDate
+              handleChange={handleChange}
+              name="DOB"
+              value={patientDetails?.DOB || ""}
+              label="Date of birth"
+              style={{ maxWidth: "220px" }}
+            />
+
+            {/* <p className="pb-4 text-sm text-fontColor-light">Date of birth</p>
             <div className="flex items-center">
               <div className="pr-4">
                 <NewCaseSelect
@@ -149,7 +269,7 @@ const StepTwo = ({
                   style={{ minWidth: "80px" }}
                 />
               </div>
-            </div>
+            </div> */}
           </div>
 
           <div className="mt-6">
@@ -188,7 +308,7 @@ const StepTwo = ({
               handleChange={handleChange}
               name="insuredCardNumber"
               value={patientDetails?.insuredCardNumber || ""}
-              label="Insured card number"
+              label="Insured Member ID Card No"
               labelStyle={{ paddingBottom: "12px" }}
               style={{ height: "40px" }}
             />
@@ -197,13 +317,13 @@ const StepTwo = ({
 
         <div className="border-r border-fontColor-darkGray"></div>
 
-        <div className=" flex-1 p-6 pb-0">
+        <div className=" sm:w-1/2 p-6 pb-0">
           <div>
             <Input
               handleChange={handleChange}
               name="policyNumber"
               value={patientDetails?.policyNumber || ""}
-              label="Policy number"
+              label="Policy Number / Corporate Name"
               labelStyle={{ paddingBottom: "12px" }}
               style={{ height: "40px" }}
             />
@@ -246,6 +366,31 @@ const StepTwo = ({
             </div>
           </div>
 
+          {patientDetails?.previousHealthInsurance === "yes" ? (
+            <>
+              <div className="mt-6">
+                <Input
+                  handleChange={handleChange}
+                  name="HealthInsuranceYesCompanyName"
+                  value={patientDetails?.HealthInsuranceYesCompanyName || ""}
+                  label="Company name"
+                  labelStyle={{ paddingBottom: "12px" }}
+                  style={{ height: "40px" }}
+                />
+              </div>
+              <div className="mt-6">
+                <Input
+                  handleChange={handleChange}
+                  name="Give_Company_details"
+                  value={patientDetails?.Give_Company_details || ""}
+                  label="Give Details"
+                  labelStyle={{ paddingBottom: "12px" }}
+                  style={{ height: "40px" }}
+                />
+              </div>
+            </>
+          ) : null}
+
           <div className="mt-8">
             <p className="pb-4 text-sm text-fontColor-light">
               Do you have family physician ?
@@ -272,7 +417,44 @@ const StepTwo = ({
             </div>
           </div>
 
-          <div className="mt-6">
+          {patientDetails?.familyPhysician === "yes" ? (
+            <>
+              <div className="mt-6">
+                <Input
+                  handleChange={handleChange}
+                  name="PhysicianYesPhysicianName"
+                  value={patientDetails?.PhysicianYesPhysicianName || ""}
+                  label="Physician name"
+                  labelStyle={{ paddingBottom: "12px" }}
+                  style={{ height: "40px" }}
+                />
+              </div>
+              <div className="mt-6">
+                <Input
+                  handleChange={handleChange}
+                  name="PhysicianYesPhysicianContactNum"
+                  value={patientDetails?.PhysicianYesPhysicianContactNum || ""}
+                  label="Physician Contract Number"
+                  labelStyle={{ paddingBottom: "12px" }}
+                  style={{ height: "40px" }}
+                />
+              </div>
+              <div className="mt-6">
+                <Input
+                  handleChange={handleChange}
+                  name="PhysicianYesPhysicianCurrentAddress"
+                  value={
+                    patientDetails?.PhysicianYesPhysicianCurrentAddress || ""
+                  }
+                  label="Physician Current Address"
+                  labelStyle={{ paddingBottom: "12px" }}
+                  style={{ height: "40px" }}
+                />
+              </div>
+            </>
+          ) : null}
+
+          {/* <div className="mt-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-1">
                 <NewCaseSelect
@@ -295,9 +477,23 @@ const StepTwo = ({
                 />
               </div>
             </div>
-          </div>
+          </div> */}
 
-          <div className="mt-6">
+          <div className="my-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-1">
+                <Input
+                  handleChange={handleChange}
+                  name="City"
+                  value={patientDetails?.City || ""}
+                  label="City"
+                  labelStyle={{ paddingBottom: "12px" }}
+                  style={{ height: "40px" }}
+                />
+              </div>
+            </div>
+          </div>
+          {/* <div className="mt-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-1">
                 <Input
@@ -310,13 +506,47 @@ const StepTwo = ({
                 />
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
       <div className="mt-18 flex items-center justify-between p-6">
         <NextButton iconLeft={true} text="Back" handleClick={prevStep} />
-        <NextButton iconRight={true} handleClick={nextStep} />
+        <div className="hidden lg:flex">
+          <NextButton text="View ReteList" style={{ marginRight: "16px" }} />
+          <NextButton text="View Documents" style={{ marginRight: "16px" }} />
+          {param ? (
+            <NextButton
+              text="Generate Pre Auth Form"
+              style={{ marginRight: "16px" }}
+            />
+          ) : null}
+
+          <NextButton
+            text="Send Mail"
+            style={{ marginRight: "16px" }}
+            handleClick={toggleModal}
+          />
+        </div>
+        <NextButton iconRight={true} handleClick={saveDataToDb} />
+      </div>
+      <div className="mt-18 flex items-center justify-between w-full p-6 lg:hidden">
+        <div className="flex ml-auto mr-auto w-72 sm:w-full justify-between flex-col sm:flex-row">
+          <NextButton text="View ReteList" style={{ marginTop: "16px" }} />
+          <NextButton text="View Documents" style={{ marginTop: "16px" }} />
+          {param ? (
+            <NextButton
+              text="Generate Pre Auth Form"
+              style={{ marginTop: "16px" }}
+            />
+          ) : null}
+
+          <NextButton
+            text="Send Mail"
+            style={{ marginTop: "16px" }}
+            handleClick={toggleModal}
+          />
+        </div>
       </div>
     </div>
   );

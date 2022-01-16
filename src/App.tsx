@@ -17,27 +17,18 @@ import CreateCompany from "./components/empanelled/createCompany/CreateCompany";
 import UpdateCompanies from "./components/empanelled/updateCompanies/UpdateCompanies";
 import Mail from "./components/mail/Mail";
 import LoginPage from "./components/auth/login.page";
-import SignPage from "./components/auth/signup.page";
-import { useState } from "react";
+// import SignPage from "./components/auth/signup.page";
+import { useAppSelector } from "./redux/hooks";
+import PreauthForm from "./components/preauthForm/PreauthForm";
 
 function App() {
-  const [user, setUser] = useState("hello");
-  if (!user) {
-    return (
-      <Router>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignPage />} />
-        </Routes>
-      </Router>
-    );
-  }
+  const { user } = useAppSelector((state) => state?.user);
+
   return (
     <Router>
       <Layout>
         <Routes>
-          {user && (
+          {user ? (
             <>
               <Route path="/" element={<Home />} />
               <Route path="/plan" element={<Plan />} />
@@ -49,10 +40,11 @@ function App() {
               <Route path="/doctor/create" element={<DoctorCreate />} />
               <Route path="/doctor/:key" element={<DoctorUpdate />} />
               <Route path="/newCase" element={<NewCase />} />
+              <Route path="/newCase/:case" element={<NewCase />} />
               <Route path="/order" element={<Order />} />
-              <Route path="/drafts" element={<Drafts />} />
+              <Route path="/caseData/:case" element={<Drafts />} />
               <Route path="/mail" element={<Mail />} />
-
+              <Route path="/preauthform" element={<PreauthForm />} />
               <Route
                 path="/empanelledCompanies"
                 element={<EmpanelledCompanies />}
@@ -66,9 +58,13 @@ function App() {
                 element={<UpdateCompanies />}
               />
             </>
+          ) : (
+            <>
+              <Route path="/" element={<LoginPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              {/* <Route path="/signup" element={<SignPage />} /> */}
+            </>
           )}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignPage />} />
         </Routes>
       </Layout>
     </Router>

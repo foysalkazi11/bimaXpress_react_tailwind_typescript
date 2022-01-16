@@ -2,6 +2,7 @@
   border-bottom-right-radius: 5px;
   border-top-right-radius: 5px;
 }
+
 .tableHeader:first-child {
   border-bottom-left-radius: 5px;
   border-top-left-radius: 5px;
@@ -10,8 +11,7 @@
 .downloadBtn {
   width: 100px;
   height: 30px;
-  background: transparent linear-gradient(120deg, #414141 0%, #333232 100%) 0%
-    0% no-repeat padding-box;
+  background: transparent linear-gradient(120deg, #414141 0%, #333232 100%) 0% 0% no-repeat padding-box;
   border-radius: 3px;
   border: none;
   outline: none;

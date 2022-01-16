@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import search_icon from "../../assets/icon/search_icon.svg";
 import deleteIcon from "../../assets/icon/delete_icon.svg";
 import openBook from "../../assets/icon/book_open.svg";
@@ -11,53 +11,49 @@ import MailDescripationHeader from "./mailDescripationHeader/MailDescripationHea
 import MailDescripation from "./mailDescripatio/MailDescripation";
 import ApproveModal from "./approveModal/ApproveModal";
 import ComposeModal from "./composeModal/ComposeModal";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import {
+  setComposeMailStatus,
+  setInboxMailList,
+  setSentMailList,
+} from "../../redux/slices/mailSlice";
+import { setLoading } from "../../redux/slices/utilitySlice";
+import notification from "../theme/utility/notification";
+import axiosConfig from "../../config/axiosConfig";
+// import ReactHtmlParser from "react-html-parser";
+import parse from "html-react-parser";
 
-const mailList = [
-  {
-    id: 1,
-    heading: "Kaspersky Malware Protection",
-    sebHeading: "Internet security",
-    date: "10 Nov",
-    discripation:
-      "Forget about spam, advertising mailings, hacking and attacking robots. Keep your real mailbox clean and secure. Temp Mail provides temporary, secure.",
-  },
-  {
-    id: 2,
-    heading: "Kaspersky Malware Protection",
-    sebHeading: "Internet security",
-    date: "10 Nov",
-    discripation:
-      "Forget about spam, advertising mailings, hacking and attacking robots. Keep your real mailbox clean and secure. Temp Mail provides temporary, secure.",
-  },
-  {
-    id: 3,
-    heading: "Kaspersky Malware Protection",
-    sebHeading: "Internet security",
-    date: "09 Nov",
-    discripation:
-      "Forget about spam, advertising mailings, hacking and attacking robots. Keep your real mailbox clean and secure. Temp Mail provides temporary, secure.",
-  },
-  {
-    id: 4,
-    heading: "Kaspersky Malware Protection",
-    sebHeading: "Internet security",
-    date: "08 Nov",
-    discripation:
-      "Forget about spam, advertising mailings, hacking and attacking robots. Keep your real mailbox clean and secure. Temp Mail provides temporary, secure.",
-  },
-  {
-    id: 5,
-    heading: "Kaspersky Malware Protection",
-    sebHeading: "Internet security",
-    date: "07 Nov",
-    discripation:
-      "Forget about spam, advertising mailings, hacking and attacking robots. Keep your real mailbox clean and secure. Temp Mail provides temporary, secure.",
-  },
-];
+// function b64DecodeUnicode(str: string) {
+//   // Going backwards: from bytestream, to percent-encoding, to original string.
+//   return decodeURIComponent(
+//     atob(str)
+//       .split("")
+//       .map(function (c) {
+//         return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+//       })
+//       .join("")
+//   );
+// }
+
 const Mail = () => {
   const [mailDes, setMailDes] = useState(0);
   const [openApproveModal, setOpenApproveModal] = useState(false);
   const [openComposeModal, setOpenComposeModal] = useState(false);
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state?.user);
+  const { inboxMailList, sentMailList, currentMailList } = useAppSelector(
+    (state) => state?.mail
+  );
+  const [selectedMail, setSelectedMail] = useState({});
+
+  const mailList = {
+    inbox: [...inboxMailList],
+    sent: [...sentMailList],
+  };
+
+  //@ts-ignore
+  // var decodedStringAtoB = atob(inboxMailList[0]?.message);
+  // console.log(decodedStringAtoB);
 
   const handleOpenApproveModal = () => {
     setOpenApproveModal((pre) => !pre);
@@ -65,6 +61,38 @@ const Mail = () => {
   const handleOpenComposeModal = () => {
     setOpenComposeModal((pre) => !pre);
   };
+
+  const handleSelectMail = (num: number) => {
+    setMailDes(1);
+    //@ts-ignore
+    const singleMail = mailList[currentMailList][num];
+    setSelectedMail(singleMail);
+  };
+
+  const fetchMailList = async () => {
+    dispatch(setLoading(true));
+    const GETINBOXMAIL = `/inbox?email=${user}`;
+    const GETSENTMAIL = `/sentInbox?email=${user}`;
+    try {
+      const { data: inboxMail } = await axiosConfig.get(GETINBOXMAIL);
+      const { data: sentMail } = await axiosConfig.get(GETSENTMAIL);
+      dispatch(setLoading(false));
+      dispatch(setInboxMailList(inboxMail?.data));
+      dispatch(setSentMailList(sentMail?.data));
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
+
+  useEffect(() => {
+    if (!inboxMailList?.length || !sentMailList?.length) {
+      fetchMailList();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const renderUI = () => {
     switch (mailDes) {
@@ -75,6 +103,8 @@ const Mail = () => {
           <MailDescripation
             openApproveModal={openApproveModal}
             handleOpenApproveModal={handleOpenApproveModal}
+            openModal={handleOpenComposeModal}
+            selectedMail={selectedMail}
           />
         );
 
@@ -104,50 +134,70 @@ const Mail = () => {
             <img
               src={smellEditIcon}
               alt="icon"
-              onClick={handleOpenComposeModal}
+              onClick={() => {
+                dispatch(setComposeMailStatus("new"));
+                handleOpenComposeModal();
+              }}
               className="cursor-pointer"
             />
           </div>
         </div>
         <div className="border-t-2 border-fontColor-darkGray p-4  ">
-          {mailList?.map((mail, index) => {
-            return (
-              <div key={index} className="grid grid-cols-12">
-                <div className="col-span-1">
-                  <GeneralCheckbox />
-                </div>
-                <div className="col-span-11 mb-4 pb-3 border-b border-fontColor-darkGray">
-                  <div className="flex items-center justify-between">
-                    <div
-                      onClick={() => setMailDes(1)}
-                      className="cursor-pointer"
-                    >
-                      <h2 className="text-xl text-fontColor">
+          {/* @ts-ignore */}
+          {mailList[currentMailList]?.length
+            ? //@ts-ignore
+              mailList[currentMailList]?.map((mail, index) => {
+                return (
+                  <div key={index} className="grid grid-cols-12">
+                    <div className="col-span-1">
+                      <GeneralCheckbox />
+                    </div>
+                    <div className="col-span-11 mb-4 pb-3 border-b border-fontColor-darkGray">
+                      <h2
+                        className="text-xl text-fontColor cursor-pointer"
+                        onClick={() => handleSelectMail(index)}
+                      >
                         {" "}
-                        {mail?.heading}
+                        {/* @ts-ignore */}
+                        {mail?.name}
                       </h2>
-                      <p className="text-xs text-fontColor">
-                        {mail?.sebHeading}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs text-fontColor mr-2">
+                            {/* @ts-ignore */}
+                            {mail?.subject}
+                          </p>
+                        </div>
+                        <p className="text-xs text-fontColor">
+                          {/* @ts-ignore */}
+                          {mail?.date}
+                        </p>
+                      </div>
+
+                      <p
+                        className={`text-sm text-fontColor mt-4 ${styles.mailDiscriptationContainer}`}
+                        // dangerouslySetInnerHTML={{ __html: mail?.message }}
+                      >
+                        {/* @ts-ignore */}
+                        {/* <div dangerouslySetInnerHTML={mail?.message}></div> */}
+                        {parse(mail?.message)}
                       </p>
                     </div>
-                    <p className="text-xs text-fontColor">{mail?.date}</p>
                   </div>
-
-                  <p className="text-sm text-fontColor mt-4">
-                    {mail?.discripation}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
+                );
+              })
+            : null}
         </div>
       </div>
-      <div className="col-span-7 bg-primary-light min-h-full p-4 relative">
+      <div className="col-span-7 bg-primary-light min-h-full p-4 ">
         {renderUI()}
         <div className={styles.compareButContainer}>
           <button
             className={`${styles.compostBtn}`}
-            onClick={handleOpenComposeModal}
+            onClick={() => {
+              dispatch(setComposeMailStatus("new"));
+              handleOpenComposeModal();
+            }}
           >
             <img src={big_edit_icon} alt="icon" className="mr-2" />
             Compose
@@ -160,6 +210,7 @@ const Mail = () => {
         <ComposeModal
           isOpen={openComposeModal}
           closeModal={handleOpenComposeModal}
+          selectedMail={selectedMail}
         />
       </div>
     </div>

@@ -14,6 +14,18 @@ import filter from "../../assets/icon/filter.svg";
 import NewCaseSelect from "../theme/select/newCaseSelect/NewCaseSelect";
 import TableCheckbox from "../theme/table/tableCheckbox/TableCheckbox";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useNavigate, useParams } from "react-router-dom";
+import { setLoading } from "../../redux/slices/utilitySlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import axiosConfig from "../../config/axiosConfig";
+import { setCaseData } from "../../redux/slices/homeSlice";
+import notification from "../theme/utility/notification";
+import SummeryModal from "./Summary/SummeryModal";
+import NewAction from "./newAction/NewAction";
+import SentMail from "./sentMail/SentMail";
+import ApproveModal from "./approveModal/ApproveModal";
+import EnchanceAndFciModal from "./enhanceAndFci/EnchanceAndFci";
+import styles from "./Drafts.module.css";
 
 const insuranceCompany = [
   { label: "Health India Insurance", value: "health_india_insurance" },
@@ -39,66 +51,120 @@ interface ColumnDetails {
 }
 
 const Drafts = () => {
+  const [tableRow, setTableRow] = useState<ColumnDetails[]>([]);
+  const param = useParams();
   const [inputValue, setInputValue] = useState("");
-  const data = React.useMemo<ColumnDetails[]>(
-    () => [
-      {
-        name: "Pranav vikram",
-        phone: 9898525481,
-        claimNumber: "TFS4556dD",
-        admissionDate: "20 Nov 2021",
-        claimAmount: "2000",
-        insuranceTPA: "Health India Insurance",
-        action: <img src={download} alt="icon" />,
-      },
-      {
-        name: "Chandar sekar",
-        phone: 9898525481,
-        claimNumber: "TFS47556dD",
-        admissionDate: "20 Nov 2021",
-        claimAmount: "3000",
-        insuranceTPA: "Reliance General Insurance",
-        action: <img src={download} alt="icon" />,
-      },
-      {
-        name: "Sai shree",
-        phone: 9898525481,
-        claimNumber: "T4556dD",
-        admissionDate: "20 Nov 2021",
-        claimAmount: "3000",
-        insuranceTPA: "Futura Generali Insurance",
-        action: <img src={download} alt="icon" />,
-      },
-      {
-        name: "Rupa rajesh",
-        phone: 9898525481,
-        claimNumber: "RFS56dD",
-        admissionDate: "20 Nov 2021",
-        claimAmount: "2300",
-        insuranceTPA: "Medsave Health Insurance",
-        action: <img src={download} alt="icon" />,
-      },
-      {
-        name: "vikram",
-        phone: 9898525481,
-        claimNumber: "TFS4556dD",
-        admissionDate: "20 Nov 2021",
-        claimAmount: "2300",
-        insuranceTPA: "Bajaj Allianz Life Insurance",
-        action: <img src={download} alt="icon" />,
-      },
-      {
-        name: "Kumar",
-        phone: 9898525481,
-        claimNumber: "TDS4556dD",
-        admissionDate: "20 Nov 2021",
-        claimAmount: "2300",
-        insuranceTPA: "Bajaj Allianz Life Insurance",
-        action: <img src={download} alt="icon" />,
-      },
-    ],
-    []
-  );
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state?.user);
+  const { caseData } = useAppSelector((state) => state?.home);
+  const navigate = useNavigate();
+  const [summeryData, setSummeryData] = useState({});
+  const [action, setAction] = useState("");
+
+  const [openSummeryModal, setOpenSummeryModal] = useState<boolean>(false);
+  const toggleSummeryModal = () => {
+    setOpenSummeryModal((pre) => !pre);
+  };
+  const [openNewActionModal, setOpenNewActionModal] = useState<boolean>(false);
+  const toggleNewActionModal = () => {
+    setOpenNewActionModal((pre) => !pre);
+  };
+  const [openSentmailModal, setOpenSentmailModal] = useState<boolean>(false);
+  const toggleSentmailModal = () => {
+    setOpenSentmailModal((pre) => !pre);
+  };
+  const [openApproveModal, setOpenApproveModal] = useState<boolean>(false);
+  const toggleApproveModal = () => {
+    setOpenApproveModal((pre) => !pre);
+  };
+  const [openEnhanceAndFciModal, setOpenEnhanceAndFciModal] =
+    useState<boolean>(false);
+  const toggleEnhanceAndFciModal = () => {
+    setOpenEnhanceAndFciModal((pre) => !pre);
+  };
+
+  const fetchAnalyst = async () => {
+    dispatch(setLoading(true));
+    const URL = `/${param?.case}?email=${user}`;
+    try {
+      const { data } = await axiosConfig.get(URL);
+      dispatch(setLoading(false));
+      dispatch(setCaseData(data?.data));
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchAnalyst();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const showDetails = (value: string) => {
+    if (param?.case === "draftcases") {
+      navigate(`/newCase/${value}`);
+    } else {
+      //@ts-ignore
+      const obj = caseData[value] || {};
+      console.log(obj);
+      setSummeryData(obj);
+      toggleSummeryModal();
+    }
+  };
+
+  useEffect(() => {
+    if (action === "query") {
+      toggleSentmailModal();
+    }
+    if (
+      action === "Approved" ||
+      action === "Reject" ||
+      action === "Discharge_Approved"
+    ) {
+      toggleApproveModal();
+    }
+    if (action === "Enhance" || action === "fci") {
+      toggleEnhanceAndFciModal();
+    }
+  }, [action]);
+
+  useEffect(() => {
+    const res = Object.entries(caseData)?.map(
+      (
+        //@ts-ignore
+        [
+          key,
+          {
+            patient_details: { Name, Phone, Policy_Id },
+            Tpa_Company,
+            hospital_details: { total, Date_of_Admission },
+          },
+        ]
+      ) => ({
+        name: Name,
+        phone: Phone,
+        claimNumber: Policy_Id,
+        admissionDate: Date_of_Admission,
+        claimAmount: total,
+        insuranceTPA: Tpa_Company,
+        action: (
+          <img
+            src={download}
+            alt="icon"
+            onClick={() => showDetails(key)}
+            className="cursor-pointer"
+          />
+        ),
+      })
+    );
+    setTableRow(res);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [caseData]);
+
+  const data = React.useMemo<ColumnDetails[]>(() => tableRow, [tableRow]);
 
   const columns = React.useMemo(
     () => [
@@ -207,8 +273,10 @@ const Drafts = () => {
   }, [setPageSize]);
 
   return (
-    <div className="py-6 px-10 w-full flex flex-col">
-      <div className="flex items-center justify-between  flex-wrap ">
+    <div
+      className={`py-6 px-10 w-auto flex flex-col overflow-x-scroll ${styles.scrollBarDesign}`}
+    >
+      <div className="flex items-center justify-between flex-wrap">
         <div className="flex items-center mt-6">
           <div className="mr-4 ">
             <TableSearch
@@ -239,10 +307,10 @@ const Drafts = () => {
                 defaultOption="Insurance TPA"
                 value={options?.insuranceTPA || ""}
                 style={{
-                  maxWidth: "170px",
+                  minWidth: "170px",
                   height: "30px",
                   backgroundColor: "#FFFFFF17",
-                  padding: "0px",
+                  padding: "0px 5px",
                   borderRadius: "3px",
                   fontSize: "12px",
                 }}
@@ -256,10 +324,10 @@ const Drafts = () => {
                 defaultOption="Status"
                 value={options?.dateRange || ""}
                 style={{
-                  maxWidth: "125px",
+                  minWidth: "125px",
                   height: "30px",
                   backgroundColor: "#FFFFFF17",
-                  padding: "0px",
+                  padding: "0px 5px",
                   borderRadius: "3px",
                   fontSize: "12px",
                 }}
@@ -282,6 +350,43 @@ const Drafts = () => {
         previousPage={previousPage}
         canNextPage={canNextPage}
         canPreviousPage={canPreviousPage}
+      />
+
+      <SummeryModal
+        summeryData={summeryData}
+        closeModal={toggleSummeryModal}
+        isOpen={openSummeryModal}
+        toggleNewActionModal={toggleNewActionModal}
+      />
+
+      <NewAction
+        closeModal={toggleNewActionModal}
+        isOpen={openNewActionModal}
+        selectValue={action}
+        setSelectValue={setAction}
+        toggleSummeryModal={toggleSummeryModal}
+        newCaseData={summeryData}
+        action={action}
+      />
+
+      <SentMail
+        newCaseData={summeryData}
+        closeModal={toggleSentmailModal}
+        isOpen={openSentmailModal}
+        action={action}
+      />
+
+      <ApproveModal
+        closeModal={toggleApproveModal}
+        isOpen={openApproveModal}
+        newCaseData={summeryData}
+        action={action}
+      />
+      <EnchanceAndFciModal
+        closeModal={toggleEnhanceAndFciModal}
+        isOpen={openEnhanceAndFciModal}
+        newCaseData={summeryData}
+        action={action}
       />
     </div>
   );
