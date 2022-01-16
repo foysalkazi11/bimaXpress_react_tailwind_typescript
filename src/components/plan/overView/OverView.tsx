@@ -103,7 +103,7 @@ const OverView = () => {
 
         <div className="flex flex-col md:grid grid-cols-12 relative">
           {/* first-4-col */}
-          <div className="col-span-4 mt-auto">
+          <div className="col-span-4 mt-auto ml-2">
             <p className="text-xs text-fontColor-gray">
               Subscription started on
             </p>
