@@ -3,6 +3,7 @@ import FormButton from "../../theme/button/FormButton";
 import { IoDocumentsOutline } from "react-icons/io5";
 import { Row, useTable } from "react-table";
 import styles from "./ActionTaken.module.css";
+import scrollbar from '../../../scrollbar.module.css';
 import { format } from "date-fns";
 
 interface ColumnDetails {
@@ -90,7 +91,7 @@ const ActionTaken = ({
       </div>
 
       <div>
-        <table {...getTableProps()} className="w-full mt-8 overflow-x-scroll">
+        <table {...getTableProps()} className={`w-full mt-8 overflow-x-scroll ${scrollbar.scrollBarDesign}`}>
           <thead>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>

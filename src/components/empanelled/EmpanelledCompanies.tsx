@@ -12,6 +12,7 @@ import { setLoading } from "../../redux/slices/utilitySlice";
 import notification from "../theme/utility/notification";
 import axiosConfig from "../../config/axiosConfig";
 import { setEmpanelledCompaniesListList } from "../../redux/slices/empanelledCompaniesSlice";
+import scrollbar from '../../scrollbar.module.css';
 
 interface ColumnDetails {
   [key: string]: any;
@@ -137,7 +138,7 @@ const EmpanelledCompanies = () => {
   }, [setPageSize]);
 
   return (
-    <div className="py-6 px-10 w-full flex flex-col overflow-x-scroll">
+    <div className={`py-6 px-10 w-full flex flex-col overflow-x-scroll ${scrollbar.scrollBarDesign}`}>
       <p className="text-base text-fontColor-gray ">
         Find details about the insurance companies
       </p>
