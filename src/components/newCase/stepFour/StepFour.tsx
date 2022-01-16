@@ -697,7 +697,6 @@ const StepFour = ({
           <p className="pb-6 text-lg font-semibold text-fontColor-light">
             Total Cost
           </p>
-
           <p className=" border-b-2 border-fontColor-darkGray py-1 w-full text-base text-fontColor-light ">
             {totalCost}
           </p>
