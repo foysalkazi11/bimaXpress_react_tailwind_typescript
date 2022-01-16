@@ -9,8 +9,13 @@ module.exports = {
       9000: "9000ms",
     },
     extend: {
+      screens: {
+        '1040': '1200px',
+      },
       minHeight: {
         'calc-30': 'calc(100vh - 300px)',
+        'calc-5': 'calc(80vh - 50px)',
+        '10': '3rem',
       },
       margin: {
         "120-neg": "-70rem",

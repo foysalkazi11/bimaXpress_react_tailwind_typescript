@@ -352,7 +352,7 @@ const StepThree = ({
                 />
               </div>
             </div>
-          
+
           </div> */}
 
           <div className="mt-6">
@@ -694,9 +694,9 @@ const StepThree = ({
         </div>
       </div>
 
-      <div className="p-6 flex items-center justify-between">
+      <div className="mt-18 flex items-center justify-between p-6">
         <NextButton iconLeft={true} text="Back" handleClick={prevStep} />
-        <div className="flex items-center flex-wrap">
+        <div className="hidden lg:flex">
           <NextButton
             text="View ReteList"
             style={{ marginRight: "16px", marginBottom: "16px" }}
@@ -712,13 +712,39 @@ const StepThree = ({
             style={{ marginRight: "16px", marginBottom: "16px" }}
             handleClick={() => navigate("/preauthform")}
           />
+
           <NextButton
             text="Send Mail"
-            style={{ marginRight: "16px", marginBottom: "16px" }}
+            style={{ marginRight: "16px" }}
             handleClick={toggleModal}
           />
         </div>
         <NextButton iconRight={true} handleClick={saveDataToDb} />
+      </div>
+      <div className="mt-18 flex items-center justify-between w-full p-6 lg:hidden">
+        <div className="flex ml-auto mr-auto w-72 sm:w-full justify-between flex-col sm:flex-row">
+          <NextButton
+            text="View ReteList"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+            handleClick={toggleDocumentsModal}
+          />
+          <NextButton
+            text="View Documents"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+            handleClick={toggleViewDocumentsModal}
+          />
+          <NextButton
+            text="Generate Pre Auth Form"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+            handleClick={() => navigate("/preauthform")}
+          />
+
+          <NextButton
+            text="Send Mail"
+            style={{ marginTop: "16px" }}
+            handleClick={toggleModal}
+          />
+        </div>
       </div>
     </div>
   );

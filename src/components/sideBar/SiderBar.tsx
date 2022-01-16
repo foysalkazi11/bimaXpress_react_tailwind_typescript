@@ -148,6 +148,7 @@ const SiderBar = () => {
     }
   };
   const handleActiveMenu = (num: number, name: string, link: string) => {
+    dispatch(setCollapseState(!collapsed));
     if (user) {
       setActiveMenu(num);
       dispatch(setCurrentMenu(name));

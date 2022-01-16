@@ -144,7 +144,7 @@ const StepOne = ({
   };
 
   return (
-    <div className=" relative m-8">
+    <div className=" relative m-8 min-h-calc-5">
       <div className={`grid gap-8 sm:grid-cols-2 ${styles.elementDiv}`}>
         <div className="col-span-1 ">
           <NewCaseSelect
@@ -169,7 +169,7 @@ const StepOne = ({
       </div>
 
       <div
-        className="flex items-center justify-between flex-wrap"
+        className="flex items-center justify-between flex-wrap absolute w-full"
         style={{ bottom: "30px" }}
       >
         {param ? (

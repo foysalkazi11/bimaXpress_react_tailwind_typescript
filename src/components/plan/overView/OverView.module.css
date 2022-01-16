@@ -1,6 +1,6 @@
 .overviewContainer {
   width: 100%;
-  height: 214px;
+  min-height: 214px;
   background: transparent linear-gradient(99deg, #ffffff4d 0%, #ffffff00 100%)
     0% 0% no-repeat padding-box;
   box-shadow: inset 0px 0px 10px #ffffff1a;
