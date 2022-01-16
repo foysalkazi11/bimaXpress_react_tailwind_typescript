@@ -8,6 +8,7 @@ import external_link from "../../../assets/icon/external_link.svg";
 import filter from "../../../assets/icon/filter.svg";
 import NewCaseSelect from "../../theme/select/newCaseSelect/NewCaseSelect";
 import InputDate from "../../theme/inputDate/InputDate";
+import scrollbar from "../../../scrollbar.module.css";
 
 const insuranceCompany = [
   { label: "Health India Insurance", value: "health_india_insurance" },
@@ -182,11 +183,11 @@ const TrackOrder = () => {
   }, [setPageSize]);
 
   return (
-    <div className="py-6 px-10 w-full flex flex-col">
+    <div className={`py-6 px-10 w-full flex flex-col overflow-x-scroll ${scrollbar.scrollBarDesign}`}>
       <p className="text-base text-fontColor-gray ">
         Find details about doctor and can update details
       </p>
-      <div className="flex items-center justify-between  flex-wrap ">
+      <div className={`flex items-center justify-between  flex-wrap `}>
         <div className="flex items-center mt-6">
           <div className="mr-4 ">
             <TableSearch

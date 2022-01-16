@@ -14,6 +14,7 @@ import filter from "../../../assets/icon/filter.svg";
 import NewCaseSelect from "../../theme/select/newCaseSelect/NewCaseSelect";
 import InputDate from "../../theme/inputDate/InputDate";
 import TableCheckbox from "../../theme/table/tableCheckbox/TableCheckbox";
+import scrollbar from "../../../scrollbar.module.css";
 
 const insuranceCompany = [
   { label: "Health India Insurance", value: "health_india_insurance" },
@@ -217,7 +218,7 @@ const OrderHistory = () => {
   }, [setPageSize]);
 
   return (
-    <div className="py-6 px-10 w-full flex flex-col">
+    <div className={`py-6 px-10 w-full flex flex-col overflow-x-scroll ${scrollbar.scrollBarDesign}`}>
       <p className="text-base text-fontColor-gray ">
         Find details about doctor and can update details
       </p>
