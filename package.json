@@ -31,6 +31,7 @@
   },
   "proxy": "http://ec2-3-110-207-150.ap-south-1.compute.amazonaws.com",
   "scripts": {
+    "dev": "craco start",
     "start": "serve -s build",
     "build": "craco build",
     "test": "craco test",
