@@ -5,6 +5,7 @@ import SinglePlan from "../../theme/plan/SinglePlan";
 import styles from "./ExistingPlan.module.css";
 import axiosConfig from "../../../config/axiosConfig";
 import { setAllPlans } from "../../../redux/slices/planSlice";
+import scrollbar from '../../../scrollbar.module.css';
 
 type ExistingPlansProps = {
   setRender: Dispatch<SetStateAction<string>>;
@@ -67,7 +68,7 @@ const ExistingPlans = ({ setRender }: ExistingPlansProps) => {
       </div>
 
       <div
-        className={`py-8 mb-12 flex items-center overflow-x-scroll overflow-y-hidden ${styles.plansContainer}`}
+        className={`py-8 mb-12 flex items-center overflow-x-scroll ${scrollbar.scrollBarDesign} overflow-y-hidden ${styles.plansContainer}`}
       >
         {planDetails?.map((plan, index) => {
           //@ts-ignore

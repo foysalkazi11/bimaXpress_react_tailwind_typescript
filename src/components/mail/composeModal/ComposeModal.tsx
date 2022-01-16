@@ -56,10 +56,6 @@ const ComposeModal = ({
   const bodyRef = useRef(null);
 
   const uploadFile = async () => {
-    console.log(mail);
-    //@ts-ignore
-    console.log(typeof bodyRef?.current?.innerHTML);
-
     dispatch(setLoading(true));
 
     const URL = `/${

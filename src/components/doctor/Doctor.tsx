@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { setLoading } from "../../redux/slices/utilitySlice";
 import notification from "../theme/utility/notification";
 import { setDoctorList } from "../../redux/slices/doctorSlice";
+import scrollbar from '../../scrollbar.module.css';
 interface ColumnDetails {
   [key: string]: any;
 }
@@ -125,7 +126,7 @@ const Doctor = () => {
   }, [setPageSize]);
 
   return (
-    <div className="py-6 px-10 w-full flex flex-col overflow-x-scroll">
+    <div className={`py-6 px-10 w-full flex flex-col overflow-x-scroll ${scrollbar.scrollBarDesign}`}>
       <p className="text-base text-fontColor-gray ">
         Find details about doctor and can update details
       </p>

@@ -12,6 +12,7 @@ import { setLoading } from "../../redux/slices/utilitySlice";
 import notification from "../theme/utility/notification";
 import axiosConfig from "../../config/axiosConfig";
 import { setEmpanelledCompaniesListList } from "../../redux/slices/empanelledCompaniesSlice";
+import scrollbar from '../../scrollbar.module.css';
 
 interface ColumnDetails {
   [key: string]: any;
@@ -57,7 +58,7 @@ const EmpanelledCompanies = () => {
           //@ts-ignore
           [key, { Exclusion, Ratelist, Discount, expiryDate }]
         ) => ({
-          logo: (
+          ratelistImage: (
             <img
               src={Ratelist}
               alt="logo"
@@ -65,7 +66,7 @@ const EmpanelledCompanies = () => {
             />
           ),
           name: key,
-          expiryDate: expiryDate || "",
+          // expiryDate: expiryDate || "",
           discount: Discount,
           exclusion: Exclusion,
           action: (
@@ -84,17 +85,17 @@ const EmpanelledCompanies = () => {
   const columns = React.useMemo(
     () => [
       {
-        Header: "Logo",
-        accessor: "logo", // accessor is the "key" in the data
+        Header: "Ratelist Image",
+        accessor: "ratelistImage", // accessor is the "key" in the data
       },
       {
         Header: "Name",
         accessor: "name", // accessor is the "key" in the data
       },
-      {
-        Header: "Expiry date",
-        accessor: "expiryDate",
-      },
+      // {
+      //   Header: "Expiry date",
+      //   accessor: "expiryDate",
+      // },
       {
         Header: "Discount",
         accessor: "discount",
@@ -137,7 +138,7 @@ const EmpanelledCompanies = () => {
   }, [setPageSize]);
 
   return (
-    <div className="py-6 px-10 w-full flex flex-col overflow-x-scroll">
+    <div className={`py-6 px-10 w-full flex flex-col overflow-x-scroll ${scrollbar.scrollBarDesign}`}>
       <p className="text-base text-fontColor-gray ">
         Find details about the insurance companies
       </p>

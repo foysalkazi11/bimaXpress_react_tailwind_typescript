@@ -3,7 +3,7 @@
 /* width: 20px; */
 /* height: 10px; */
 background-color: #4b4a4a;
-height: 8px;
+height: 12px;
 margin: 20px;
 }
 .scrollBarDesign::-webkit-scrollbar-track{
@@ -18,5 +18,5 @@ height: 8px;
   border-radius: 10px;
 }
 .scrollBarDesign::-webkit-scrollbar-thumb:hover {
-  background: #b30000;
+  background: #141313;
 }

@@ -1,30 +1,152 @@
-import React, { useState, useRef, useEffect, ChangeEvent } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import styles from "./CreateCompany.module.css";
 import Input from "../../theme/input/Input";
 import FormButton from "../../theme/button/FormButton";
-import { Link } from "react-router-dom";
-import InputDate from "../../theme/inputDate/InputDate";
+import { Link, useNavigate } from "react-router-dom";
+// import InputDate from "../../theme/inputDate/InputDate";
 import left_arrow from "../../../assets/icon/left_arrow.svg";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { setLoading } from "../../../redux/slices/utilitySlice";
+import {
+  setAllCompaniesList,
+  setEmpanelledCompaniesListList,
+} from "../../../redux/slices/empanelledCompaniesSlice";
+import axiosConfig from "../../../config/axiosConfig";
+import notification from "../../theme/utility/notification";
+import NewCaseSelect from "../../theme/select/newCaseSelect/NewCaseSelect";
+import { IoClose } from "react-icons/io5";
+import { FiPaperclip } from "react-icons/fi";
 
 const CreateCompany = () => {
+  const [insuranceCompany, setInsuranceCompany] = useState<any>([]);
   const [analystInfo, setAnalystInfo] = useState({
     name: "",
     expiryDate: "",
     discount: "",
     exclusion: "",
+    Ratelist: [],
   });
+  const { allCompaniesList } = useAppSelector(
+    (state) => state?.empanelledCompanies
+  );
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state?.user);
+  const { newCaseNum } = useAppSelector((state) => state?.case);
+  const navigate = useNavigate();
 
-  const inputRef = useRef<any>(null);
+  const imageUpload = async () => {
+    const IMAGEUPLOAD = `/imageupload?email=${user}&casenumber=${
+      newCaseNum ? newCaseNum : "case0"
+    }`;
+    const imageFormData = new FormData();
+    let name: string | Blob | any[] = [];
+
+    analystInfo?.Ratelist?.forEach((img) => {
+      //@ts-ignore
+      name.push(img?.name);
+
+      imageFormData.append("image", img);
+    });
+    //@ts-ignore
+    imageFormData?.append("imagename", name);
+    imageFormData?.append("arrayname", "Ratelist");
+
+    const { data } = await axiosConfig.post(IMAGEUPLOAD, imageFormData);
+    return data?.data;
+  };
+
+  const addAnalyst = async () => {
+    const URL = `/empanelcompany?email=${user}`;
+    if (analystInfo?.Ratelist?.length) {
+      dispatch(setLoading(true));
+
+      const formData = new FormData();
+      formData?.append("companyname", analystInfo?.name);
+      formData?.append("discount", analystInfo?.discount);
+      formData?.append("exclusion", analystInfo?.exclusion);
+      const images = await imageUpload();
+      formData?.append("Ratelist", images);
+      try {
+        await axiosConfig.post(URL, formData);
+        const { data } = await axiosConfig.get(URL);
+
+        dispatch(setLoading(false));
+        notification("info", "Create successfully");
+        dispatch(setEmpanelledCompaniesListList(data?.data));
+        navigate(`/empanelledCompanies/${analystInfo?.name}`);
+      } catch (error) {
+        dispatch(setLoading(false));
+        //@ts-ignore
+        notification("error", error?.message);
+      }
+    } else {
+      notification("error", "Please upload documents");
+    }
+  };
+
+  const fetchEmpanelledCompanies = async () => {
+    const URLALLCOMPANY = `/allcompany`;
+    dispatch(setLoading(true));
+    try {
+      const { data: allCompanyData } = await axiosConfig.get(URLALLCOMPANY);
+      dispatch(setLoading(false));
+      dispatch(setAllCompaniesList(allCompanyData?.data));
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
+
+  const removeImage = (name: string) => {
+    setAnalystInfo((pre: any) => ({
+      ...pre,
+      //@ts-ignore
+      Ratelist: pre?.Ratelist?.filter((files) => files?.name !== name),
+    }));
+  };
 
   useEffect(() => {
-    inputRef?.current?.focus();
+    if (!Object.entries(allCompaniesList)?.length) {
+      fetchEmpanelledCompanies();
+    } else {
+      // const email = JSON.parse(companyInfo?.replace(/'/g, '"'))?.email;
+      //@ts-ignore
+      const res = Object.entries(allCompaniesList)?.map(
+        (
+          //@ts-ignore
+          [key, value]
+        ) => ({
+          label: key,
+          value: key,
+        })
+      );
+
+      setInsuranceCompany(res);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // const inputRef = useRef<any>(null);
+
+  // useEffect(() => {
+  //   inputRef?.current?.focus();
+  // }, []);
 
   const updateAnalytstInfo = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLDataElement | any>
   ) => {
-    const { name, value } = e?.target;
-    setAnalystInfo((pre) => ({ ...pre, [name]: value }));
+    const { name, value, type } = e?.target;
+    if (type === "file") {
+      //@ts-ignore
+      setAnalystInfo((pre) => ({
+        ...pre,
+        //@ts-ignore
+        Ratelist: [...pre?.Ratelist, ...e?.target?.files],
+      }));
+    } else {
+      setAnalystInfo((pre) => ({ ...pre, [name]: value }));
+    }
   };
 
   return (
@@ -39,7 +161,8 @@ const CreateCompany = () => {
                 <img src={left_arrow} alt="icon" />
               </Link>
             </div>
-            <div className={styles.uploadLogo}>Upload Logo</div>
+            {/* <div className={styles.uploadLogo}>Upload Logo</div> */}
+            <div></div>
           </div>
 
           <div className="grid grid-cols-2 gap-x-8  mb-4 bg-primary-lighter px-8 py-4 rounded-xl opacity-95">
@@ -63,23 +186,73 @@ const CreateCompany = () => {
             </div> */}
 
             <div className="col-span-2  pb-6 flex justify-end">
-              <FormButton
-                text={"Create"}
-                // handleClick={() => setIsEdit(!isEdit)}
-              />
+              <FormButton text={"Create"} handleClick={addAnalyst} />
             </div>
 
             <div className="col-span-2 lg:col-span-1 pb-6">
-              <Input
-                handleChange={updateAnalytstInfo}
+              <NewCaseSelect
+                options={insuranceCompany}
                 name="name"
-                value={analystInfo?.name}
-                label="Name"
-                isEdit={true}
+                handleChange={updateAnalytstInfo}
+                defaultOption="Select empanelled Company"
+                label="Empanelled Company"
+                value={analystInfo?.name || ""}
               />
             </div>
             <div className="col-span-2 lg:col-span-1 pb-6">
-              <InputDate
+              <div className="flex justify-center flex-col">
+                <div
+                  className={`flex items-center flex-wrap ${
+                    analystInfo?.Ratelist?.length ? "" : "pb-8"
+                  } `}
+                >
+                  {analystInfo?.Ratelist?.length
+                    ? analystInfo?.Ratelist?.map((file, index) => {
+                        return (
+                          <div
+                            className="bg-fontColor-gray text-sm flex items-center justify-between  h-8 px-2 mr-2 rounded-sm m-4 overflow-hidden "
+                            style={{ width: "100%", maxWidth: "145px" }}
+                            key={index}
+                          >
+                            <p
+                              style={{
+                                width: "100%",
+                                maxWidth: "125px",
+                                overflow: "hidden",
+                                whiteSpace: "nowrap",
+                                textOverflow: "ellipsis",
+                              }}
+                            >
+                              {/* @ts-ignore */}
+                              {file?.name}
+                            </p>
+
+                            <IoClose
+                              //@ts-ignore
+                              onClick={() => removeImage(file?.name)}
+                            />
+                          </div>
+                        );
+                      })
+                    : null}
+                </div>
+                <div
+                  className="relative flex items-center justify-center border-2 border-fontColor-darkGray rounded-lg  h-10 px-2"
+                  style={{ minWidth: "150px" }}
+                >
+                  <FiPaperclip className="mr-2 text-fontColor-darkGray" />
+                  <p className="text-fborder-fontColor-darkGray-gray font-normal text-fontColor-darkGray">
+                    Upload Ratelist documents
+                  </p>
+                  <input
+                    type="file"
+                    className="absolute border-none outline-none cursor-pointer opacity-0 w-full h-10 top-0 left-0 z-10"
+                    onChange={updateAnalytstInfo}
+                    multiple
+                  />
+                </div>
+              </div>
+              {/* <InputDate
                 handleChange={updateAnalytstInfo}
                 name={analystInfo?.expiryDate}
                 label="Expiry date"
@@ -91,14 +264,14 @@ const CreateCompany = () => {
                   marginTop: "4px",
                   maxWidth: "100%",
                 }}
-              />
+              /> */}
             </div>
             <div className="col-span-2 lg:col-span-1 pb-6">
               <Input
                 handleChange={updateAnalytstInfo}
                 name="discount"
                 value={analystInfo?.discount}
-                label="Eiscount"
+                label="Discount"
                 isEdit={true}
                 type="number"
               />
