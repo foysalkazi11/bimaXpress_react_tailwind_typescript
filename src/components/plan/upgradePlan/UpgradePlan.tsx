@@ -38,7 +38,7 @@ const UpgradePlan = ({ setCurrentPlan, currentPlan }: UpgradePlanProps) => {
   useEffect(() => {
     axios.get(`/allplansdetails`).then(res => {
       console.log(res.data?.data);
-      // setPlans(res.data?.data)
+      setPlans(res.data?.data)
     }).catch(err => {
       console.log(err)
     })
@@ -56,17 +56,17 @@ const UpgradePlan = ({ setCurrentPlan, currentPlan }: UpgradePlanProps) => {
               key={index}
             >
               <img
-                src={plan?.icon}
+                src={standard}
                 alt="icon"
                 className={`w-8 text-fontColor ${styles.svg}`}
               />
               <p className="font-light text-xl pt-4 text-fontColor capitalize">
-                {plan?.title}
+                {plan?.name}
               </p>
               <div className="flex items-center pt-6">
                 <img src={rupi} alt="icon" />
                 <h1 className="text-6xl text-fontColor font-semibold pl-2 -mt-3">
-                  {plan?.amount}
+                  {plan?.price}
                 </h1>
               </div>
               <p className="text-xs font-thin pt-8 text-fontColor">Features</p>
