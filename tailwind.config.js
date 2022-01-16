@@ -9,6 +9,9 @@ module.exports = {
       9000: "9000ms",
     },
     extend: {
+      screens: {
+        '1040': '1200px',
+      },
       minHeight: {
         'calc-30': 'calc(100vh - 300px)',
       },

@@ -278,8 +278,8 @@ const StepFour = ({
   return (
     <div className="pb-8">
       <div className="border-b border-fontColor-darkGray w-full relative">
-        <div className="flex justify-between flex-col lg:flex-row">
-          <div className=" lg:1/2 p-6 pb-12">
+        <div className="flex justify-between flex-col lg:flex-row ">
+          <div className=" lg:w-1/2 p-6 pb-12">
             <div>
               <p className="pb-4 text-sm text-fontColor-light">
                 Date & Time of admission
@@ -453,16 +453,16 @@ const StepFour = ({
           </div>
           <div className="border-r border-fontColor-darkGray"></div>
 
-          <div className="lg:1/2 p-6 pb-12">
+          <div className="lg:w-1/2 p-6 pb-12">
             <p className=" text-base text-fontColor-light opacity-50">
               Mandatory past history of any chronic illness
             </p>
 
-            <div className="grid grid-cols-5 gap-8 mt-4 items-center">
-              <div className="col-span-1">
+            <div className="block sm:grid grid-cols-12 gap-8 mt-4 items-center">
+              <div className="col-span-3">
                 <p className="text-sm text-fontColor-light">Diabetes</p>
               </div>
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <NewCaseSelect
                   options={months}
                   name="diabetes_month"
@@ -471,7 +471,7 @@ const StepFour = ({
                   value={admissionDetails?.diabetes_month || ""}
                 />
               </div>
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <NewCaseSelect
                   options={yearList}
                   name="diabetes_year"
@@ -481,11 +481,11 @@ const StepFour = ({
                 />
               </div>
             </div>
-            <div className="grid grid-cols-5 gap-8 mt-8 items-center">
-              <div className="col-span-1">
+            <div className="block sm:grid grid-cols-12 gap-8 mt-8 items-center">
+              <div className="col-span-3">
                 <p className="text-sm text-fontColor-light">Heart Disease</p>
               </div>
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <NewCaseSelect
                   options={months}
                   name="heart_disease_month"
@@ -494,7 +494,7 @@ const StepFour = ({
                   value={admissionDetails?.heart_disease_month || ""}
                 />
               </div>
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <NewCaseSelect
                   options={yearList}
                   name="heart_disease_year"
@@ -505,11 +505,11 @@ const StepFour = ({
               </div>
             </div>
 
-            <div className="grid grid-cols-5 gap-8 mt-8 items-center">
-              <div className="col-span-1">
+            <div className="block sm:grid grid-cols-12 gap-8 mt-8 items-center">
+              <div className="col-span-3">
                 <p className="text-sm text-fontColor-light">Hypertension</p>
               </div>
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <NewCaseSelect
                   options={months}
                   name="hypertension_month"
@@ -518,7 +518,7 @@ const StepFour = ({
                   value={admissionDetails?.hypertension_month || ""}
                 />
               </div>
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <NewCaseSelect
                   options={yearList}
                   name="hypertension_year"
@@ -529,11 +529,11 @@ const StepFour = ({
               </div>
             </div>
 
-            <div className="grid grid-cols-5 gap-8 mt-8 items-center">
-              <div className="col-span-1">
+            <div className="block sm:grid grid-cols-12 gap-8 mt-8 items-center">
+              <div className="col-span-3">
                 <p className="text-sm text-fontColor-light">Hyperlipidemias</p>
               </div>
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <NewCaseSelect
                   options={months}
                   name="hyperlipidemias_month"
@@ -542,7 +542,7 @@ const StepFour = ({
                   value={admissionDetails?.hyperlipidemias_month || ""}
                 />
               </div>
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <NewCaseSelect
                   options={yearList}
                   name="hyperlipidemias_year"
@@ -553,11 +553,11 @@ const StepFour = ({
               </div>
             </div>
 
-            <div className="grid grid-cols-5 gap-8 mt-8 items-center">
-              <div className="col-span-1">
+            <div className="block sm:grid grid-cols-12 gap-8 mt-8 items-center">
+              <div className="col-span-3">
                 <p className="text-sm text-fontColor-light">Osteoarthritis</p>
               </div>
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <NewCaseSelect
                   options={months}
                   name="osteoarthritis_month"
@@ -566,7 +566,7 @@ const StepFour = ({
                   value={admissionDetails?.osteoarthritis_month || ""}
                 />
               </div>
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <NewCaseSelect
                   options={yearList}
                   name="osteoarthritis_year"
@@ -577,13 +577,13 @@ const StepFour = ({
               </div>
             </div>
 
-            <div className="grid grid-cols-5 gap-8 mt-8 items-center">
-              <div className="col-span-1">
+            <div className="block sm:grid grid-cols-12 gap-8 mt-8 items-center">
+              <div className="col-span-3">
                 <p className="text-sm text-fontColor-light">
                   Asthma/ COPD/ Bronchitis
                 </p>
               </div>
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <NewCaseSelect
                   options={months}
                   name="asthma_COPD_bronchitis_month"
@@ -592,7 +592,7 @@ const StepFour = ({
                   value={admissionDetails?.asthma_COPD_bronchitis_month || ""}
                 />
               </div>
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <NewCaseSelect
                   options={yearList}
                   name="asthma_COPD_bronchitis_year"
@@ -603,11 +603,11 @@ const StepFour = ({
               </div>
             </div>
 
-            <div className="grid grid-cols-5 gap-8 mt-8 items-center">
-              <div className="col-span-1">
+            <div className="block sm:grid grid-cols-12 gap-8 mt-8 items-center">
+              <div className="col-span-3">
                 <p className="text-sm text-fontColor-light">Cancer</p>
               </div>
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <NewCaseSelect
                   options={months}
                   name="cancer_month"
@@ -616,7 +616,7 @@ const StepFour = ({
                   value={admissionDetails?.cancer_month || ""}
                 />
               </div>
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <NewCaseSelect
                   options={yearList}
                   name="cancer_year"
@@ -627,13 +627,13 @@ const StepFour = ({
               </div>
             </div>
 
-            <div className="grid grid-cols-5 gap-8 mt-8 items-center">
-              <div className="col-span-1">
+            <div className="block sm:grid grid-cols-12 gap-8 mt-8 items-center">
+              <div className="col-span-3">
                 <p className="text-sm text-fontColor-light">
                   Alcohol/Drag Abuse
                 </p>
               </div>
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <NewCaseSelect
                   options={months}
                   name="alcohol_drag_abuse_month"
@@ -642,7 +642,7 @@ const StepFour = ({
                   value={admissionDetails?.alcohol_drag_abuse_month || ""}
                 />
               </div>
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <NewCaseSelect
                   options={yearList}
                   name="alcohol_drag_abuse_year"
@@ -653,13 +653,13 @@ const StepFour = ({
               </div>
             </div>
 
-            <div className="grid grid-cols-5 gap-8 mt-8 items-center">
-              <div className="col-span-1">
+            <div className="block sm:grid grid-cols-12 gap-8 mt-8 items-center">
+              <div className="col-span-3">
                 <p className="text-sm text-fontColor-light">
                   Any HIV Or STD/Related Ailments
                 </p>
               </div>
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <NewCaseSelect
                   options={months}
                   name="HIV_STD_related_ailments_months"
@@ -670,7 +670,7 @@ const StepFour = ({
                   }
                 />
               </div>
-              <div className="col-span-2">
+              <div className="col-span-4">
                 <NewCaseSelect
                   options={yearList}
                   name="HIV_STD_related_ailments_year"
@@ -683,7 +683,7 @@ const StepFour = ({
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-x-12 gap-y-6 p-8">
+      <div className="grid grid-cols-2 gap-x-12 gap-y-6 p-8 ">
         <div className="col-span-1">
           <p className="pb-6 text-lg font-semibold text-fontColor-light">
             Total Cost
