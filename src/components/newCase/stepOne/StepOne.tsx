@@ -136,7 +136,7 @@ const StepOne = ({
   };
 
   return (
-    <div className=" relative m-8 min-h-screen">
+    <div className=" relative m-8 min-h-calc-30">
       <div
         className={`grid gap-8 sm:grid-cols-2 ${styles.elementDiv}`}
       >
