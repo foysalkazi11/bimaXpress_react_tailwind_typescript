@@ -6,9 +6,9 @@ import {
 } from "react-icons/ai";
 import { HiOutlineViewGridAdd } from "react-icons/hi";
 import { BiDetail } from "react-icons/bi";
-import { RiSpamLine, RiDeleteBinLine } from "react-icons/ri";
+// import { RiSpamLine, RiDeleteBinLine } from "react-icons/ri";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
-import { IoDocumentOutline } from "react-icons/io5";
+// import { IoDocumentOutline } from "react-icons/io5";
 import { FaHospital, FaStethoscope, FaRegBuilding } from "react-icons/fa";
 import { FiSend } from "react-icons/fi";
 import { MdOutlineInbox } from "react-icons/md";
@@ -46,31 +46,31 @@ const sentMail = {
   pageLink: "#",
 };
 
-const innerMailMenu = [
-  {
-    name: "Drafts",
-    amount: 10,
-    icon: (
-      <IoDocumentOutline className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />
-    ),
-    pageLink: "#",
-  },
-  {
-    name: "Spams",
-    amount: 10,
-    icon: <RiSpamLine className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />,
-    pageLink: "#",
-  },
+// const innerMailMenu = [
+//   {
+//     name: "Drafts",
+//     amount: 10,
+//     icon: (
+//       <IoDocumentOutline className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />
+//     ),
+//     pageLink: "#",
+//   },
+//   {
+//     name: "Spams",
+//     amount: 10,
+//     icon: <RiSpamLine className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />,
+//     pageLink: "#",
+//   },
 
-  {
-    name: "Deleted",
-    amount: 50,
-    icon: (
-      <RiDeleteBinLine className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />
-    ),
-    pageLink: "#",
-  },
-];
+//   {
+//     name: "Deleted",
+//     amount: 50,
+//     icon: (
+//       <RiDeleteBinLine className="text-fontColor mr-4 ml-2 md:ml-5 text-xl" />
+//     ),
+//     pageLink: "#",
+//   },
+// ];
 
 const sideBarMenu = [
   {
@@ -279,7 +279,7 @@ const SiderBar = () => {
                   {sentMailList?.length}
                 </p>
               </Link>
-              {innerMailMenu?.map((menu, index) => {
+              {/* {innerMailMenu?.map((menu, index) => {
                 return (
                   <Link
                     to={menu?.pageLink}
@@ -306,7 +306,7 @@ const SiderBar = () => {
                     </p>
                   </Link>
                 );
-              })}
+              })} */}
             </div>
           ) : null}
 

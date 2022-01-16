@@ -58,7 +58,7 @@ const EmpanelledCompanies = () => {
           //@ts-ignore
           [key, { Exclusion, Ratelist, Discount, expiryDate }]
         ) => ({
-          logo: (
+          ratelistImage: (
             <img
               src={Ratelist}
               alt="logo"
@@ -66,7 +66,7 @@ const EmpanelledCompanies = () => {
             />
           ),
           name: key,
-          expiryDate: expiryDate || "",
+          // expiryDate: expiryDate || "",
           discount: Discount,
           exclusion: Exclusion,
           action: (
@@ -85,17 +85,17 @@ const EmpanelledCompanies = () => {
   const columns = React.useMemo(
     () => [
       {
-        Header: "Logo",
-        accessor: "logo", // accessor is the "key" in the data
+        Header: "Ratelist Image",
+        accessor: "ratelistImage", // accessor is the "key" in the data
       },
       {
         Header: "Name",
         accessor: "name", // accessor is the "key" in the data
       },
-      {
-        Header: "Expiry date",
-        accessor: "expiryDate",
-      },
+      // {
+      //   Header: "Expiry date",
+      //   accessor: "expiryDate",
+      // },
       {
         Header: "Discount",
         accessor: "discount",
