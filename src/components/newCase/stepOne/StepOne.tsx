@@ -9,13 +9,17 @@ import {
   setAllCompaniesList,
   setEmpanelledCompaniesListList,
 } from "../../../redux/slices/empanelledCompaniesSlice";
-import styles from './stepOne.module.css';
+import styles from "./stepOne.module.css";
+import { useNavigate } from "react-router-dom";
 type StepOneProps = {
   newCaseData: any;
   setNewCaseData: any;
   nextStep: () => void;
   param: string | undefined;
   toggleModal?: () => void;
+  reteList?: string;
+  toggleDocumentsModal?: () => void;
+  toggleViewDocumentsModal?: () => void;
 };
 
 const TPA = [
@@ -51,6 +55,9 @@ const StepOne = ({
   nextStep,
   param,
   toggleModal,
+  reteList,
+  toggleDocumentsModal,
+  toggleViewDocumentsModal,
 }: StepOneProps) => {
   const [insuranceCompany, setInsuranceCompany] = useState<any>([]);
   const { detailsOfTPA } = newCaseData;
@@ -60,6 +67,7 @@ const StepOne = ({
   const { empanelledCompaniesList, allCompaniesList } = useAppSelector(
     (state) => state?.empanelledCompanies
   );
+  const navigate = useNavigate();
 
   const fetchEmpanelledCompanies = async () => {
     const URL = `/empanelcompany?email=${user}`;
@@ -137,9 +145,7 @@ const StepOne = ({
 
   return (
     <div className=" relative m-8 min-h-calc-5">
-      <div
-        className={`grid gap-8 sm:grid-cols-2 ${styles.elementDiv}`}
-      >
+      <div className={`grid gap-8 sm:grid-cols-2 ${styles.elementDiv}`}>
         <div className="col-span-1 ">
           <NewCaseSelect
             options={insuranceCompany}
@@ -171,21 +177,25 @@ const StepOne = ({
             <NextButton
               text="View ReteList"
               style={{ marginRight: "16px", marginBottom: "16px" }}
+              handleClick={toggleDocumentsModal}
             />
-            <a
+            {/* <a
               href={`http://localhost:3000/preauthform`}
               target="_blank"
               rel="noopener noreferrer"
             >
-              <NextButton
-                text="Generate Pre Auth Form"
-                style={{ marginRight: "16px", marginBottom: "16px" }}
-              />
-            </a>
+            </a> */}
+
+            <NextButton
+              text="Generate Pre Auth Form"
+              style={{ marginRight: "16px", marginBottom: "16px" }}
+              handleClick={() => navigate("/preauthform")}
+            />
 
             <NextButton
               text="View Documents"
               style={{ marginRight: "16px", marginBottom: "16px" }}
+              handleClick={toggleViewDocumentsModal}
             />
             <NextButton
               text="Send Mail"

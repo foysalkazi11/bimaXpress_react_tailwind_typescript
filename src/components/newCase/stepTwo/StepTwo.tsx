@@ -9,6 +9,7 @@ import axiosConfig from "../../../config/axiosConfig";
 import notification from "../../theme/utility/notification";
 import { setLoading } from "../../../redux/slices/utilitySlice";
 import InputDate from "../../theme/inputDate/InputDate";
+import { useNavigate } from "react-router-dom";
 
 type StepTwoProps = {
   newCaseData: any;
@@ -21,6 +22,9 @@ type StepTwoProps = {
   days: { label: string; value: string }[];
   param: string | undefined;
   toggleModal?: () => void;
+  reteList?: string;
+  toggleDocumentsModal?: () => void;
+  toggleViewDocumentsModal?: () => void;
 };
 
 const StepTwo = ({
@@ -34,12 +38,15 @@ const StepTwo = ({
   yearList,
   param,
   toggleModal,
+  reteList,
+  toggleDocumentsModal,
+  toggleViewDocumentsModal,
 }: StepTwoProps) => {
   const { patientDetails } = newCaseData;
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state?.user);
   const { newCaseNum } = useAppSelector((state) => state?.case);
-  console.log(newCaseNum);
+  const navigate = useNavigate();
 
   const saveDataToDb = async () => {
     const POST_URL = `/preauthdata?email=${user}&casenumber=${newCaseNum}`;
@@ -513,14 +520,22 @@ const StepTwo = ({
       <div className="mt-18 flex items-center justify-between p-6">
         <NextButton iconLeft={true} text="Back" handleClick={prevStep} />
         <div className="hidden lg:flex">
-          <NextButton text="View ReteList" style={{ marginRight: "16px" }} />
-          <NextButton text="View Documents" style={{ marginRight: "16px" }} />
-          {param ? (
-            <NextButton
-              text="Generate Pre Auth Form"
-              style={{ marginRight: "16px" }}
-            />
-          ) : null}
+          <NextButton
+            text="View ReteList"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+            handleClick={toggleDocumentsModal}
+          />
+          <NextButton
+            text="View Documents"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+            handleClick={toggleViewDocumentsModal}
+          />
+
+          <NextButton
+            text="Generate Pre Auth Form"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+            handleClick={() => navigate("/preauthform")}
+          />
 
           <NextButton
             text="Send Mail"
@@ -532,14 +547,22 @@ const StepTwo = ({
       </div>
       <div className="mt-18 flex items-center justify-between w-full p-6 lg:hidden">
         <div className="flex ml-auto mr-auto w-72 sm:w-full justify-between flex-col sm:flex-row">
-          <NextButton text="View ReteList" style={{ marginTop: "16px" }} />
-          <NextButton text="View Documents" style={{ marginTop: "16px" }} />
-          {param ? (
-            <NextButton
-              text="Generate Pre Auth Form"
-              style={{ marginTop: "16px" }}
-            />
-          ) : null}
+          <NextButton
+            text="View ReteList"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+            handleClick={toggleDocumentsModal}
+          />
+          <NextButton
+            text="View Documents"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+            handleClick={toggleViewDocumentsModal}
+          />
+
+          <NextButton
+            text="Generate Pre Auth Form"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+            handleClick={() => navigate("/preauthform")}
+          />
 
           <NextButton
             text="Send Mail"

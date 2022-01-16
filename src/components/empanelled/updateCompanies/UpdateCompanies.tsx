@@ -3,7 +3,7 @@ import styles from "./UpdateCompanies.module.css";
 import { RiDeleteBinLine } from "react-icons/ri";
 import Input from "../../theme/input/Input";
 import FormButton from "../../theme/button/FormButton";
-import InputDate from "../../theme/inputDate/InputDate";
+// import InputDate from "../../theme/inputDate/InputDate";
 import left_arrow from "../../../assets/icon/left_arrow.svg";
 import { Link, useParams } from "react-router-dom";
 import { useAppSelector } from "../../../redux/hooks";
@@ -78,7 +78,7 @@ const UpdateCompanies = () => {
                 isEdit={isEdit}
               />
             </div>
-            <div className="col-span-2 lg:col-span-1 pb-6">
+            {/* <div className="col-span-2 lg:col-span-1 pb-6">
               {isEdit ? (
                 <InputDate
                   handleChange={updateAnalytstInfo}
@@ -109,7 +109,7 @@ const UpdateCompanies = () => {
                   </p>
                 </>
               )}
-            </div>
+            </div> */}
             <div className="col-span-2 lg:col-span-1 pb-6">
               <Input
                 handleChange={updateAnalytstInfo}

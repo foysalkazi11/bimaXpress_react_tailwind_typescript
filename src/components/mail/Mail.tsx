@@ -71,8 +71,8 @@ const Mail = () => {
 
   const fetchMailList = async () => {
     dispatch(setLoading(true));
-    const GETINBOXMAIL = `/inbox?email=${user}`;
-    const GETSENTMAIL = `/sentInbox?email=${user}`;
+    const GETINBOXMAIL = `/inbox?email=${user}&pagenumber=1`;
+    const GETSENTMAIL = `/sentInbox?email=${user}&pagenumber=1`;
     try {
       const { data: inboxMail } = await axiosConfig.get(GETINBOXMAIL);
       const { data: sentMail } = await axiosConfig.get(GETSENTMAIL);
