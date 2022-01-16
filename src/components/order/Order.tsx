@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import BookOrder from "./bookOrder/BookOrder";
 import OrderHistory from "./orderHistory/OrderHistory";
 import TrackOrder from "./trackOrders/TrackOrder";
-import scrollbar from "../../scrollbar.module.css";
 
 const tabs = ["Book order", "Track orders", "Order history"];
 

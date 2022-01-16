@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import AuthScreenWrapper from "./authscreen.wrapper";
 import { useNavigate } from "react-router-dom";
