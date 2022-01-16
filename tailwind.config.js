@@ -14,6 +14,7 @@ module.exports = {
       },
       minHeight: {
         'calc-30': 'calc(100vh - 300px)',
+        'calc-5': 'calc(80vh - 50px)',
       },
       margin: {
         "120-neg": "-70rem",
