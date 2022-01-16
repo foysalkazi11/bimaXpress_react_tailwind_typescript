@@ -9,6 +9,7 @@ import axiosConfig from "../../../config/axiosConfig";
 import notification from "../../theme/utility/notification";
 import { setLoading } from "../../../redux/slices/utilitySlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { useNavigate } from "react-router-dom";
 
 type StepThreeProps = {
   newCaseData: any;
@@ -17,6 +18,9 @@ type StepThreeProps = {
   prevStep: () => void;
   param: string | undefined;
   toggleModal?: () => void;
+  reteList?: string;
+  toggleDocumentsModal?: () => void;
+  toggleViewDocumentsModal?: () => void;
 };
 
 const StepThree = ({
@@ -26,12 +30,15 @@ const StepThree = ({
   setNewCaseData,
   param,
   toggleModal,
+  reteList,
+  toggleDocumentsModal,
+  toggleViewDocumentsModal,
 }: StepThreeProps) => {
   const { diagnosisDetails } = newCaseData;
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state?.user);
   const { newCaseNum } = useAppSelector((state) => state?.case);
-
+  const navigate = useNavigate();
   const saveDataToDb = async () => {
     const POST_URL = `/preauthdata?email=${user}&casenumber=${newCaseNum}`;
 
@@ -693,10 +700,17 @@ const StepThree = ({
           <NextButton
             text="View ReteList"
             style={{ marginRight: "16px", marginBottom: "16px" }}
+            handleClick={toggleDocumentsModal}
           />
           <NextButton
             text="View Documents"
             style={{ marginRight: "16px", marginBottom: "16px" }}
+            handleClick={toggleViewDocumentsModal}
+          />
+          <NextButton
+            text="Generate Pre Auth Form"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+            handleClick={() => navigate("/preauthform")}
           />
           <NextButton
             text="Send Mail"

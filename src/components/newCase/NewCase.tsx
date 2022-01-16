@@ -9,6 +9,7 @@ import axiosConfig from "../../config/axiosConfig";
 import { setNewCaseNum } from "../../redux/slices/caseSlice";
 import { useParams } from "react-router-dom";
 import SentMail from "./sentMail/SentMail";
+import ViewDocumentsModal from "./viewDocuments/ViewDocumentsModal";
 
 const months = [
   { label: "January", value: "01" },
@@ -26,7 +27,6 @@ const months = [
 ];
 
 const NewCase = () => {
-  const [openModal, setOpenModal] = useState(false);
   const [steps, setSteps] = useState(1);
   const [yearList, setYearList] = useState<{ label: string; value: string }[]>(
     []
@@ -44,9 +44,27 @@ const NewCase = () => {
   // const { newCaseNum } = useAppSelector((state) => state?.case);
   const { caseData } = useAppSelector((state) => state?.home);
   const param = useParams();
+  const { allCompaniesList } = useAppSelector(
+    (state) => state?.empanelledCompanies
+  );
+  const [reteList, setRateList] = useState<string[]>([]);
+  const [documentsList, setDocumentsList] = useState<string[]>([]);
+  const [totalCost, setTotalCost] = useState(0);
+  const [openModal, setOpenModal] = useState(false);
+  const [showRateList, setShowRateList] = useState(true);
 
   const toggleModal = () => {
     setOpenModal((pre) => !pre);
+  };
+  const [openDocumentsModal, setopenDocumentsModal] = useState(false);
+
+  const toggleDocumentsModal = () => {
+    setShowRateList(true);
+    setopenDocumentsModal((pre) => !pre);
+  };
+  const toggleViewDocumentsModal = () => {
+    setShowRateList(false);
+    setopenDocumentsModal((pre) => !pre);
   };
 
   const getNewCaseNumber = async () => {
@@ -69,11 +87,37 @@ const NewCase = () => {
         diagnosisDetails: {},
         admissionDetails: {},
       });
+      const companyInfo =
+        //@ts-ignore
+        allCompaniesList[newCaseData?.detailsOfTPA?.insuranceCompany];
+      if (companyInfo) {
+        const data = JSON.parse(companyInfo?.replace(/'/g, '"'));
+        setRateList([data?.image]);
+      }
+      //@ts-ignore
+      if (newCaseData?.Aadhar_card_Front) {
+        //@ts-ignore
+        setDocumentsList((pre) => [...pre, newCaseData?.Aadhar_card_Front]);
+      }
+      //@ts-ignore
+      if (newCaseData?.Aadhar_Card_Back) {
+        //@ts-ignore
+        setDocumentsList((pre) => [...pre, newCaseData?.Aadhar_Card_Back]);
+      }
+      //@ts-ignore
+      if (newCaseData?.Health_card) {
+        //@ts-ignore
+        setDocumentsList((pre) => [...pre, newCaseData?.Health_card]);
+      }
     } else {
       dispatch(setNewCaseNum(param?.case));
       //@ts-ignore
       const obj = caseData[param?.case] || {};
+
       const {
+        Aadhar_card_Front,
+        Aadhar_Card_Back,
+        Health_card,
         // Approvedamount,
         // Approveddate,
         // Discharge_Approvedamount,
@@ -202,6 +246,23 @@ const NewCase = () => {
           patient_details_HealthInsurance,
         },
       } = obj;
+
+      //@ts-ignore
+      const companyInfo = allCompaniesList[Insurance_Company];
+      if (companyInfo) {
+        const data = JSON.parse(companyInfo?.replace(/'/g, '"'));
+        setRateList([data?.image]);
+      }
+
+      if (Aadhar_card_Front) {
+        setDocumentsList((pre) => [...pre, Aadhar_card_Front]);
+      }
+      if (Aadhar_Card_Back) {
+        setDocumentsList((pre) => [...pre, Aadhar_Card_Back]);
+      }
+      if (Health_card) {
+        setDocumentsList((pre) => [...pre, Health_card]);
+      }
 
       setNewCaseData((pre: any) => ({
         ...pre,
@@ -363,6 +424,8 @@ const NewCase = () => {
             nextStep={nextStep}
             param={param?.case}
             toggleModal={toggleModal}
+            toggleDocumentsModal={toggleDocumentsModal}
+            toggleViewDocumentsModal={toggleViewDocumentsModal}
           />
         );
       case 2:
@@ -378,6 +441,8 @@ const NewCase = () => {
             days={day}
             param={param?.case}
             toggleModal={toggleModal}
+            toggleDocumentsModal={toggleDocumentsModal}
+            toggleViewDocumentsModal={toggleViewDocumentsModal}
           />
         );
       case 3:
@@ -389,6 +454,8 @@ const NewCase = () => {
             prevStep={prevStep}
             param={param?.case}
             toggleModal={toggleModal}
+            toggleDocumentsModal={toggleDocumentsModal}
+            toggleViewDocumentsModal={toggleViewDocumentsModal}
           />
         );
       case 4:
@@ -401,6 +468,10 @@ const NewCase = () => {
             yearList={yearList}
             param={param?.case}
             toggleModal={toggleModal}
+            totalCost={totalCost}
+            setTotalCost={setTotalCost}
+            toggleDocumentsModal={toggleDocumentsModal}
+            toggleViewDocumentsModal={toggleViewDocumentsModal}
           />
         );
 
@@ -412,6 +483,8 @@ const NewCase = () => {
             nextStep={nextStep}
             param={param?.case}
             toggleModal={toggleModal}
+            toggleDocumentsModal={toggleDocumentsModal}
+            toggleViewDocumentsModal={toggleViewDocumentsModal}
           />
         );
     }
@@ -429,6 +502,12 @@ const NewCase = () => {
         closeModal={toggleModal}
         isOpen={openModal}
         newCaseData={newCaseData}
+        total={totalCost}
+      />
+      <ViewDocumentsModal
+        closeModal={toggleDocumentsModal}
+        isOpen={openDocumentsModal}
+        documents={showRateList ? reteList : documentsList}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import InputContained from "../../theme/inputContained/InputContained";
 import InputDate from "../../theme/inputDate/InputDate";
 import InputRadio from "../../theme/inputRadio/InputRadio";
@@ -9,6 +9,7 @@ import { setLoading } from "../../../redux/slices/utilitySlice";
 import axiosConfig from "../../../config/axiosConfig";
 import notification from "../../theme/utility/notification";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { useNavigate } from "react-router-dom";
 // import { useNavigate } from "react-router-dom";
 
 const roomType = [
@@ -37,9 +38,13 @@ type StepFourProps = {
   nextStep: () => void;
   yearList: { label: string; value: string }[];
   months: { label: string; value: string }[];
-  total?: any;
   param: string | undefined;
   toggleModal?: () => void;
+  totalCost?: number;
+  setTotalCost?: any;
+  reteList?: string;
+  toggleDocumentsModal?: () => void;
+  toggleViewDocumentsModal?: () => void;
 };
 
 const StepFour = ({
@@ -48,16 +53,20 @@ const StepFour = ({
   setNewCaseData,
   months,
   yearList,
-  total,
   param,
   toggleModal,
+  totalCost = 0,
+  setTotalCost,
+  reteList,
+  toggleDocumentsModal,
+  toggleViewDocumentsModal,
 }: StepFourProps) => {
   const { admissionDetails } = newCaseData;
-  const [totalCost, setTotalCost] = useState(0);
+  // const [totalCost, setTotalCost] = useState(0);
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state?.user);
   const { newCaseNum } = useAppSelector((state) => state?.case);
-  console.log(admissionDetails);
+  const navigate = useNavigate();
 
   const saveDataToDb = async () => {
     const POST_URL = `/preauthdata?email=${user}&casenumber=${newCaseNum}`;
@@ -704,10 +713,17 @@ const StepFour = ({
           <NextButton
             text="View Retelist"
             style={{ marginRight: "16px", marginBottom: "16px" }}
+            handleClick={toggleDocumentsModal}
           />
           <NextButton
             text="View Documents"
             style={{ marginRight: "16px", marginBottom: "16px" }}
+            handleClick={toggleViewDocumentsModal}
+          />
+          <NextButton
+            text="Generate Pre Auth Form"
+            style={{ marginRight: "16px", marginBottom: "16px" }}
+            handleClick={() => navigate("/preauthform")}
           />
           <NextButton
             text="Send Mail"

@@ -23,12 +23,14 @@ type ComposeModalProps = {
   isOpen?: boolean;
   closeModal?: () => void;
   newCaseData: any;
+  total?: number;
 };
 
 const SentMail = ({
   isOpen = false,
   closeModal = () => {},
   newCaseData,
+  total = 0,
 }: ComposeModalProps) => {
   const [mail, setMail] = useState<{
     to: string;
@@ -77,35 +79,108 @@ const SentMail = ({
 
   const bodyRef = useRef(null);
 
-  // const imageUpload = async () => {
-  //   const IMAGEUPLOAD = `/imageupload?email=${user}&casenumber=${newCaseNum}`;
-  //   const imageFormData = new FormData();
-  //   let name: string | Blob | any[] = [];
+  const imageUpload = async () => {
+    const IMAGEUPLOAD = `/imageupload?email=${user}&casenumber=${newCaseNum}`;
 
-  //   mail?.file.forEach((img) => {
-  //     //@ts-ignore
-  //     name.push(img?.name);
+    let name: string | Blob | any[] = [];
+    let imageArray: string | Blob | any[] = [];
+    if (mail?.Urlidproof?.length) {
+      const imageFormData = new FormData();
+      mail?.Urlidproof.forEach((img) => {
+        //@ts-ignore
+        name.push(img?.name);
 
-  //     imageFormData.append("image", img);
-  //   });
-  //   //@ts-ignore
-  //   imageFormData?.append("imagename", name);
+        imageFormData.append("image", img);
+      });
+      //@ts-ignore
+      imageFormData?.append("imagename", name);
+      imageFormData?.append("arrayname", "Urlidproof");
 
-  //   const { data } = await axiosConfig.post(IMAGEUPLOAD, imageFormData);
-  //   return data?.data;
-  // };
+      const { data } = await axiosConfig.post(IMAGEUPLOAD, imageFormData);
+      imageArray = [...imageArray, ...data?.data];
+    }
 
-  const removeImage = (name: string) => {
+    if (mail?.UrlotherDocuments?.length) {
+      const imageFormData = new FormData();
+      mail?.UrlotherDocuments.forEach((img) => {
+        //@ts-ignore
+        name.push(img?.name);
+
+        imageFormData.append("image", img);
+      });
+      //@ts-ignore
+      imageFormData?.append("imagename", name);
+      imageFormData?.append("arrayname", "UrlotherDocuments");
+
+      const { data } = await axiosConfig.post(IMAGEUPLOAD, imageFormData);
+      imageArray = [...imageArray, ...data?.data];
+    }
+
+    if (mail?.UrluploadConsultation?.length) {
+      const imageFormData = new FormData();
+      mail?.UrluploadConsultation.forEach((img) => {
+        //@ts-ignore
+        name.push(img?.name);
+
+        imageFormData.append("image", img);
+      });
+      //@ts-ignore
+      imageFormData?.append("imagename", name);
+      imageFormData?.append("arrayname", "UrluploadConsultation");
+
+      const { data } = await axiosConfig.post(IMAGEUPLOAD, imageFormData);
+      imageArray = [...imageArray, ...data?.data];
+    }
+    if (mail?.UrluploadPatientsHealthIDCard?.length) {
+      const imageFormData = new FormData();
+      mail?.UrluploadPatientsHealthIDCard.forEach((img) => {
+        //@ts-ignore
+        name.push(img?.name);
+
+        imageFormData.append("image", img);
+      });
+      //@ts-ignore
+      imageFormData?.append("imagename", name);
+      imageFormData?.append("arrayname", "UrluploadPatientsHealthIDCard");
+
+      const { data } = await axiosConfig.post(IMAGEUPLOAD, imageFormData);
+      imageArray = [...imageArray, ...data?.data];
+    }
+    if (mail?.UrluploadSignedPreAuth?.length) {
+      const imageFormData = new FormData();
+      mail?.UrluploadSignedPreAuth.forEach((img) => {
+        //@ts-ignore
+        name.push(img?.name);
+
+        imageFormData.append("image", img);
+      });
+      //@ts-ignore
+      imageFormData?.append("imagename", name);
+      imageFormData?.append("arrayname", "UrluploadSignedPreAuth");
+
+      const { data } = await axiosConfig.post(IMAGEUPLOAD, imageFormData);
+      imageArray = [...imageArray, ...data?.data];
+    }
+
+    return imageArray;
+  };
+
+  const removeImage = (name: string, listName: string) => {
+    console.log(name, listName);
+
     setMail((pre: any) => ({
       ...pre,
       //@ts-ignore
-      file: pre?.file?.filter((files) => files?.name !== name),
+      [listName]: [...pre[listName]]?.filter(
+        (files: { name: string }) => files?.name !== name
+      ),
     }));
   };
 
   const uploadFile = async () => {
     //@ts-ignore
     const email = JSON.parse(companyInfo?.replace(/'/g, '"'))?.email;
+    console.log(email);
 
     dispatch(setLoading(true));
 
@@ -115,9 +190,9 @@ const SentMail = ({
     const URLFORMCREATIONAUDITTRIAL = `/formcreationaudittrail?email=${user}&casenumber=${newCaseNum}`;
 
     const formCreationAuditForm = new FormData();
-    formCreationAuditForm?.append("amount", "");
-    formCreationAuditForm?.append("date", "");
-    formCreationAuditForm?.append("imgurl", "");
+    //@ts-ignore
+    formCreationAuditForm?.append("amount", total);
+    formCreationAuditForm?.append("date", new Date()?.toISOString() || "");
 
     const formStatus = new FormData();
     formStatus?.append(
@@ -131,23 +206,43 @@ const SentMail = ({
 
     const formData = new FormData();
     formData?.append("reciever", email ? email : "");
-    formData?.append(
-      "Cc",
-      //@ts-ignore
-      mail?.ccList?.length ? mail?.ccList : ""
-    );
-    formData?.append(
-      "Bcc",
-      //@ts-ignore
-      mail?.bccList?.length ? mail?.bccList : ""
-    );
+    mail?.ccList?.length
+      ? mail?.ccList?.forEach((mail) => {
+          formData.append("Cc", mail);
+        })
+      : formData.append("Cc", "");
+    mail?.bccList.length
+      ? mail?.bccList?.forEach((mail) => {
+          formData.append("Bcc", mail);
+        })
+      : formData.append("Bcc", "");
     formData?.append("sub", mail?.sub);
     //@ts-ignore
     formData?.append("sender_msg", bodyRef?.current?.innerText);
     try {
-      if (mail?.file?.length) {
-        // await imageUpload();
-        mail?.file.forEach((img) => {
+      if (
+        mail?.Urlidproof?.length ||
+        mail?.UrlotherDocuments?.length ||
+        mail?.UrluploadConsultation?.length ||
+        mail?.UrluploadPatientsHealthIDCard?.length ||
+        mail?.UrluploadSignedPreAuth?.length
+      ) {
+        const images = await imageUpload();
+        console.log(images);
+
+        //@ts-ignore
+        images?.forEach((img) => {
+          formData.append("imgurl", img);
+        });
+        // formCreationAuditForm?.append("imgurl", images);
+        let imageArray = [
+          ...mail?.Urlidproof,
+          ...mail?.UrlotherDocuments,
+          ...mail?.UrluploadConsultation,
+          ...mail?.UrluploadPatientsHealthIDCard,
+          ...mail?.UrluploadSignedPreAuth,
+        ];
+        imageArray?.forEach((img) => {
           formData.append("files", img);
         });
         await axiosConfig.post(URL, formData);
@@ -159,6 +254,7 @@ const SentMail = ({
         );
       } else {
         formData.append("files", "");
+        formCreationAuditForm?.append("imgurl", "#");
         await axiosConfig.post(URL, formData);
         await axiosConfig.post(URLINCEMENT, formStatus);
         await axiosConfig.post(URLCHANGESTATUS, formNewStatus);
@@ -201,6 +297,7 @@ const SentMail = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type } = e?.target;
+    console.log(type);
 
     if (value !== ",") {
       if (type === "file") {
@@ -218,7 +315,7 @@ const SentMail = ({
 
   useEffect(() => {
     //@ts-ignore
-    console.log(mail.file);
+    console.log(mail);
   }, [mail]);
 
   const handleKeypress = (
@@ -270,7 +367,7 @@ const SentMail = ({
   return (
     <Modal
       isOpen={isOpen}
-      className={styles.approveModalContainer}
+      className={`${styles.approveModalContainer} y-scroll`}
       overlayClassName={styles.overlayContainer}
       onRequestClose={closeModal}
       shouldCloseOnOverlayClick={true}
@@ -342,12 +439,12 @@ const SentMail = ({
         {ReactHtmlParser(mail?.body)}
       </div>
 
-      <div className="flex items-center flex-wrap">
+      {/* <div className="flex items-center flex-wrap">
         {mail?.file?.length
           ? mail?.file?.map((file, index) => {
               return (
                 <div
-                  className="bg-fontColor-gray text-sm flex items-center justify-between  h-8 px-2 mr-2 rounded-sm mx-4 mt-4 overflow-hidden "
+                  className="bg-fontColor-gray text-sm flex items-center justify-between  h-8 px-2 mr-2 rounded-sm m-4 overflow-hidden "
                   style={{ width: "100%", maxWidth: "145px" }}
                   key={index}
                 >
@@ -360,18 +457,52 @@ const SentMail = ({
                       textOverflow: "ellipsis",
                     }}
                   >
-                    {/* @ts-ignore */}
+                   
                     {file?.name}
                   </p>
-                  {/* @ts-ignore */}
-                  <IoClose onClick={() => removeImage(file?.name)} />
+                  
+                  <IoClose onClick={() => removeImage(file?.name, "file")} />
                 </div>
               );
             })
           : null}
-      </div>
+      </div> */}
+
       <div className="grid grid-cols-2 gap-x-4 gap-y-6 m-4">
-        <div className="col-span-1 flex justify-center">
+        <div className="col-span-1 flex justify-center flex-col">
+          <div className="flex items-center flex-wrap">
+            {mail?.UrluploadSignedPreAuth?.length
+              ? mail?.UrluploadSignedPreAuth?.map((file, index) => {
+                  return (
+                    <div
+                      className="bg-fontColor-gray text-sm flex items-center justify-between  h-8 px-2 mr-2 rounded-sm m-4 overflow-hidden "
+                      style={{ width: "100%", maxWidth: "145px" }}
+                      key={index}
+                    >
+                      <p
+                        style={{
+                          width: "100%",
+                          maxWidth: "125px",
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {/* @ts-ignore */}
+                        {file?.name}
+                      </p>
+
+                      <IoClose
+                        onClick={() =>
+                          //@ts-ignore
+                          removeImage(file?.name, "UrluploadSignedPreAuth")
+                        }
+                      />
+                    </div>
+                  );
+                })
+              : null}
+          </div>
           <div
             className="relative flex items-center justify-center border-2 border-fontColor-darkGray rounded-lg  h-10 px-2"
             style={{ minWidth: "150px" }}
@@ -382,14 +513,47 @@ const SentMail = ({
             </p>
             <input
               type="file"
-              className="absolute border-none outline-none cursor-pointer opacity-0 w-44 h-10 top-0 left-0 z-10"
+              className="absolute border-none outline-none cursor-pointer opacity-0 w-full h-10 top-0 left-0 z-10"
               name="UrluploadSignedPreAuth"
               onChange={handleChange}
               multiple
             />
           </div>
         </div>
-        <div className="col-span-1 flex justify-center">
+        <div className="col-span-1 flex justify-center flex-col">
+          <div className="flex items-center flex-wrap">
+            {mail?.UrluploadConsultation?.length
+              ? mail?.UrluploadConsultation?.map((file, index) => {
+                  return (
+                    <div
+                      className="bg-fontColor-gray text-sm flex items-center justify-between  h-8 px-2 mr-2 rounded-sm m-4 overflow-hidden "
+                      style={{ width: "100%", maxWidth: "145px" }}
+                      key={index}
+                    >
+                      <p
+                        style={{
+                          width: "100%",
+                          maxWidth: "125px",
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {/* @ts-ignore */}
+                        {file?.name}
+                      </p>
+                      {/* @ts-ignore */}
+                      <IoClose
+                        onClick={() =>
+                          //@ts-ignore
+                          removeImage(file?.name, "UrluploadConsultation")
+                        }
+                      />
+                    </div>
+                  );
+                })
+              : null}
+          </div>
           <div
             className="relative flex items-center justify-center border-2 border-fontColor-darkGray rounded-lg  h-10 px-2"
             style={{ minWidth: "150px" }}
@@ -400,14 +564,50 @@ const SentMail = ({
             </p>
             <input
               type="file"
-              className="absolute border-none outline-none cursor-pointer opacity-0 w-44 h-10 top-0 left-0 z-10"
+              className="absolute border-none outline-none cursor-pointer opacity-0 w-full h-10 top-0 left-0 z-10"
               name="UrluploadConsultation"
               onChange={handleChange}
               multiple
             />
           </div>
         </div>
-        <div className="col-span-1 flex justify-center">
+        <div className="col-span-1 flex justify-center flex-col">
+          <div className="flex items-center flex-wrap">
+            {mail?.UrluploadPatientsHealthIDCard?.length
+              ? mail?.UrluploadPatientsHealthIDCard?.map((file, index) => {
+                  return (
+                    <div
+                      className="bg-fontColor-gray text-sm flex items-center justify-between  h-8 px-2 mr-2 rounded-sm m-4 overflow-hidden "
+                      style={{ width: "100%", maxWidth: "145px" }}
+                      key={index}
+                    >
+                      <p
+                        style={{
+                          width: "100%",
+                          maxWidth: "125px",
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {/* @ts-ignore */}
+                        {file?.name}
+                      </p>
+                      {/* @ts-ignore */}
+                      <IoClose
+                        onClick={() =>
+                          removeImage(
+                            //@ts-ignore
+                            file?.name,
+                            "UrluploadPatientsHealthIDCard"
+                          )
+                        }
+                      />
+                    </div>
+                  );
+                })
+              : null}
+          </div>
           <div
             className="relative flex items-center justify-center border-2 border-fontColor-darkGray rounded-lg  h-10 px-2"
             style={{ minWidth: "150px" }}
@@ -418,14 +618,45 @@ const SentMail = ({
             </p>
             <input
               type="file"
-              className="absolute border-none outline-none cursor-pointer opacity-0 w-44 h-10 top-0 left-0 z-10"
+              className="absolute border-none outline-none cursor-pointer opacity-0 w-full h-10 top-0 left-0 z-10"
               name="UrluploadPatientsHealthIDCard"
               onChange={handleChange}
               multiple
             />
           </div>
         </div>
-        <div className="col-span-1 flex justify-center">
+        <div className="col-span-1 flex justify-center flex-col">
+          <div className="flex items-center flex-wrap">
+            {mail?.Urlidproof?.length
+              ? mail?.Urlidproof?.map((file, index) => {
+                  return (
+                    <div
+                      className="bg-fontColor-gray text-sm flex items-center justify-between  h-8 px-2 mr-2 rounded-sm m-4 overflow-hidden "
+                      style={{ width: "100%", maxWidth: "145px" }}
+                      key={index}
+                    >
+                      <p
+                        style={{
+                          width: "100%",
+                          maxWidth: "125px",
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {/* @ts-ignore */}
+                        {file?.name}
+                      </p>
+
+                      <IoClose
+                        //@ts-ignore
+                        onClick={() => removeImage(file?.name, "Urlidproof")}
+                      />
+                    </div>
+                  );
+                })
+              : null}
+          </div>
           <div
             className="relative flex items-center justify-center border-2 border-fontColor-darkGray rounded-lg  h-10 px-2"
             style={{ minWidth: "150px" }}
@@ -436,14 +667,47 @@ const SentMail = ({
             </p>
             <input
               type="file"
-              className="absolute border-none outline-none cursor-pointer opacity-0 w-44 h-10 top-0 left-0 z-10"
+              className="absolute border-none outline-none cursor-pointer opacity-0 w-full h-10 top-0 left-0 z-10"
               name="Urlidproof"
               onChange={handleChange}
               multiple
             />
           </div>
         </div>
-        <div className="col-span-1 flex justify-center">
+        <div className="col-span-1 flex justify-center flex-col">
+          <div className="flex items-center flex-wrap">
+            {mail?.UrlotherDocuments?.length
+              ? mail?.UrlotherDocuments?.map((file, index) => {
+                  return (
+                    <div
+                      className="bg-fontColor-gray text-sm flex items-center justify-between  h-8 px-2 mr-2 rounded-sm m-4 overflow-hidden "
+                      style={{ width: "100%", maxWidth: "145px" }}
+                      key={index}
+                    >
+                      <p
+                        style={{
+                          width: "100%",
+                          maxWidth: "125px",
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {/* @ts-ignore */}
+                        {file?.name}
+                      </p>
+
+                      <IoClose
+                        onClick={() =>
+                          //@ts-ignore
+                          removeImage(file?.name, "UrlotherDocuments")
+                        }
+                      />
+                    </div>
+                  );
+                })
+              : null}
+          </div>
           <div
             className="relative flex items-center justify-center border-2 border-fontColor-darkGray rounded-lg  h-10 px-2"
             style={{ minWidth: "150px" }}
@@ -454,7 +718,7 @@ const SentMail = ({
             </p>
             <input
               type="file"
-              className="absolute border-none outline-none cursor-pointer opacity-0 w-44 h-10 top-0 left-0 z-10"
+              className="absolute border-none outline-none cursor-pointer opacity-0 w-full h-10 top-0 left-0 z-10"
               name="UrlotherDocuments"
               onChange={handleChange}
               multiple
