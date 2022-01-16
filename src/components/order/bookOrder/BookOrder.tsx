@@ -50,14 +50,14 @@ const BookOrder = () => {
     setOrders((pre) => ({ ...pre, [name]: value }));
   };
   return (
-    <div className="mt-4 grid grid-cols-12 gap-4">
+    <div className="mt-4 flex flex-col lg:grid grid-cols-12 gap-4">
       <div className="col-span-9 flex flex-col">
         {bookOrder?.map((order, index) => {
           return (
             <div
               key={index}
-              className="p-4 grid grid-cols-5 gap-4 w-full bg-secondary-light bg-opacity-40 rounded mb-8"
-              style={{ height: "230px" }}
+              className="p-4 grid grid-cols-5 gap-4 w-full  bg-opacity-40 rounded mb-8 bg-secondary-light"
+              style={{ minHeight: "230px" }}
             >
               <div className="col-span-2">
                 <div>
@@ -108,12 +108,12 @@ const BookOrder = () => {
                     <p className="ml-2 text-sm text-fontColor">Kg</p>
                   </div>
                 </div>
-                <div className="flex items-center mt-12">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center mt-4 sm:mt-12">
                   <div className="flex items-center mr-8">
                     <img src={download} alt="icon" className="mr-2" />
                     <p className="text-xs text-fontColor">Download</p>
                   </div>
-                  <div className="flex items-center mr-8">
+                  <div className="flex items-center mt-2 sm:mt-0 mr-8">
                     <img src={print} alt="icon" className="mr-2" />
                     <p className="text-xs text-fontColor">Print</p>
                   </div>
@@ -142,7 +142,7 @@ const BookOrder = () => {
                         maxWidth: "70px",
                         border: "none",
                         outline: "none",
-                        height: "30px",
+                        minHeight: "30px",
                         backgroundColor: "#FFFFFF17",
                         fontSize: "14px",
                         padding: " 4px 10px",
@@ -153,7 +153,10 @@ const BookOrder = () => {
                   </div>
                 </div>
                 <div className="mt-8">
-                  <button className="border border-fontColor rounded-sm outline-none h-10 w-full bg-secondary-dark text-base text-fontColor">
+                  <button
+                    className="border border-fontColor rounded-sm outline-none h-auto w-full bg-secondary-dark text-base text-fontColor"
+                    style={{ minHeight: "3rem" }}
+                  >
                     Book order
                   </button>
                 </div>

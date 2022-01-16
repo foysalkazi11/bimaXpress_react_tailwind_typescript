@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useTable, useGlobalFilter, usePagination, Row } from "react-table";
 import { BsEye } from "react-icons/bs";
-import styles from "./Analysts.module.css";
+import scrollbar from "../../scrollbar.module.css";
+import styles from './Analysts.module.css';
 import FormButton from "../theme/button/FormButton";
 import TableSearch from "../theme/table/tableSearchInput/TableSearchInput";
 import TableSearchButton from "../theme/table/tableSearchButton/TableSearchButton";
@@ -121,7 +122,7 @@ const Analyst = () => {
   }, [setPageSize]);
 
   return (
-    <div className={`py-6 px-10 w-full flex flex-col overflow-x-scroll ${styles.scrollBarDesign}}`}>
+    <div className={`py-6 px-10 w-full flex flex-col overflow-x-scroll ${scrollbar.scrollBarDesign}`}>
       <p className="text-base text-fontColor-gray ">
         Find details about analyst and can update details
       </p>

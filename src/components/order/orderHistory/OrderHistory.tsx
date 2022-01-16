@@ -221,7 +221,7 @@ const OrderHistory = () => {
       <p className="text-base text-fontColor-gray ">
         Find details about doctor and can update details
       </p>
-      <div className="flex items-center justify-between  flex-wrap ">
+      <div className="flex items-center justify-between flex-wrap ">
         <div className="flex items-center mt-6">
           <div className="mr-4 ">
             <TableSearch
