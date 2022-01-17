@@ -79,6 +79,11 @@ const StepFour = ({
     // ]
 
     const formData = new FormData();
+    admissionDetails?.per_day_room_rent_nursing_charges &&
+      formData?.append(
+        "per_day_room_rent_nursing_charges",
+        admissionDetails?.per_day_room_rent_nursing_charges
+      );
     admissionDetails?.others &&
       formData?.append(
         "admission_madicineConsumablesCostOfImplats_admission_Consumables",
@@ -393,7 +398,20 @@ const StepFour = ({
             </div>
             <div className="mt-6">
               <Input
-                label="Expenses (includes Room rent, Nursing services, Patient diet)"
+                label="Par day room rent"
+                handleChange={handleChange}
+                name="per_day_room_rent_nursing_charges"
+                value={
+                  admissionDetails?.per_day_room_rent_nursing_charges || ""
+                }
+                type="number"
+                style={inputStyle}
+                placeHolder="Please specify the amount"
+              />
+            </div>
+            <div className="mt-6">
+              <Input
+                label="Expenses ( Nursing services, Patient diet)"
                 handleChange={handleChange}
                 name="expenses"
                 value={admissionDetails?.expenses || ""}

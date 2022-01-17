@@ -44,6 +44,8 @@ const NewCase = () => {
   // const { newCaseNum } = useAppSelector((state) => state?.case);
   const { caseData } = useAppSelector((state) => state?.home);
   const param = useParams();
+  console.log(param);
+
   const { allCompaniesList } = useAppSelector(
     (state) => state?.empanelledCompanies
   );
@@ -140,7 +142,7 @@ const NewCase = () => {
           // Anesthetist,
           // Bed_No,
           // Consumables,
-          Contact_number,
+          // Contact_number,
           Cost_Of_Investigation,
           Date_of_Admission,
           // DateofInjury,
@@ -151,13 +153,13 @@ const NewCase = () => {
           Nursing,
           OT_Charges,
           // OtherHospitalIfAny,
-          // Per_Day_Room_Rent,
+          Per_Day_Room_Rent,
           // PhysicianCharge,
           ProfessionalFeesSurgeon,
           // Room_Category,
           // Room_No,
           Room_Type,
-          // Treating_Doctor,
+          Treating_Doctor,
           Treating_Doctor_Name,
           admission_time,
           cost_Of_Implant,
@@ -293,9 +295,10 @@ const NewCase = () => {
           ICDCode: ICD_Code,
           accident: In_Case_Of_Accident,
           // alcoholConsumer: ,
-          contractNumber: Contact_number,
+          contractNumber: Treating_Doctor,
           dateOfInjury: Date_Of_Injury,
           doctorsName: Treating_Doctor_Name,
+
           durationOfPresentAilment: Duration_Of_Present_Ailments,
           expectedDeliveryDate: ExpectedDateOfDelivery,
           firstConsultation: Date_Of_First_Consultation,
@@ -331,6 +334,7 @@ const NewCase = () => {
         admissionDetails: {
           //       HIV_STD_related_ailments_months:,
           // HIV_STD_related_ailments_year: "1903",
+          per_day_room_rent_nursing_charges: Per_Day_Room_Rent,
           ICU_charge: ICU_Charges,
           OT_charge: OT_Charges,
           alcohol_drag_abuse_month: AlcoholOrDrugAbuseMonth,
