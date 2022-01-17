@@ -8,12 +8,12 @@ import HtmlParser from "react-html-parser";
 const PreauthForm = () => {
   const [data, setData] = useState<any>("");
   const { user } = useAppSelector((state) => state?.user);
-  const { newCaseNum } = useAppSelector((state) => state?.case);
+  // const { newCaseNum } = useAppSelector((state) => state?.case);
   const dispatch = useAppDispatch();
 
   const getPreauthForm = async () => {
     dispatch(setLoading(true));
-    const URL = `/preauthform?email=${user}&casenumber=${newCaseNum}`;
+    const URL = `/preauthform?email=${user}&casenumber=case6`;
     try {
       const { data } = await axiosConfig.get(URL);
       dispatch(setLoading(false));

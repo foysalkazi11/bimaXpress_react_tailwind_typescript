@@ -88,10 +88,7 @@ const StepThree = ({
         diagnosisDetails?.surgeryName
       );
     diagnosisDetails?.contractNumber &&
-      formData?.append(
-        "PhysicianYesPhysicianContactNum",
-        diagnosisDetails?.contractNumber
-      );
+      formData?.append("doctor_name_email", diagnosisDetails?.contractNumber);
     diagnosisDetails?.doctorsName &&
       formData?.append("doctor_name", diagnosisDetails?.doctorsName);
     diagnosisDetails?.ICD &&
