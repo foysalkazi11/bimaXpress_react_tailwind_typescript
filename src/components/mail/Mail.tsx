@@ -20,7 +20,7 @@ import {
 import { setLoading } from "../../redux/slices/utilitySlice";
 import notification from "../theme/utility/notification";
 import axiosConfig from "../../config/axiosConfig";
-
+import PaginationButton from "../theme/PaginationButton/PaginationButton";
 
 const Mail = () => {
   const [mailDes, setMailDes] = useState(0);
@@ -32,7 +32,61 @@ const Mail = () => {
     (state) => state?.mail
   );
   const [selectedMail, setSelectedMail] = useState({});
+  const [totalNoInboxpage, settotalNoInboxpage] = useState(5);
+  const [totalNoSentpage, settotalNoSentpage] = useState(5);
+  const [currentSentPage, setSentCurrentPage] = useState(1);
+  const [currentInboxPage, setInboxCurrentPage] = useState(1);
+  const [nextButDisable, setNextBtnDisable] = useState(false);
+  const [previousButDisable, setpreviousBtnDisable] = useState(true);
 
+  const nextPage = () => {
+    if (
+      (currentMailList === "inbox"
+        ? currentInboxPage + 1
+        : currentSentPage + 1) >
+      (currentMailList === "inbox" ? totalNoInboxpage : totalNoSentpage)
+    ) {
+      //
+    } else if (
+      (currentMailList === "inbox"
+        ? currentInboxPage + 1
+        : currentSentPage + 1) ===
+      (currentMailList === "inbox" ? totalNoInboxpage : totalNoSentpage)
+    ) {
+      setNextBtnDisable(true);
+    } else {
+      currentMailList === "inbox"
+        ? setSentCurrentPage((pre) => pre + 1)
+        : setInboxCurrentPage((pre) => pre + 1);
+      setpreviousBtnDisable(false);
+      paginateMailList(
+        currentMailList === "inbox" ? currentInboxPage + 1 : currentSentPage + 1
+      );
+    }
+  };
+
+  const previousPage = () => {
+    if (
+      (currentMailList === "inbox"
+        ? currentInboxPage - 1
+        : currentSentPage - 1) === 0
+    ) {
+      //
+    } else if (
+      (currentMailList === "inbox"
+        ? currentInboxPage - 1
+        : currentSentPage - 1) === 1
+    ) {
+      setpreviousBtnDisable(true);
+    } else {
+      currentMailList === "inbox"
+        ? setSentCurrentPage((pre) => pre - 1)
+        : setInboxCurrentPage((pre) => pre - 1);
+      paginateMailList(
+        currentMailList === "inbox" ? currentInboxPage - 1 : currentSentPage - 1
+      );
+    }
+  };
   const mailList = {
     inbox: [...inboxMailList],
     sent: [...sentMailList],
@@ -56,8 +110,31 @@ const Mail = () => {
     setSelectedMail(singleMail);
   };
 
+  const paginateMailList = async (pageNo: number) => {
+    dispatch(setLoading(true));
+
+    const GETINBOXMAIL = `/inboxmails?email=${user}&pagenumber=${pageNo}`;
+    const GETSENTMAIL = `/sentinboxmails?email=${user}&pagenumber=${pageNo}`;
+    try {
+      if (currentMailList === "inbox") {
+        const { data: inboxMail } = await axiosConfig.get(GETINBOXMAIL);
+        dispatch(setInboxMailList(inboxMail?.data));
+      } else {
+        const { data: sentMail } = await axiosConfig.get(GETSENTMAIL);
+        dispatch(setSentMailList(sentMail?.data));
+      }
+      dispatch(setLoading(false));
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
+
   const fetchMailList = async () => {
     dispatch(setLoading(true));
+    settotalNoInboxpage(5);
+    settotalNoSentpage(5);
     const GETINBOXMAIL = `/inboxmails?email=${user}&pagenumber=1`;
     const GETSENTMAIL = `/sentinboxmails?email=${user}&pagenumber=1`;
     try {
@@ -135,14 +212,16 @@ const Mail = () => {
             ? //@ts-ignore
               mailList[currentMailList]?.map((mail, index) => {
                 return (
-                  <div key={index} className="grid grid-cols-12" onClick={() => handleSelectMail(index)}>
+                  <div
+                    key={index}
+                    className="grid grid-cols-12"
+                    onClick={() => handleSelectMail(index)}
+                  >
                     <div className="col-span-1">
                       <GeneralCheckbox />
                     </div>
                     <div className="col-span-11 mb-4 pb-3 border-b border-fontColor-darkGray">
-                      <h2
-                        className="text-lg text-fontColor cursor-pointer"
-                      >
+                      <h2 className="text-lg text-fontColor cursor-pointer">
                         {" "}
                         {/* @ts-ignore */}
                         {mail?.name}
@@ -173,6 +252,20 @@ const Mail = () => {
                 );
               })
             : null}
+          <div className="flex justify-end my-2">
+            <div className="pr-2">
+              <PaginationButton
+                leftIcon={true}
+                handleClick={() => previousPage()}
+                disability={previousButDisable}
+              />
+            </div>
+            <PaginationButton
+              rightIcon={true}
+              handleClick={() => nextPage()}
+              disability={nextButDisable}
+            />
+          </div>
         </div>
       </div>
       <div className="col-span-7 bg-primary-light min-h-full p-4 ">

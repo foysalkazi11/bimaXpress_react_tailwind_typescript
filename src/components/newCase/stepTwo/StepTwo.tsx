@@ -73,6 +73,21 @@ const StepTwo = ({
     // ]
 
     const formData = new FormData();
+    patientDetails?.PhysicianYesPhysicianContactNum &&
+      formData?.append(
+        "PhysicianYesPhysicianContactNum",
+        patientDetails?.PhysicianYesPhysicianContactNum
+      );
+    patientDetails?.PhysicianYesPhysicianName &&
+      formData?.append(
+        "PhysicianYesPhysicianName",
+        patientDetails?.PhysicianYesPhysicianName
+      );
+    patientDetails?.PhysicianYesPhysicianName &&
+      formData?.append(
+        "PhysicianYesPhysicianName",
+        patientDetails?.PhysicianYesPhysicianName
+      );
     patientDetails?.city && formData?.append("city", patientDetails?.city);
     patientDetails?.PhysicianYesPhysicianCurrentAddress &&
       formData?.append(

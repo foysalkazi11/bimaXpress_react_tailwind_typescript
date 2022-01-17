@@ -30,7 +30,7 @@ const PreauthForm = () => {
   };
 
   const printForm = () => {
-    window.print()
+    window.print();
   };
 
   useEffect(() => {
@@ -39,12 +39,40 @@ const PreauthForm = () => {
   }, []);
 
   return (
-    <div className="printable" style={{textAlign: 'center', marginTop: '10px'}}>
-      <button onClick={printForm} style={{textTransform: 'uppercase', backgroundColor: 'steelblue', padding: '6px 15px', color: '#fff', borderRadius: '2px', marginBottom: '10px', fontSize: '18px'}}>Print</button>
-      <button onClick={printForm} style={{textTransform: 'uppercase', backgroundColor: 'steelblue', padding: '6px 15px', color: '#fff', borderRadius: '2px', marginBottom: '10px', fontSize: '18px', marginLeft: '10px'}} >Back</button>
-      <div style={{position: 'relative'}}>
-        {HtmlParser(data)}
-      </div>
+    <div
+      className="printable"
+      style={{ textAlign: "center", marginTop: "10px" }}
+    >
+      <button
+        onClick={printForm}
+        style={{
+          textTransform: "uppercase",
+          backgroundColor: "#535353",
+          padding: "6px 15px",
+          color: "#fff",
+          borderRadius: "2px",
+          marginBottom: "10px",
+          fontSize: "18px",
+        }}
+      >
+        Print
+      </button>
+      <button
+        onClick={printForm}
+        style={{
+          textTransform: "uppercase",
+          backgroundColor: "#535353",
+          padding: "6px 15px",
+          color: "#fff",
+          borderRadius: "2px",
+          marginBottom: "10px",
+          fontSize: "18px",
+          marginLeft: "10px",
+        }}
+      >
+        Back
+      </button>
+      <div style={{ position: "relative" }}>{HtmlParser(data)}</div>
     </div>
   );
 };
