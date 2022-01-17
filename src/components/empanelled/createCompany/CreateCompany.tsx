@@ -31,29 +31,29 @@ const CreateCompany = () => {
   );
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state?.user);
-  const { newCaseNum } = useAppSelector((state) => state?.case);
+  // const { newCaseNum } = useAppSelector((state) => state?.case);
   const navigate = useNavigate();
 
-  const imageUpload = async () => {
-    const IMAGEUPLOAD = `/imageupload?email=${user}&casenumber=${
-      newCaseNum ? newCaseNum : "case0"
-    }`;
-    const imageFormData = new FormData();
-    let name: string | Blob | any[] = [];
+  // const imageUpload = async () => {
+  //   const IMAGEUPLOAD = `/imageupload?email=${user}&casenumber=${
+  //     newCaseNum ? newCaseNum : "case0"
+  //   }`;
+  //   const imageFormData = new FormData();
+  //   let name: string | Blob | any[] = [];
 
-    analystInfo?.Ratelist?.forEach((img) => {
-      //@ts-ignore
-      name.push(img?.name);
+  //   analystInfo?.Ratelist?.forEach((img) => {
+  //     //@ts-ignore
+  //     name.push(img?.name);
 
-      imageFormData.append("image", img);
-    });
-    //@ts-ignore
-    imageFormData?.append("imagename", name);
-    imageFormData?.append("arrayname", "Ratelist");
+  //     imageFormData.append("image", img);
+  //   });
+  //   //@ts-ignore
+  //   imageFormData?.append("imagename", name);
+  //   imageFormData?.append("arrayname", "Ratelist");
 
-    const { data } = await axiosConfig.post(IMAGEUPLOAD, imageFormData);
-    return data?.data;
-  };
+  //   const { data } = await axiosConfig.post(IMAGEUPLOAD, imageFormData);
+  //   return data?.data;
+  // };
 
   const addAnalyst = async () => {
     const URL = `/empanelcompany?email=${user}`;
@@ -64,8 +64,11 @@ const CreateCompany = () => {
       formData?.append("companyname", analystInfo?.name);
       formData?.append("discount", analystInfo?.discount);
       formData?.append("exclusion", analystInfo?.exclusion);
-      const images = await imageUpload();
-      formData?.append("Ratelist", images);
+
+      analystInfo?.Ratelist?.forEach((img) => {
+        formData.append("Ratelist", img);
+      });
+
       try {
         await axiosConfig.post(URL, formData);
         const { data } = await axiosConfig.get(URL);
@@ -248,7 +251,6 @@ const CreateCompany = () => {
                     type="file"
                     className="absolute border-none outline-none cursor-pointer opacity-0 w-full h-10 top-0 left-0 z-10"
                     onChange={updateAnalytstInfo}
-                    multiple
                   />
                 </div>
               </div>

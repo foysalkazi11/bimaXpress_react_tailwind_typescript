@@ -1,11 +1,20 @@
 import React from "react";
 import { BiLink, BiBell } from "react-icons/bi";
 import userImage from "../../assets/images/user.jpg";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { setRole, setUser, setUserData } from "../../redux/slices/userSlice";
 
 const NavBar = () => {
   const { currentMenu } = useAppSelector((state) => state?.home);
   const { user, userData, role } = useAppSelector((state) => state?.user);
+  const dispatch = useAppDispatch();
+
+  const handleLogout = () => {
+    sessionStorage?.removeItem("bimaUser");
+    dispatch(setUserData({}));
+    dispatch(setUser(""));
+    dispatch(setRole(""));
+  };
 
   return (
     <div className="flex items-center justify-between bg-primary px-4 py-3  mb-auto border-b border-fontColor-darkGray">
@@ -27,7 +36,17 @@ const NavBar = () => {
               {/* @ts-ignore */}
               {user ? userData?.displayName || userData?.email : "No user"}
             </span>
-            <span className="block text-xs text-fontColor">{role}</span>
+            <div className="flex items-center">
+              <span className="block text-xs text-fontColor">{role}</span>
+              {user ? (
+                <span
+                  className="block text-xs text-fontColor underline ml-4 cursor-pointer"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </span>
+              ) : null}
+            </div>
           </div>
         </div>
       </div>

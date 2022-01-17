@@ -24,49 +24,52 @@ import PreauthForm from "./components/preauthForm/PreauthForm";
 function App() {
   const { user } = useAppSelector((state) => state?.user);
 
+  const Wrapper = (element: any) => (
+    <Layout>
+      {element}
+    </Layout>
+  )
+
   return (
     <Router>
-      <Layout>
         <Routes>
           {user ? (
             <>
-              <Route path="/" element={<Home />} />
-              <Route path="/plan" element={<Plan />} />
-              <Route path="/hospital" element={<Hospital />} />
-              <Route path="/analyst" element={<Analyst />} />
-              <Route path="/analyst/:key" element={<AnalystUpdate />} />
-              <Route path="/analyst/create" element={<AnalystCreate />} />
-              <Route path="/doctor" element={<Doctor />} />
-              <Route path="/doctor/create" element={<DoctorCreate />} />
-              <Route path="/doctor/:key" element={<DoctorUpdate />} />
-              <Route path="/newCase" element={<NewCase />} />
-              <Route path="/newCase/:case" element={<NewCase />} />
-              <Route path="/order" element={<Order />} />
-              <Route path="/caseData/:case" element={<Drafts />} />
-              <Route path="/mail" element={<Mail />} />
               <Route path="/preauthform" element={<PreauthForm />} />
+              <Route path="/" element={Wrapper(<Home />)} />
+              <Route path="/plan" element={Wrapper(<Plan />)} />
+              <Route path="/hospital" element={Wrapper(<Hospital />)} />
+              <Route path="/analyst" element={Wrapper(<Analyst />)} />
+              <Route path="/analyst/:key" element={Wrapper(<AnalystUpdate />)} />
+              <Route path="/analyst/create" element={Wrapper(<AnalystCreate />)} />
+              <Route path="/doctor" element={Wrapper(<Doctor />)} />
+              <Route path="/doctor/create" element={Wrapper(<DoctorCreate />)} />
+              <Route path="/doctor/:key" element={Wrapper(<DoctorUpdate />)} />
+              <Route path="/newCase" element={Wrapper(<NewCase />)} />
+              <Route path="/newCase/:case" element={Wrapper(<NewCase />)} />
+              <Route path="/order" element={Wrapper(<Order />)} />
+              <Route path="/caseData/:case" element={Wrapper(<Drafts />)} />
+              <Route path="/mail" element={Wrapper(<Mail />)} />
               <Route
                 path="/empanelledCompanies"
-                element={<EmpanelledCompanies />}
+                element={Wrapper(<EmpanelledCompanies />)}
               />
               <Route
                 path="/empanelledCompanies/create"
-                element={<CreateCompany />}
+                element={Wrapper(<CreateCompany />)}
               />
               <Route
                 path="/empanelledCompanies/:key"
-                element={<UpdateCompanies />}
+                element={Wrapper(<UpdateCompanies />)}
               />
             </>
           ) : (
             <>
               <Route path="/" element={<LoginPage />} />
               <Route path="/login" element={<LoginPage />} />
-              {/* <Route path="/signup" element={<SignPage />} /> */}
             </>
           )}
         </Routes>
-      </Layout>
     </Router>
   );
 }
