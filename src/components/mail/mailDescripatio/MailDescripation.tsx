@@ -70,11 +70,7 @@ const MailDescripation = ({
           // dangerouslySetInnerHTML={{ __html: selectedMail?.message }}
         >
           {/* @ts-ignore */}
-          <div contentEditable={true} dangerouslySetInnerHTML={{ __html: ReactHtmlParser(selectedMail?.message) }} value={ReactHtmlParser(selectedMail?.message)} style={{minHeight: '100vh', width: '100%'}}>
-
-          </div>
-          {/* @ts-ignore */}
-          {/* {ReactHtmlParser(selectedMail?.message)} */}
+          {ReactHtmlParser(selectedMail?.message)}
         </p>
         {/* <p className="mt-6 text-lg text-fontColor-gray font-thin tracking-wide">
           We all know that Internet / Technologies / Automation is present and

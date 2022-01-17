@@ -71,8 +71,8 @@ const Mail = () => {
 
   const fetchMailList = async () => {
     dispatch(setLoading(true));
-    const GETINBOXMAIL = `/inbox?email=${user}&pagenumber=1`;
-    const GETSENTMAIL = `/sentInbox?email=${user}&pagenumber=1`;
+    const GETINBOXMAIL = `/inboxmails?email=${user}&pagenumber=1`;
+    const GETSENTMAIL = `/sentinboxmails?email=${user}&pagenumber=1`;
     try {
       const { data: inboxMail } = await axiosConfig.get(GETINBOXMAIL);
       const { data: sentMail } = await axiosConfig.get(GETSENTMAIL);
@@ -168,7 +168,7 @@ const Mail = () => {
                             {mail?.subject}
                           </p>
                         </div>
-                        <p className="text-xs text-fontColor">
+                        <p className="text-xs text-fontColor w-10">
                           {/* @ts-ignore */}
                           {mail?.date}
                         </p>
@@ -180,7 +180,7 @@ const Mail = () => {
                       >
                         {/* @ts-ignore */}
                         {/* <div dangerouslySetInnerHTML={mail?.message}></div> */}
-                        {parse(mail?.message)}
+                        {/* {parse(mail?.message)} */}
                       </p>
                     </div>
                   </div>
