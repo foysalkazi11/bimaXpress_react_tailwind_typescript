@@ -148,14 +148,13 @@ const Mail = () => {
             ? //@ts-ignore
               mailList[currentMailList]?.map((mail, index) => {
                 return (
-                  <div key={index} className="grid grid-cols-12">
+                  <div key={index} className="grid grid-cols-12" onClick={() => handleSelectMail(index)}>
                     <div className="col-span-1">
                       <GeneralCheckbox />
                     </div>
                     <div className="col-span-11 mb-4 pb-3 border-b border-fontColor-darkGray">
                       <h2
-                        className="text-xl text-fontColor cursor-pointer"
-                        onClick={() => handleSelectMail(index)}
+                        className="text-lg text-fontColor cursor-pointer"
                       >
                         {" "}
                         {/* @ts-ignore */}
@@ -163,7 +162,7 @@ const Mail = () => {
                       </h2>
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-xs text-fontColor mr-2">
+                          <p className="text-xs text-gray-300 mr-2">
                             {/* @ts-ignore */}
                             {mail?.subject}
                           </p>
