@@ -20,20 +20,7 @@ import {
 import { setLoading } from "../../redux/slices/utilitySlice";
 import notification from "../theme/utility/notification";
 import axiosConfig from "../../config/axiosConfig";
-// import ReactHtmlParser from "react-html-parser";
-import parse from "html-react-parser";
 
-// function b64DecodeUnicode(str: string) {
-//   // Going backwards: from bytestream, to percent-encoding, to original string.
-//   return decodeURIComponent(
-//     atob(str)
-//       .split("")
-//       .map(function (c) {
-//         return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-//       })
-//       .join("")
-//   );
-// }
 
 const Mail = () => {
   const [mailDes, setMailDes] = useState(0);
