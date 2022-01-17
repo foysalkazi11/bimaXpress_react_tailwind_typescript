@@ -70,18 +70,19 @@ const MailDescripation = ({
           // dangerouslySetInnerHTML={{ __html: selectedMail?.message }}
         >
           {/* @ts-ignore */}
-          {/* <iframe
+          <iframe
             //@ts-ignore
-            srcDoc={selectedMail?.message}
+            srcDoc={ReactHtmlParser(selectedMail?.message)}
             style={{
               width: "100%",
               minHeight: "100vh",
               color: "#f2f2f8",
+              border: 'none'
             }}
             title="tilled"
-          ></iframe> */}
+          ></iframe>
           {/* @ts-ignore */}
-          {ReactHtmlParser(selectedMail?.message)}
+          {/* {ReactHtmlParser(selectedMail?.message)} */}
         </p>
         {/* <p className="mt-6 text-lg text-fontColor-gray font-thin tracking-wide">
           We all know that Internet / Technologies / Automation is present and
