@@ -12,7 +12,6 @@ const PreauthForm = () => {
   const dispatch = useAppDispatch();
 
   const getPreauthForm = async () => {
-    // const URL = `/preauthform?email=${user}&casenumber=${newCaseNum}`;
     dispatch(setLoading(true));
     const URL = `/preauthform?email=${user}&casenumber=${newCaseNum}`;
     try {

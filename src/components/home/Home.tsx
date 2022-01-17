@@ -153,9 +153,8 @@ const Home = () => {
           index: React.Key | null | undefined
         ) => {
           return (
-            <>
-              <div
-                key={index}
+            <div
+                key={index + 'home'}
                 className="grid justify-center"
                 onClick={() => GoDraftPage(menu?.pageLink, menu?.value)}
               >
@@ -165,8 +164,7 @@ const Home = () => {
                   amount={menu?.amount}
                   key={index}
                 />
-              </div>
-            </>
+            </div>
           );
         }
       )}
