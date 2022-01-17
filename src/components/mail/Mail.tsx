@@ -20,20 +20,7 @@ import {
 import { setLoading } from "../../redux/slices/utilitySlice";
 import notification from "../theme/utility/notification";
 import axiosConfig from "../../config/axiosConfig";
-// import ReactHtmlParser from "react-html-parser";
-import parse from "html-react-parser";
 
-// function b64DecodeUnicode(str: string) {
-//   // Going backwards: from bytestream, to percent-encoding, to original string.
-//   return decodeURIComponent(
-//     atob(str)
-//       .split("")
-//       .map(function (c) {
-//         return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-//       })
-//       .join("")
-//   );
-// }
 
 const Mail = () => {
   const [mailDes, setMailDes] = useState(0);
@@ -71,8 +58,8 @@ const Mail = () => {
 
   const fetchMailList = async () => {
     dispatch(setLoading(true));
-    const GETINBOXMAIL = `/inbox?email=${user}&pagenumber=1`;
-    const GETSENTMAIL = `/sentInbox?email=${user}&pagenumber=1`;
+    const GETINBOXMAIL = `/inboxmails?email=${user}&pagenumber=1`;
+    const GETSENTMAIL = `/sentinboxmails?email=${user}&pagenumber=1`;
     try {
       const { data: inboxMail } = await axiosConfig.get(GETINBOXMAIL);
       const { data: sentMail } = await axiosConfig.get(GETSENTMAIL);
@@ -148,14 +135,13 @@ const Mail = () => {
             ? //@ts-ignore
               mailList[currentMailList]?.map((mail, index) => {
                 return (
-                  <div key={index} className="grid grid-cols-12">
+                  <div key={index} className="grid grid-cols-12" onClick={() => handleSelectMail(index)}>
                     <div className="col-span-1">
                       <GeneralCheckbox />
                     </div>
                     <div className="col-span-11 mb-4 pb-3 border-b border-fontColor-darkGray">
                       <h2
-                        className="text-xl text-fontColor cursor-pointer"
-                        onClick={() => handleSelectMail(index)}
+                        className="text-lg text-fontColor cursor-pointer"
                       >
                         {" "}
                         {/* @ts-ignore */}
@@ -163,12 +149,12 @@ const Mail = () => {
                       </h2>
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-xs text-fontColor mr-2">
+                          <p className="text-xs text-gray-300 mr-2">
                             {/* @ts-ignore */}
                             {mail?.subject}
                           </p>
                         </div>
-                        <p className="text-xs text-fontColor">
+                        <p className="text-xs text-fontColor w-10">
                           {/* @ts-ignore */}
                           {mail?.date}
                         </p>
@@ -180,7 +166,7 @@ const Mail = () => {
                       >
                         {/* @ts-ignore */}
                         {/* <div dangerouslySetInnerHTML={mail?.message}></div> */}
-                        {parse(mail?.message)}
+                        {/* {parse(mail?.message)} */}
                       </p>
                     </div>
                   </div>

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import BookOrder from "./bookOrder/BookOrder";
 import OrderHistory from "./orderHistory/OrderHistory";
 import TrackOrder from "./trackOrders/TrackOrder";
-import scrollbar from "../../scrollbar.module.css";
 
 const tabs = ["Book order", "Track orders", "Order history"];
 
@@ -23,12 +22,12 @@ const Order = () => {
     }
   };
   return (
-    <div className={`px-8 py-6 overflow-x-scroll ${scrollbar.scrollBarDesign}`}>
+    <div className={`px-8 py-6 `}>
       <p className="text-sm text-fontColor">
         Find details about your orders & shipemnst. You can track your orders by
         viewing track orders and your order history
       </p>
-      <div className="flex items-center border-b border-fontColor-darkGray mt-6">
+      <div className={`flex items-center border-b border-fontColor-darkGray mt-6`}>
         {tabs?.map((tab, index) => {
           return (
             <p

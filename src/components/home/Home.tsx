@@ -154,16 +154,16 @@ const Home = () => {
         ) => {
           return (
             <div
-                key={index + 'home'}
-                className="grid justify-center"
-                onClick={() => GoDraftPage(menu?.pageLink, menu?.value)}
-              >
-                <HomeCard
-                  name={menu?.name}
-                  icon={menu?.icon}
-                  amount={menu?.amount}
-                  key={index}
-                />
+              key={index + "home"}
+              className="grid justify-center"
+              onClick={() => GoDraftPage(menu?.pageLink, menu?.value)}
+            >
+              <HomeCard
+                name={menu?.name}
+                icon={menu?.icon}
+                amount={menu?.amount}
+                key={index}
+              />
             </div>
           );
         }

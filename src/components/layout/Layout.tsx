@@ -12,8 +12,9 @@ type LayoutProps = {
 const Layout = ({ children }: LayoutProps) => {
   const navigate = useNavigate();
   const { user } = useAppSelector((state) => state?.user);
+  let userSession = sessionStorage.getItem('bimaUser');
   useEffect(() => {
-    if (!user) {
+    if (!user && !userSession) {
       navigate("/login");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

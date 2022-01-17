@@ -471,7 +471,7 @@ const StepFour = ({
               <div className="col-span-3">
                 <p className="text-sm text-fontColor-light">Diabetes</p>
               </div>
-              <div className="col-span-4">
+              <div className="col-span-4 mt-3 sm:mt-0">
                 <NewCaseSelect
                   options={months}
                   name="diabetes_month"
@@ -480,7 +480,7 @@ const StepFour = ({
                   value={admissionDetails?.diabetes_month || ""}
                 />
               </div>
-              <div className="col-span-4">
+              <div className="col-span-4 mt-3 sm:mt-0">
                 <NewCaseSelect
                   options={yearList}
                   name="diabetes_year"
@@ -494,7 +494,7 @@ const StepFour = ({
               <div className="col-span-3">
                 <p className="text-sm text-fontColor-light">Heart Disease</p>
               </div>
-              <div className="col-span-4">
+              <div className="col-span-4 mt-3 sm:mt-0">
                 <NewCaseSelect
                   options={months}
                   name="heart_disease_month"
@@ -503,7 +503,7 @@ const StepFour = ({
                   value={admissionDetails?.heart_disease_month || ""}
                 />
               </div>
-              <div className="col-span-4">
+              <div className="col-span-4 mt-3 sm:mt-0">
                 <NewCaseSelect
                   options={yearList}
                   name="heart_disease_year"
@@ -518,7 +518,7 @@ const StepFour = ({
               <div className="col-span-3">
                 <p className="text-sm text-fontColor-light">Hypertension</p>
               </div>
-              <div className="col-span-4">
+              <div className="col-span-4 mt-3 sm:mt-0">
                 <NewCaseSelect
                   options={months}
                   name="hypertension_month"
@@ -527,7 +527,7 @@ const StepFour = ({
                   value={admissionDetails?.hypertension_month || ""}
                 />
               </div>
-              <div className="col-span-4">
+              <div className="col-span-4 mt-3 sm:mt-0">
                 <NewCaseSelect
                   options={yearList}
                   name="hypertension_year"
@@ -542,7 +542,7 @@ const StepFour = ({
               <div className="col-span-3">
                 <p className="text-sm text-fontColor-light">Hyperlipidemias</p>
               </div>
-              <div className="col-span-4">
+              <div className="col-span-4 mt-3 sm:mt-0">
                 <NewCaseSelect
                   options={months}
                   name="hyperlipidemias_month"
@@ -551,7 +551,7 @@ const StepFour = ({
                   value={admissionDetails?.hyperlipidemias_month || ""}
                 />
               </div>
-              <div className="col-span-4">
+              <div className="col-span-4 mt-3 sm:mt-0">
                 <NewCaseSelect
                   options={yearList}
                   name="hyperlipidemias_year"
@@ -566,7 +566,7 @@ const StepFour = ({
               <div className="col-span-3">
                 <p className="text-sm text-fontColor-light">Osteoarthritis</p>
               </div>
-              <div className="col-span-4">
+              <div className="col-span-4 mt-3 sm:mt-0">
                 <NewCaseSelect
                   options={months}
                   name="osteoarthritis_month"
@@ -575,7 +575,7 @@ const StepFour = ({
                   value={admissionDetails?.osteoarthritis_month || ""}
                 />
               </div>
-              <div className="col-span-4">
+              <div className="col-span-4 mt-3 sm:mt-0">
                 <NewCaseSelect
                   options={yearList}
                   name="osteoarthritis_year"
@@ -592,7 +592,7 @@ const StepFour = ({
                   Asthma/ COPD/ Bronchitis
                 </p>
               </div>
-              <div className="col-span-4">
+              <div className="col-span-4 mt-3 sm:mt-0">
                 <NewCaseSelect
                   options={months}
                   name="asthma_COPD_bronchitis_month"
@@ -601,7 +601,7 @@ const StepFour = ({
                   value={admissionDetails?.asthma_COPD_bronchitis_month || ""}
                 />
               </div>
-              <div className="col-span-4">
+              <div className="col-span-4 mt-3 sm:mt-0">
                 <NewCaseSelect
                   options={yearList}
                   name="asthma_COPD_bronchitis_year"
@@ -616,7 +616,7 @@ const StepFour = ({
               <div className="col-span-3">
                 <p className="text-sm text-fontColor-light">Cancer</p>
               </div>
-              <div className="col-span-4">
+              <div className="col-span-4 mt-3 sm:mt-0">
                 <NewCaseSelect
                   options={months}
                   name="cancer_month"
@@ -625,7 +625,7 @@ const StepFour = ({
                   value={admissionDetails?.cancer_month || ""}
                 />
               </div>
-              <div className="col-span-4">
+              <div className="col-span-4 mt-3 sm:mt-0">
                 <NewCaseSelect
                   options={yearList}
                   name="cancer_year"
@@ -642,7 +642,7 @@ const StepFour = ({
                   Alcohol/Drag Abuse
                 </p>
               </div>
-              <div className="col-span-4">
+              <div className="col-span-4 mt-3 sm:mt-0">
                 <NewCaseSelect
                   options={months}
                   name="alcohol_drag_abuse_month"
@@ -651,7 +651,7 @@ const StepFour = ({
                   value={admissionDetails?.alcohol_drag_abuse_month || ""}
                 />
               </div>
-              <div className="col-span-4">
+              <div className="col-span-4 mt-3 sm:mt-0">
                 <NewCaseSelect
                   options={yearList}
                   name="alcohol_drag_abuse_year"
@@ -668,7 +668,7 @@ const StepFour = ({
                   Any HIV Or STD/Related Ailments
                 </p>
               </div>
-              <div className="col-span-4">
+              <div className="col-span-4 mt-3 sm:mt-0">
                 <NewCaseSelect
                   options={months}
                   name="HIV_STD_related_ailments_months"
@@ -679,7 +679,7 @@ const StepFour = ({
                   }
                 />
               </div>
-              <div className="col-span-4">
+              <div className="col-span-4 mt-3 sm:mt-0">
                 <NewCaseSelect
                   options={yearList}
                   name="HIV_STD_related_ailments_year"
@@ -697,7 +697,6 @@ const StepFour = ({
           <p className="pb-6 text-lg font-semibold text-fontColor-light">
             Total Cost
           </p>
-
           <p className=" border-b-2 border-fontColor-darkGray py-1 w-full text-base text-fontColor-light ">
             {totalCost}
           </p>

@@ -31,6 +31,7 @@ module.exports = {
       },
       gridTemplateColumns: {
         "auto-fit": "repeat(auto-fit,minmax(170px,1fr))",
+        "auto-fit-upgrade": "repeat(auto-fit,minmax(200px,1fr))",
       },
       colors: {
         primary: {

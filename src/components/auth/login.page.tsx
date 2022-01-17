@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from "react";
 import AuthScreenWrapper from "./authscreen.wrapper";
 import { useNavigate } from "react-router-dom";
 import "./auth.scss";
@@ -23,13 +24,28 @@ function LoginPage() {
     setUserInput((pre) => ({ ...pre, [name]: value }));
   };
 
+  useEffect(() => {
+    let user = sessionStorage.getItem('bimaUser');
+      if(user){
+        //@ts-ignore
+        user = JSON.parse(user)
+        dispatch(setLoading(false));
+         //@ts-ignore
+        dispatch(setUserData(user));
+         //@ts-ignore
+        dispatch(setUser(user?.email));
+         //@ts-ignore
+        dispatch(setRole(user?.role));
+        navigate("/");
+      }
+  }, [])
+
   // HANDLE LOGIN ON FORM SUBMISSION
   const handleSignin = async (e: any) => {
     e.preventDefault();
     dispatch(setLoading(true));
     try {
       const URL = "/signin";
-
       const {
         data: { data },
       } = await axiosConfig.post(URL, {
@@ -39,6 +55,11 @@ function LoginPage() {
       const {
         data: { data: userRole },
       } = await axiosConfig.get(`/role?email=${data?.email}`);
+
+      data.role = userRole.Role;
+
+      console.log(data)
+      window.sessionStorage.setItem('bimaUser', JSON.stringify(data));
 
       dispatch(setLoading(false));
       dispatch(setUserData(data));

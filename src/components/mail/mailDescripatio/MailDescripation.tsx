@@ -70,17 +70,6 @@ const MailDescripation = ({
           // dangerouslySetInnerHTML={{ __html: selectedMail?.message }}
         >
           {/* @ts-ignore */}
-          {/* <iframe
-            //@ts-ignore
-            srcDoc={selectedMail?.message}
-            style={{
-              width: "100%",
-              minHeight: "100vh",
-              color: "#f2f2f8",
-            }}
-            title="tilled"
-          ></iframe> */}
-          {/* @ts-ignore */}
           {ReactHtmlParser(selectedMail?.message)}
         </p>
         {/* <p className="mt-6 text-lg text-fontColor-gray font-thin tracking-wide">

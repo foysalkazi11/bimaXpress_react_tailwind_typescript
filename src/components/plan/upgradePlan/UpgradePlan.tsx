@@ -1,31 +1,9 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import standard from "../../../assets/icon/planBig.svg";
-import premium from "../../../assets/icon/Diamond.svg";
-import platinum from "../../../assets/icon/platinam.svg";
 import rupi from "../../../assets/icon/rupi.svg";
 import styles from "./UpgradePlan.module.css";
 import PlanSelectButton from "../../theme/button/PlanSelectButton";
-
-const plans = [
-  {
-    icon: standard,
-    title: "standard",
-    amount: 1000,
-    features: ["One year subscription", "Upto 80 claim tokens"],
-  },
-  {
-    icon: premium,
-    title: "premium",
-    amount: 7000,
-    features: ["Lifetime membership", "Upto 200 claim tokens"],
-  },
-  {
-    icon: platinum,
-    title: "platimum",
-    amount: 14000,
-    features: ["Lifetime membership", "Upto 500 claim tokens"],
-  },
-];
+import axios from "axios";
 
 type UpgradePlanProps = {
   setCurrentPlan: Dispatch<SetStateAction<string>>;
@@ -33,35 +11,44 @@ type UpgradePlanProps = {
 };
 
 const UpgradePlan = ({ setCurrentPlan, currentPlan }: UpgradePlanProps) => {
+  const [plans, setPlans] = useState<any[]>([])
+  useEffect(() => {
+    axios.get(`/allplansdetails`).then(res => {
+      console.log(res.data?.data);
+      setPlans(res.data?.data)
+    }).catch(err => {
+      console.log(err)
+    })
+  })
   return (
     <div className="px-8 py-6">
       <h2 className="text-3xl text-fontColor font-semibold">
         Upgrade your plan
       </h2>
-      <div className="flex justify-between flex-wrap pt-8">
-        {plans?.map((plan, index) => {
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-10 pt-8">
+        {plans && plans?.map((plan, index) => {
           return (
             <div
-              className={`w-full h-full border border-fontColor rounded-2xl px-4 py-6 mb-6 flex flex-col ${styles.container}`}
+              className={`w-full ml-auto mr-auto max-h-6 border border-fontColor rounded-2xl px-4 py-6 mb-6 flex flex-col ${styles.container}`}
               key={index}
             >
               <img
-                src={plan?.icon}
+                src={standard}
                 alt="icon"
                 className={`w-8 text-fontColor ${styles.svg}`}
               />
               <p className="font-light text-xl pt-4 text-fontColor capitalize">
-                {plan?.title}
+                {plan?.name}
               </p>
               <div className="flex items-center pt-6">
                 <img src={rupi} alt="icon" />
-                <h1 className="text-6xl text-fontColor font-semibold pl-2 -mt-3">
-                  {plan?.amount}
-                </h1>
+                <h2 className="text-5xl text-fontColor font-semibold pl-2 -mt-3">
+                  {plan?.price}
+                </h2>
               </div>
               <p className="text-xs font-thin pt-8 text-fontColor">Features</p>
-              <div className={`h-full ${styles.contentBox}`}>
-                {plan?.features?.map((fetures, index) => {
+              <div className={`h-3 ${styles.contentBox}`}>
+                {plan?.features?.map((fetures: any, index: number) => {
                   return (
                     <div className="pt-4 flex items-center" key={index}>
                       <span className={styles.boldIcon}></span>
@@ -71,7 +58,7 @@ const UpgradePlan = ({ setCurrentPlan, currentPlan }: UpgradePlanProps) => {
                 })}
               </div>
 
-              <div className="pt-5">
+              <div className="mb-4">
                 <PlanSelectButton
                   text="Buy now"
                   disable={plan?.title === currentPlan}

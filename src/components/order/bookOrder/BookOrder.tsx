@@ -56,7 +56,7 @@ const BookOrder = () => {
           return (
             <div
               key={index}
-              className="p-4 grid grid-cols-5 gap-4 w-full  bg-opacity-40 rounded mb-8 bg-secondary-light"
+              className="p-4 md:grid flex flex-col md:grid-cols-5 gap-4 w-full  bg-opacity-40 rounded mb-8 bg-secondary-light"
               style={{ minHeight: "230px" }}
             >
               <div className="col-span-2">
