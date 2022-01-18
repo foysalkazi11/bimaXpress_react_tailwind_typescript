@@ -73,6 +73,11 @@ const StepTwo = ({
     // ]
 
     const formData = new FormData();
+    patientDetails?.HealthInsuranceYesCompanyName &&
+      formData?.append(
+        "HealthInsuranceYesCompanyName",
+        patientDetails?.HealthInsuranceYesCompanyName
+      );
     patientDetails?.PhysicianYesPhysicianContactNum &&
       formData?.append(
         "PhysicianYesPhysicianContactNum",
@@ -96,7 +101,7 @@ const StepTwo = ({
       );
     patientDetails?.Give_Company_details &&
       formData?.append(
-        "patient_details_Give_details",
+        "Give_Company_details",
         patientDetails?.Give_Company_details
       );
     patientDetails?.previousHealthInsurance &&
@@ -506,8 +511,8 @@ const StepTwo = ({
               <div className="col-span-1">
                 <Input
                   handleChange={handleChange}
-                  name="City"
-                  value={patientDetails?.City || ""}
+                  name="city"
+                  value={patientDetails?.city || ""}
                   label="City"
                   labelStyle={{ paddingBottom: "12px" }}
                   style={{ height: "40px" }}

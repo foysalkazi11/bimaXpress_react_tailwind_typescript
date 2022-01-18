@@ -193,13 +193,18 @@ const StepThree = ({
       );
     diagnosisDetails?.accident &&
       formData?.append("doctor_inCaseOfAccident", diagnosisDetails?.accident);
-    // diagnosisDetails?.surgeryName && formData?.append(
-    //   "doctor_injuryorDiseaseCausedDueToSubstance",
-    //   diagnosisDetails?.gender
-    // );
-    diagnosisDetails?.alcoholConsumer &&
-      formData?.append("doctor_testAlcohol", diagnosisDetails?.alcoholConsumer);
-    // diagnosisDetails?.surgeryName && formData?.append("doctor_firNo", diagnosisDetails?.gender);
+    diagnosisDetails?.Injury_Disease_Caused_Due_To_Substance_Abuse_Alcohol_Consumption_ &&
+      formData?.append(
+        "doctor_injuryorDiseaseCausedDueToSubstance",
+        diagnosisDetails?.Injury_Disease_Caused_Due_To_Substance_Abuse_Alcohol_Consumption_
+      );
+    diagnosisDetails?.doctor_testAlcohol &&
+      formData?.append(
+        "doctor_testAlcohol",
+        diagnosisDetails?.doctor_testAlcohol
+      );
+    diagnosisDetails?.FIR_Number &&
+      formData?.append("doctor_firNo", diagnosisDetails?.FIR_Number);
     diagnosisDetails?.maternity?.includes("g") &&
       formData?.append(
         "doctor_inCaseMaternityG",
@@ -604,10 +609,13 @@ const StepThree = ({
               <div className="mr-8">
                 <InputRadio
                   handleChange={handleChange}
-                  name="alcoholConsumer"
+                  name="Injury_Disease_Caused_Due_To_Substance_Abuse_Alcohol_Consumption_"
                   value="no"
                   radioLabel="No"
-                  fieldName={diagnosisDetails?.alcoholConsumer || ""}
+                  fieldName={
+                    diagnosisDetails?.Injury_Disease_Caused_Due_To_Substance_Abuse_Alcohol_Consumption_ ||
+                    ""
+                  }
                 />
               </div>
             </div>

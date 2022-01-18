@@ -29,7 +29,7 @@ const SummeryModal = ({
       shouldCloseOnOverlayClick={true}
     >
       <p className="text-lg text-fontColor mb-2">Summery</p>
-      <div className={`${styles.summerModalContainer} relative`}>
+      <div className={`${styles.summerModalContainer} relative y-scroll`}>
         <IoClose
           className=" absolute top-4 right-6 text-2xl text-fontColor cursor-pointer"
           onClick={closeModal}
