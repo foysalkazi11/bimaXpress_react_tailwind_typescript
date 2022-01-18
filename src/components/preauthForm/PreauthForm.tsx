@@ -4,12 +4,14 @@ import axiosConfig from "../../config/axiosConfig";
 import notification from "../theme/utility/notification";
 import { setLoading } from "../../redux/slices/utilitySlice";
 import HtmlParser from "react-html-parser";
+import { useNavigate } from "react-router-dom";
 
 const PreauthForm = () => {
   const [data, setData] = useState<any>("");
   const { user } = useAppSelector((state) => state?.user);
   // const { newCaseNum } = useAppSelector((state) => state?.case);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const getPreauthForm = async () => {
     dispatch(setLoading(true));
@@ -58,7 +60,7 @@ const PreauthForm = () => {
         Print
       </button>
       <button
-        onClick={printForm}
+        onClick={() => navigate(-1)}
         style={{
           textTransform: "uppercase",
           backgroundColor: "#535353",
