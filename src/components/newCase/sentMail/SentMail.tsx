@@ -231,10 +231,10 @@ const SentMail = ({
         console.log(images);
 
         //@ts-ignore
-        images?.forEach((img) => {
-          formData.append("imgurl", img);
-        });
-        // formCreationAuditForm?.append("imgurl", images);
+        // images?.forEach((img) => {
+        //   formCreationAuditForm.append("imgurl", img);
+        // });
+        formCreationAuditForm?.append("imgurl", images);
         let imageArray = [
           ...mail?.Urlidproof,
           ...mail?.UrlotherDocuments,

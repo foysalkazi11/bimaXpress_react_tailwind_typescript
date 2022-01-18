@@ -44,7 +44,6 @@ const NewCase = () => {
   // const { newCaseNum } = useAppSelector((state) => state?.case);
   const { caseData } = useAppSelector((state) => state?.home);
   const param = useParams();
-  console.log(param);
 
   const { allCompaniesList } = useAppSelector(
     (state) => state?.empanelledCompanies
@@ -179,6 +178,7 @@ const NewCase = () => {
           // Ailment,
           AlcoholOrDrugAbuseMonth,
           AlcoholOrDrugAbuseYear,
+          //data[AsthmaOrCOPDOrBronchitisMonth
           AsthmaOrCOPDOrBronchitisMonth,
           AsthmaOrCOPDOrBronchitisYear,
           Attending_Relative_Number,
@@ -248,6 +248,7 @@ const NewCase = () => {
           patient_details_HealthInsurance,
         },
       } = obj;
+      setTotalCost(total);
 
       //@ts-ignore
       const companyInfo = allCompaniesList[Insurance_Company];
