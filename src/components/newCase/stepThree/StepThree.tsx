@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "../../theme/input/Input";
 import InputCheckbox from "../../theme/inputCheckbox/InputCheckbox";
 import InputContained from "../../theme/inputContained/InputContained";
@@ -10,6 +10,8 @@ import notification from "../../theme/utility/notification";
 import { setLoading } from "../../../redux/slices/utilitySlice";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { useNavigate } from "react-router-dom";
+import { setDoctorList } from "../../../redux/slices/doctorSlice";
+import NewCaseSelect from "../../theme/select/newCaseSelect/NewCaseSelect";
 
 type StepThreeProps = {
   newCaseData: any;
@@ -38,7 +40,42 @@ const StepThree = ({
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state?.user);
   const { newCaseNum } = useAppSelector((state) => state?.case);
+  const { doctorList } = useAppSelector((state) => state?.doctor);
+  const [doctorsList, setDoctorsList] = useState<any>([]);
   const navigate = useNavigate();
+
+  const fetchDoctor = async () => {
+    dispatch(setLoading(true));
+    try {
+      const { data } = await axiosConfig.get(`/doctor?email=${user}`);
+
+      dispatch(setLoading(false));
+      dispatch(setDoctorList(data?.data));
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
+
+  useEffect(() => {
+    if (!Object.entries(doctorList)?.length) {
+      fetchDoctor();
+    } else {
+      const res = Object.entries(doctorList)?.map(
+        (
+          //@ts-ignore
+          [key, { name }]
+        ) => ({
+          label: name,
+          value: name,
+        })
+      );
+      setDoctorsList(res);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [doctorList]);
+
   const saveDataToDb = async () => {
     const POST_URL = `/preauthdata?email=${user}&casenumber=${newCaseNum}`;
 
@@ -273,7 +310,15 @@ const StepThree = ({
     <div className="mb-8">
       <div className="flex flex-col lg:flex-row justify-between border-b border-fontColor-darkGray">
         <div className=" lg:w-1/2 p-6 pb-12">
-          <div>
+          <NewCaseSelect
+            options={doctorsList}
+            name="doctorsName"
+            handleChange={handleChange}
+            defaultOption="Select Insurance Company"
+            label="Doctor's Name"
+            value={diagnosisDetails?.doctorsName || ""}
+          />
+          {/* <div>
             <Input
               handleChange={handleChange}
               name="doctorsName"
@@ -282,7 +327,7 @@ const StepThree = ({
               style={{ height: "40px" }}
               labelStyle={{ paddingBottom: "12px" }}
             />
-          </div>
+          </div> */}
           <div className="mt-6">
             <Input
               handleChange={handleChange}
@@ -298,7 +343,17 @@ const StepThree = ({
               handleChange={handleChange}
               name="natureOfIllness"
               value={diagnosisDetails?.natureOfIllness || ""}
-              label="Nature of illness"
+              label="Nature Of Illness / Disease With Presenting Complaints"
+              style={{ height: "40px" }}
+              labelStyle={{ paddingBottom: "12px" }}
+            />
+          </div>
+          <div className="mt-6">
+            <Input
+              handleChange={handleChange}
+              name="Provision_Diagnosis"
+              value={diagnosisDetails?.Provision_Diagnosis || ""}
+              label="Provisional Diagnosis"
               style={{ height: "40px" }}
               labelStyle={{ paddingBottom: "12px" }}
             />
@@ -462,6 +517,16 @@ const StepThree = ({
             </div>
           </div>
           <div className="mt-6">
+            <Input
+              handleChange={handleChange}
+              name="routeOfDrag"
+              value={diagnosisDetails?.routeOfDrag || ""}
+              label="Route of drug administration"
+              style={{ height: "40px" }}
+              labelStyle={{ paddingBottom: "12px" }}
+            />
+          </div>
+          {/* <div className="mt-6">
             <InputContained
               handleChange={handleChange}
               name="routeOfDrag"
@@ -469,7 +534,7 @@ const StepThree = ({
               label="Route of drug administration"
               style={{ maxWidth: "100px" }}
             />
-          </div>
+          </div> */}
         </div>
 
         <div className="border-r border-fontColor-darkGray"></div>
@@ -490,7 +555,7 @@ const StepThree = ({
               handleChange={handleChange}
               name="ICD"
               value={diagnosisDetails?.ICD || ""}
-              label="ICD 10 pcs code 9"
+              label="ICD 10 PCS Code"
               style={{ maxWidth: "100px" }}
             />
           </div>
@@ -517,7 +582,7 @@ const StepThree = ({
 
           <div className="mt-6">
             <p className="pb-4 text-sm text-fontColor-light">
-              In case of accident ?
+              In Case Of Accident ,Is It RTA ?
             </p>
             <div className="flex items-center">
               <div className="mr-8">
@@ -622,7 +687,7 @@ const StepThree = ({
           </div>
           <div className="mt-6">
             <p className="pb-4 text-sm text-fontColor-light">
-              Test conducted or not ?
+              Test Conducted To Establish This ?
             </p>
             <div className="flex items-center">
               <div className="mr-8">

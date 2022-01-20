@@ -10,6 +10,7 @@ import notification from "../../theme/utility/notification";
 import { setLoading } from "../../../redux/slices/utilitySlice";
 import InputDate from "../../theme/inputDate/InputDate";
 import { useNavigate } from "react-router-dom";
+import getAge from "../../theme/ageCalculate/ageCalculate";
 
 type StepTwoProps = {
   newCaseData: any;
@@ -73,6 +74,15 @@ const StepTwo = ({
     // ]
 
     const formData = new FormData();
+    patientDetails?.ipd_patient_number &&
+      formData?.append(
+        "ipd_patient_number",
+        patientDetails?.ipd_patient_number
+      );
+    patientDetails?.ageYear &&
+      formData?.append("patient_details_ageYear", patientDetails?.ageYear);
+    patientDetails?.ageMonths &&
+      formData?.append("patient_details_ageMonth", patientDetails?.ageMonths);
     patientDetails?.HealthInsuranceYesCompanyName &&
       formData?.append(
         "HealthInsuranceYesCompanyName",
@@ -204,8 +214,20 @@ const StepTwo = ({
   // };
 
   useEffect(() => {
-    console.log(newCaseData);
-  }, [newCaseData]);
+    if (patientDetails?.DOB) {
+      const res = getAge(patientDetails?.DOB);
+      setNewCaseData((pre: any) => ({
+        ...pre,
+        patientDetails: {
+          ...pre?.patientDetails,
+          ageYear: res?.years,
+          ageMonths: res?.months,
+        },
+      }));
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newCaseData.patientDetails?.DOB]);
 
   return (
     <div className="h-full relative">
@@ -216,14 +238,14 @@ const StepTwo = ({
               handleChange={handleChange}
               name="patientName"
               value={patientDetails?.patientName || ""}
-              label="Patient name"
+              label="Patient name *"
               labelStyle={{ paddingBottom: "12px" }}
               style={{ height: "40px" }}
             />
           </div>
 
           <div className="mt-6">
-            <p className="pb-4 text-sm text-fontColor-light">Gender</p>
+            <p className="pb-4 text-sm text-fontColor-light">Gender *</p>
             <div className="flex flex-col lg:flex-row">
               <div className="mr-8 ">
                 <InputRadio
@@ -263,8 +285,41 @@ const StepTwo = ({
               label="Date of birth"
               style={{ maxWidth: "220px" }}
             />
+          </div>
+          <div className="mt-6">
+            <Input
+              handleChange={handleChange}
+              name="ageYear"
+              value={patientDetails?.ageYear || ""}
+              label="Age : Year"
+              labelStyle={{ paddingBottom: "12px" }}
+              style={{ height: "40px" }}
+              type="number"
+            />
+          </div>
+          <div className="mt-6">
+            <Input
+              handleChange={handleChange}
+              name="ageMonths"
+              value={patientDetails?.ageMonths || ""}
+              label="Age : Months"
+              labelStyle={{ paddingBottom: "12px" }}
+              style={{ height: "40px" }}
+              type="number"
+            />
+          </div>
+          <div className="mt-6">
+            <Input
+              handleChange={handleChange}
+              name="ipd_patient_number"
+              value={patientDetails?.ipd_patient_number || ""}
+              label="IPD Patient Number"
+              labelStyle={{ paddingBottom: "12px" }}
+              style={{ height: "40px" }}
+            />
+          </div>
 
-            {/* <p className="pb-4 text-sm text-fontColor-light">Date of birth</p>
+          {/* <p className="pb-4 text-sm text-fontColor-light">Date of birth</p>
             <div className="flex items-center">
               <div className="pr-4">
                 <NewCaseSelect
@@ -297,24 +352,13 @@ const StepTwo = ({
                 />
               </div>
             </div> */}
-          </div>
 
-          <div className="mt-6">
-            <Input
-              handleChange={handleChange}
-              name="occupation"
-              value={patientDetails?.occupation || ""}
-              label="Occupation"
-              labelStyle={{ paddingBottom: "12px" }}
-              style={{ height: "40px" }}
-            />
-          </div>
           <div className="mt-6">
             <Input
               handleChange={handleChange}
               name="contractNumber"
               value={patientDetails?.contractNumber || ""}
-              label="Contract number"
+              label="Patient Contact Number *"
               labelStyle={{ paddingBottom: "12px" }}
               style={{ height: "40px" }}
             />
@@ -324,7 +368,7 @@ const StepTwo = ({
               handleChange={handleChange}
               name="relativeContractNumber"
               value={patientDetails?.relativeContractNumber || ""}
-              label="Relative contract number"
+              label="Contact Number Of Attending Relative"
               labelStyle={{ paddingBottom: "12px" }}
               style={{ height: "40px" }}
             />
@@ -369,7 +413,7 @@ const StepTwo = ({
 
           <div className="mt-8">
             <p className="pb-4 text-sm text-fontColor-light">
-              Do you have previous health insurance ?
+              Currently Do You Have Any Health Insurance ?
             </p>
             <div className="flex items-center">
               <div className="mr-8">
@@ -420,7 +464,7 @@ const StepTwo = ({
 
           <div className="mt-8">
             <p className="pb-4 text-sm text-fontColor-light">
-              Do you have family physician ?
+              Do You Have A Family Physician ?
             </p>
             <div className="flex items-center">
               <div className="mr-8">
@@ -473,7 +517,7 @@ const StepTwo = ({
                   value={
                     patientDetails?.PhysicianYesPhysicianCurrentAddress || ""
                   }
-                  label="Physician Current Address"
+                  label="Current Address"
                   labelStyle={{ paddingBottom: "12px" }}
                   style={{ height: "40px" }}
                 />
@@ -506,7 +550,7 @@ const StepTwo = ({
             </div>
           </div> */}
 
-          <div className="my-6">
+          {/* <div className="my-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-1">
                 <Input
@@ -519,6 +563,27 @@ const StepTwo = ({
                 />
               </div>
             </div>
+          </div> */}
+
+          <div className="mt-6">
+            <Input
+              handleChange={handleChange}
+              name="city"
+              value={patientDetails?.city || ""}
+              label="City *"
+              labelStyle={{ paddingBottom: "12px" }}
+              style={{ height: "40px" }}
+            />
+          </div>
+          <div className="mt-6">
+            <Input
+              handleChange={handleChange}
+              name="occupation"
+              value={patientDetails?.occupation || ""}
+              label="Occupation"
+              labelStyle={{ paddingBottom: "12px" }}
+              style={{ height: "40px" }}
+            />
           </div>
           {/* <div className="mt-6">
             <div className="grid grid-cols-2 gap-4">
