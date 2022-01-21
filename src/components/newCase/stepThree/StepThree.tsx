@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { useNavigate } from "react-router-dom";
 import { setDoctorList } from "../../../redux/slices/doctorSlice";
 import NewCaseSelect from "../../theme/select/newCaseSelect/NewCaseSelect";
+import { FiPaperclip } from "react-icons/fi";
 
 type StepThreeProps = {
   newCaseData: any;
@@ -710,6 +711,22 @@ const StepThree = ({
               </div>
             </div>
           </div>
+          {diagnosisDetails?.testConductedOrNot === "yes" ? (
+            <div
+              className="relative flex items-center justify-center border-2 border-fontColor rounded-lg  h-10 px-2 mt-6"
+              style={{ minWidth: "150px" }}
+            >
+              <FiPaperclip className="mr-2 text-fontColor" />
+              <p className="text-fborder-fontColor-darkGray-gray font-normal text-fontColor">
+                Upload documents
+              </p>
+              <input
+                type="file"
+                className="absolute border-none outline-none cursor-pointer opacity-0 w-full h-10 top-0 left-0 z-10"
+                // onChange={updateAnalytstInfo}
+              />
+            </div>
+          ) : null}
 
           <div className="mt-6">
             <p className="pb-4 text-sm text-fontColor-light">Maternity</p>

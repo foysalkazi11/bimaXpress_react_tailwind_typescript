@@ -14,15 +14,30 @@ import { useNavigate } from "react-router-dom";
 
 const roomType = [
   {
-    label: "sharing / semi-private room non ac",
-    value: "sharing/semi_private_room_non_ac",
+    label: "GENERAL WARD",
+    value: "GENERAL WARD",
   },
-  { label: "Aemi-private room ac", value: "semi_private_room_ac" },
-  { label: "Single_room_non_ac", value: "single_room_non_ac" },
-  { label: "Super deluxe", value: "super_deluxe" },
-  { label: "Executive room", value: "executive_room" },
-  { label: "Twin_sharing_non_ac", value: "Twin_sharing_non-ac" },
-  { label: "Deluxe non ac", value: "deluxe_non_ac" },
+  { label: "SEMI PRIVATE WARD", value: "SEMI PRIVATE WARD" },
+  { label: "SEMI PRIVATE SINGLE WARD", value: "SEMI PRIVATE SINGLE WARD" },
+  { label: "THREE SHARING SEMI PRIVATE", value: "THREE SHARING SEMI PRIVATE" },
+  { label: "PRIVATE WARD", value: "PRIVATE WARD" },
+  { label: "PRIVATE SINGLE ROOM", value: "PRIVATE SINGLE ROOM" },
+  { label: "TWIN SHARING PRIVATE", value: "TWIN SHARING PRIVATE" },
+  { label: "DELUXE WARD", value: "DELUXE WARD" },
+  { label: "DELUXE SINGLE", value: "DELUXE SINGLE" },
+  { label: "DELUXE SHARING", value: "DELUXE SHARING" },
+  { label: "SINGLE ROOM", value: "SINGLE ROOM" },
+  { label: "SINGLE AC ROOM", value: "SINGLE AC ROOM" },
+  { label: "PRIVATE AC ROOM", value: "PRIVATE AC ROOM" },
+  { label: "TWIN SHARING AC ROOM", value: "TWIN SHARING AC ROOM" },
+  { label: "HDU/ISOLATION", value: "HDU/ISOLATION" },
+  { label: "TWIN DELUXE/SEMI DELUXE", value: "TWIN DELUXE/SEMI DELUXE" },
+  { label: "SUITE ROOM", value: "SUITE ROOM" },
+  { label: "ECONOMY/DAYCARE", value: "ECONOMY/DAYCARE" },
+  { label: "ICU", value: "ICU" },
+  { label: "SICU", value: "SICU" },
+  { label: "CCU", value: "CCU" },
+  { label: "TICU", value: "TICU" },
 ];
 
 const inputStyle = {
@@ -79,6 +94,18 @@ const StepFour = ({
     // ]
 
     const formData = new FormData();
+    admissionDetails?.All_Including_Package &&
+      formData?.append(
+        "admission_allIncludePackageCharge",
+        admissionDetails?.All_Including_Package
+      );
+    admissionDetails?.OtherHospitalIfAny &&
+      formData?.append(
+        "admission_otherHospitalIfAny",
+        admissionDetails?.OtherHospitalIfAny
+      );
+    admissionDetails?.Consumables &&
+      formData?.append("admission_Consumables", admissionDetails?.Consumables);
     admissionDetails?.per_day_room_rent_nursing_charges &&
       formData?.append(
         "per_day_room_rent_nursing_charges",
@@ -133,7 +160,7 @@ const StepFour = ({
     admissionDetails?.diabetes_year &&
       formData?.append(
         "admission_mandatoryPastHistoryYear",
-        admissionDetails?.diabetes_year
+        admissionDetails?.diabetes_year?.slice(2)
       );
     admissionDetails?.heart_disease_month &&
       formData?.append(
@@ -143,7 +170,7 @@ const StepFour = ({
     admissionDetails?.heart_disease_year &&
       formData?.append(
         "admission_heartDiseaseYear",
-        admissionDetails?.heart_disease_year
+        admissionDetails?.heart_disease_year?.slice(2)
       );
     admissionDetails?.hypertension_month &&
       formData?.append(
@@ -153,7 +180,7 @@ const StepFour = ({
     admissionDetails?.hypertension_year &&
       formData?.append(
         "admission_hypertensionYear",
-        admissionDetails?.hypertension_year
+        admissionDetails?.hypertension_year?.slice(2)
       );
     admissionDetails?.hyperlipidemias_month &&
       formData?.append(
@@ -163,7 +190,7 @@ const StepFour = ({
     admissionDetails?.hyperlipidemias_year &&
       formData?.append(
         "admission_HyperlipidemiasYear",
-        admissionDetails?.hyperlipidemias_year
+        admissionDetails?.hyperlipidemias_year?.slice(2)
       );
     admissionDetails?.osteoarthritis_month &&
       formData?.append(
@@ -173,7 +200,7 @@ const StepFour = ({
     admissionDetails?.osteoarthritis_year &&
       formData?.append(
         "admission_osteoarthritisYear",
-        admissionDetails?.osteoarthritis_year
+        admissionDetails?.osteoarthritis_year?.slice(2)
       );
     admissionDetails?.asthma_COPD_bronchitis_month &&
       formData?.append(
@@ -183,12 +210,15 @@ const StepFour = ({
     admissionDetails?.asthma_COPD_bronchitis_year &&
       formData?.append(
         "admission_asthmaOrCOPDOrBronchitisYear",
-        admissionDetails?.asthma_COPD_bronchitis_year
+        admissionDetails?.asthma_COPD_bronchitis_year?.slice(2)
       );
     admissionDetails?.cancer_month &&
       formData?.append("admission_cancerMonth", admissionDetails?.cancer_month);
     admissionDetails?.cancer_year &&
-      formData?.append("admission_cancerYear", admissionDetails?.cancer_year);
+      formData?.append(
+        "admission_cancerYear",
+        admissionDetails?.cancer_year?.slice(2)
+      );
     admissionDetails?.alcohol_drag_abuse_month &&
       formData?.append(
         "admission_alcoholOrDrugAbuseMonth",
@@ -197,7 +227,7 @@ const StepFour = ({
     admissionDetails?.alcohol_drag_abuse_year &&
       formData?.append(
         "admission_alcoholOrDrugAbuseYear",
-        admissionDetails?.alcohol_drag_abuse_year
+        admissionDetails?.alcohol_drag_abuse_year?.slice(2)
       );
     admissionDetails?.HIV_STD_related_ailments_months &&
       formData?.append(
@@ -207,7 +237,7 @@ const StepFour = ({
     admissionDetails?.HIV_STD_related_ailments_year &&
       formData?.append(
         "admission_anyHIVOrSTDOrRelatedAlimentsYear",
-        admissionDetails?.HIV_STD_related_ailments_year
+        admissionDetails?.HIV_STD_related_ailments_year?.slice(2)
       );
     // admissionDetails?.roomType && formData?.append(
     //   "admission_anyOtherAliments",
@@ -264,20 +294,28 @@ const StepFour = ({
 
   useEffect(() => {
     if (
+      admissionDetails?.per_day_room_rent_nursing_charges ||
       admissionDetails?.ICU_charge ||
       admissionDetails?.OT_charge ||
       admissionDetails?.cost_for_investigation_and_diagnosis ||
       admissionDetails?.expenses ||
       admissionDetails?.others ||
-      admissionDetails?.professional_fees
+      admissionDetails?.professional_fees ||
+      admissionDetails?.All_Including_Package ||
+      admissionDetails?.Consumables ||
+      admissionDetails?.OtherHospitalIfAny
     ) {
       const totalSum =
+        Number(admissionDetails?.per_day_room_rent_nursing_charges || 0) +
         Number(admissionDetails?.ICU_charge || 0) +
         Number(admissionDetails?.OT_charge || 0) +
         Number(admissionDetails?.cost_for_investigation_and_diagnosis || 0) +
         Number(admissionDetails?.expenses || 0) +
         Number(admissionDetails?.others || 0) +
-        Number(admissionDetails?.professional_fees || 0);
+        Number(admissionDetails?.professional_fees || 0) +
+        Number(admissionDetails?.All_Including_Package || 0) +
+        Number(admissionDetails?.Consumables || 0) +
+        Number(admissionDetails?.OtherHospitalIfAny || 0);
       setTotalCost(totalSum);
       // setNewCaseData((pre: any) => ({
       //   ...pre,
@@ -372,8 +410,8 @@ const StepFour = ({
               <InputContained
                 handleChange={handleChange}
                 name="daysInHospital"
-                value={admissionDetails?.daysInHospital || 1}
-                label="No of days in hospital"
+                value={admissionDetails?.daysInHospital || 0}
+                label="Expected No. Of Days Stay In Hospital *"
                 style={{ maxWidth: "100px" }}
               />
             </div>
@@ -381,7 +419,7 @@ const StepFour = ({
               <InputContained
                 handleChange={handleChange}
                 name="daysInICU"
-                value={admissionDetails?.daysInICU || 1}
+                value={admissionDetails?.daysInICU || 0}
                 label="Days in ICU"
                 style={{ maxWidth: "100px" }}
               />
@@ -472,6 +510,39 @@ const StepFour = ({
                 handleChange={handleChange}
                 name="others"
                 value={admissionDetails?.others || ""}
+                type="number"
+                style={inputStyle}
+                placeHolder="Please specify the amount"
+              />
+            </div>
+            <div className="mt-6">
+              <Input
+                label="Consumables"
+                handleChange={handleChange}
+                name="Consumables"
+                value={admissionDetails?.Consumables || ""}
+                type="number"
+                style={inputStyle}
+                placeHolder="Please specify the amount"
+              />
+            </div>
+            <div className="mt-6">
+              <Input
+                label="Other Hospital If Any"
+                handleChange={handleChange}
+                name="OtherHospitalIfAny"
+                value={admissionDetails?.OtherHospitalIfAny || ""}
+                type="number"
+                style={inputStyle}
+                placeHolder="Please specify the amount"
+              />
+            </div>
+            <div className="mt-6">
+              <Input
+                label="All Include Package Charges If Any Applicable"
+                handleChange={handleChange}
+                name="All_Including_Package"
+                value={admissionDetails?.All_Including_Package || ""}
                 type="number"
                 style={inputStyle}
                 placeHolder="Please specify the amount"
