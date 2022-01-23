@@ -45,7 +45,7 @@ const NewCase = () => {
   const { caseData } = useAppSelector((state) => state?.home);
   const param = useParams();
 
-  const { allCompaniesList } = useAppSelector(
+  const { empanelledCompaniesList } = useAppSelector(
     (state) => state?.empanelledCompanies
   );
   const [reteList, setRateList] = useState<string[]>([]);
@@ -90,10 +90,9 @@ const NewCase = () => {
       });
       const companyInfo =
         //@ts-ignore
-        allCompaniesList[newCaseData?.detailsOfTPA?.insuranceCompany];
+        empanelledCompaniesList[newCaseData?.detailsOfTPA?.insuranceCompany];
       if (companyInfo) {
-        const data = JSON.parse(companyInfo?.replace(/'/g, '"'));
-        setRateList([data?.image]);
+        setRateList([companyInfo?.Ratelist]);
       }
       //@ts-ignore
       if (newCaseData?.Aadhar_card_Front) {
@@ -111,6 +110,12 @@ const NewCase = () => {
         setDocumentsList((pre) => [...pre, newCaseData?.Health_card]);
       }
     } else {
+      setNewCaseData({
+        detailsOfTPA: {},
+        patientDetails: {},
+        diagnosisDetails: {},
+        admissionDetails: {},
+      });
       dispatch(setNewCaseNum(param?.case));
       //@ts-ignore
       const obj = caseData[param?.case] || {};
@@ -138,7 +143,7 @@ const NewCase = () => {
         // formstatus,
         hospital_details: {
           All_Including_Package,
-          // Anesthetist,
+          Anesthetist,
           // Bed_No,
           Consumables,
           // Contact_number,
@@ -153,7 +158,7 @@ const NewCase = () => {
           OT_Charges,
           OtherHospitalIfAny,
           Per_Day_Room_Rent,
-          // PhysicianCharge,
+          PhysicianCharge,
           ProfessionalFeesSurgeon,
           // Room_Category,
           // Room_No,
@@ -176,6 +181,7 @@ const NewCase = () => {
           AgeMonth,
           AgeYear,
           // Ailment,
+          Type,
           AlcoholOrDrugAbuseMonth,
           AlcoholOrDrugAbuseYear,
           //data[AsthmaOrCOPDOrBronchitisMonth
@@ -219,7 +225,7 @@ const NewCase = () => {
           Occupation,
           OsteoarthritisMonth,
           OsteoarthritisYear,
-          // OtherAliments,
+          OtherAliments,
           // Other_Insurance_Details,
           P,
           Past_History_Of_Present_Ailments,
@@ -244,17 +250,16 @@ const NewCase = () => {
           doctor_proposedLineOfTreatment_Surgical_Managment,
           doctor_testAlcohol,
           ipd_patient_number,
-          isThisAEmergencyPlannedHospitalization,
+          // isThisAEmergencyPlannedHospitalization,
           patient_details_HealthInsurance,
         },
       } = obj;
       setTotalCost(total);
 
       //@ts-ignore
-      const companyInfo = allCompaniesList[Insurance_Company];
+      const companyInfo = empanelledCompaniesList[Insurance_Company];
       if (companyInfo) {
-        const data = JSON.parse(companyInfo?.replace(/'/g, '"'));
-        setRateList([data?.image]);
+        setRateList([companyInfo?.Ratelist]);
       }
 
       if (Aadhar_card_Front) {
@@ -311,7 +316,7 @@ const NewCase = () => {
           // historyOfPresentAilment: Past_History_Of_Present_Ailments
           //   ? "Yes"
           //   : "No",
-          historyOfPresentAilmentDis: Past_History_Of_Present_Ailments,
+          // historyOfPresentAilmentDis: Past_History_Of_Present_Ailments,
           injuryCause: How_Did_Injury_Occur,
           maternityA: A,
           maternityL: L,
@@ -336,6 +341,7 @@ const NewCase = () => {
           testConductedOrNot: doctor_testAlcohol,
           FIR_Number,
           Injury_Disease_Caused_Due_To_Substance_Abuse_Alcohol_Consumption_,
+          historyOfPresentAilment: Past_History_Of_Present_Ailments,
         },
         admissionDetails: {
           //       HIV_STD_related_ailments_months:,
@@ -344,28 +350,27 @@ const NewCase = () => {
           ICU_charge: ICU_Charges,
           OT_charge: OT_Charges,
           alcohol_drag_abuse_month: AlcoholOrDrugAbuseMonth,
-          alcohol_drag_abuse_year: `20` + AlcoholOrDrugAbuseYear,
+          alcohol_drag_abuse_year: AlcoholOrDrugAbuseYear,
           asthma_COPD_bronchitis_month: AsthmaOrCOPDOrBronchitisMonth,
-          asthma_COPD_bronchitis_year: `20` + AsthmaOrCOPDOrBronchitisYear,
+          asthma_COPD_bronchitis_year: AsthmaOrCOPDOrBronchitisYear,
           cancer_month: CancerMonth,
-          cancer_year: `20` + CancerYear,
+          cancer_year: CancerYear,
           cost_for_investigation_and_diagnosis: Cost_Of_Investigation,
           dateOfAdmission: Date_of_Admission,
           daysInHospital: Days_In_Hospital,
           daysInICU: Days_In_ICU,
           diabetes_month: MandatoryPastHistoryMonth,
-          diabetes_year: `20` + MandatoryPastHistoryYear,
-          emergencyOrPlanedHospitalizedEvent:
-            isThisAEmergencyPlannedHospitalization,
+          diabetes_year: MandatoryPastHistoryYear,
+          emergencyOrPlanedHospitalizedEvent: Type,
           expenses: Nursing,
           heart_disease_month: HeartDiseaseMonth,
-          heart_disease_year: `20` + HeartDiseaseYear,
+          heart_disease_year: HeartDiseaseYear,
           hyperlipidemias_month: HyperlipidemiasMonth,
-          hyperlipidemias_year: `20` + HyperlipidemiasYear,
+          hyperlipidemias_year: HyperlipidemiasYear,
           hypertension_month: HypertensionMonth,
-          hypertension_year: `20` + HypertensionYear,
+          hypertension_year: HypertensionYear,
           osteoarthritis_month: OsteoarthritisMonth,
-          osteoarthritis_year: `20` + OsteoarthritisYear,
+          osteoarthritis_year: OsteoarthritisYear,
           others: cost_Of_Implant,
           professional_fees: ProfessionalFeesSurgeon,
           roomType: Room_Type,
@@ -374,6 +379,9 @@ const NewCase = () => {
           Consumables,
           OtherHospitalIfAny,
           All_Including_Package,
+          OtherAliments,
+          anesthetist: Anesthetist,
+          physicianCharge: PhysicianCharge,
 
           // timeOfAdmissionAMOrPM: "am",
         },
@@ -383,10 +391,24 @@ const NewCase = () => {
   }, []);
 
   useEffect(() => {
+    if (Object.entries(empanelledCompaniesList)?.length) {
+      const companyInfo =
+        //@ts-ignore
+        empanelledCompaniesList[newCaseData?.detailsOfTPA?.insuranceCompany];
+      if (companyInfo) {
+        //@ts-ignore
+        setRateList([companyInfo?.Ratelist]);
+      }
+    }
+    //@ts-ignore
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [empanelledCompaniesList, newCaseData?.detailsOfTPA?.insuranceCompany]);
+
+  useEffect(() => {
     let arr = [];
     let days = [];
     for (let i = 2000; i <= 2022; i++) {
-      arr.push({ label: `${i}`, value: `${i}` });
+      arr.push({ label: `${i}`, value: `${i.toString()?.slice(2)}` });
     }
     setYearList(arr);
 
@@ -439,6 +461,7 @@ const NewCase = () => {
             toggleModal={toggleModal}
             toggleDocumentsModal={toggleDocumentsModal}
             toggleViewDocumentsModal={toggleViewDocumentsModal}
+            setRateList={setRateList}
           />
         );
       case 2:

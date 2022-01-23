@@ -9,13 +9,13 @@ import { useNavigate } from "react-router-dom";
 const PreauthForm = () => {
   const [data, setData] = useState<any>("");
   const { user } = useAppSelector((state) => state?.user);
-  // const { newCaseNum } = useAppSelector((state) => state?.case);
+  const { newCaseNum } = useAppSelector((state) => state?.case);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const getPreauthForm = async () => {
     dispatch(setLoading(true));
-    const URL = `/preauthform?email=${user}&casenumber=case6`;
+    const URL = `/preauthform?email=${user}&casenumber=${newCaseNum}`;
     try {
       const { data } = await axiosConfig.get(URL);
       dispatch(setLoading(false));
@@ -47,30 +47,13 @@ const PreauthForm = () => {
     >
       <button
         onClick={printForm}
-        style={{
-          textTransform: "uppercase",
-          backgroundColor: "#535353",
-          padding: "6px 15px",
-          color: "#fff",
-          borderRadius: "2px",
-          marginBottom: "10px",
-          fontSize: "18px",
-        }}
+        className="uppercase bg-secondary text-fontColor rounded-sm mb-3 ml-3 text-lg py-1 px-4"
       >
         Print
       </button>
       <button
         onClick={() => navigate(-1)}
-        style={{
-          textTransform: "uppercase",
-          backgroundColor: "#535353",
-          padding: "6px 15px",
-          color: "#fff",
-          borderRadius: "2px",
-          marginBottom: "10px",
-          fontSize: "18px",
-          marginLeft: "10px",
-        }}
+        className="uppercase bg-secondary text-fontColor rounded-sm mb-3 ml-3 text-lg py-1 px-4"
       >
         Back
       </button>

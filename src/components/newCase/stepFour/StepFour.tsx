@@ -94,6 +94,18 @@ const StepFour = ({
     // ]
 
     const formData = new FormData();
+    admissionDetails?.anesthetist &&
+      formData?.append("admission_Anesthetist", admissionDetails?.anesthetist);
+    admissionDetails?.physicianCharge &&
+      formData?.append(
+        "admission_PhysicianCharge",
+        admissionDetails?.physicianCharge
+      );
+    admissionDetails?.OtherAliments &&
+      formData?.append(
+        "admission_anyOtherAliments",
+        admissionDetails?.OtherAliments
+      );
     admissionDetails?.All_Including_Package &&
       formData?.append(
         "admission_allIncludePackageCharge",
@@ -160,7 +172,7 @@ const StepFour = ({
     admissionDetails?.diabetes_year &&
       formData?.append(
         "admission_mandatoryPastHistoryYear",
-        admissionDetails?.diabetes_year?.slice(2)
+        admissionDetails?.diabetes_year
       );
     admissionDetails?.heart_disease_month &&
       formData?.append(
@@ -170,7 +182,7 @@ const StepFour = ({
     admissionDetails?.heart_disease_year &&
       formData?.append(
         "admission_heartDiseaseYear",
-        admissionDetails?.heart_disease_year?.slice(2)
+        admissionDetails?.heart_disease_year
       );
     admissionDetails?.hypertension_month &&
       formData?.append(
@@ -180,7 +192,7 @@ const StepFour = ({
     admissionDetails?.hypertension_year &&
       formData?.append(
         "admission_hypertensionYear",
-        admissionDetails?.hypertension_year?.slice(2)
+        admissionDetails?.hypertension_year
       );
     admissionDetails?.hyperlipidemias_month &&
       formData?.append(
@@ -190,7 +202,7 @@ const StepFour = ({
     admissionDetails?.hyperlipidemias_year &&
       formData?.append(
         "admission_HyperlipidemiasYear",
-        admissionDetails?.hyperlipidemias_year?.slice(2)
+        admissionDetails?.hyperlipidemias_year
       );
     admissionDetails?.osteoarthritis_month &&
       formData?.append(
@@ -200,7 +212,7 @@ const StepFour = ({
     admissionDetails?.osteoarthritis_year &&
       formData?.append(
         "admission_osteoarthritisYear",
-        admissionDetails?.osteoarthritis_year?.slice(2)
+        admissionDetails?.osteoarthritis_year
       );
     admissionDetails?.asthma_COPD_bronchitis_month &&
       formData?.append(
@@ -210,15 +222,12 @@ const StepFour = ({
     admissionDetails?.asthma_COPD_bronchitis_year &&
       formData?.append(
         "admission_asthmaOrCOPDOrBronchitisYear",
-        admissionDetails?.asthma_COPD_bronchitis_year?.slice(2)
+        admissionDetails?.asthma_COPD_bronchitis_year
       );
     admissionDetails?.cancer_month &&
       formData?.append("admission_cancerMonth", admissionDetails?.cancer_month);
     admissionDetails?.cancer_year &&
-      formData?.append(
-        "admission_cancerYear",
-        admissionDetails?.cancer_year?.slice(2)
-      );
+      formData?.append("admission_cancerYear", admissionDetails?.cancer_year);
     admissionDetails?.alcohol_drag_abuse_month &&
       formData?.append(
         "admission_alcoholOrDrugAbuseMonth",
@@ -227,7 +236,7 @@ const StepFour = ({
     admissionDetails?.alcohol_drag_abuse_year &&
       formData?.append(
         "admission_alcoholOrDrugAbuseYear",
-        admissionDetails?.alcohol_drag_abuse_year?.slice(2)
+        admissionDetails?.alcohol_drag_abuse_year
       );
     admissionDetails?.HIV_STD_related_ailments_months &&
       formData?.append(
@@ -237,7 +246,7 @@ const StepFour = ({
     admissionDetails?.HIV_STD_related_ailments_year &&
       formData?.append(
         "admission_anyHIVOrSTDOrRelatedAlimentsYear",
-        admissionDetails?.HIV_STD_related_ailments_year?.slice(2)
+        admissionDetails?.HIV_STD_related_ailments_year
       );
     // admissionDetails?.roomType && formData?.append(
     //   "admission_anyOtherAliments",
@@ -303,7 +312,9 @@ const StepFour = ({
       admissionDetails?.professional_fees ||
       admissionDetails?.All_Including_Package ||
       admissionDetails?.Consumables ||
-      admissionDetails?.OtherHospitalIfAny
+      admissionDetails?.OtherHospitalIfAny ||
+      admissionDetails?.anesthetist ||
+      admissionDetails?.physicianCharge
     ) {
       const totalSum =
         Number(admissionDetails?.per_day_room_rent_nursing_charges || 0) +
@@ -315,7 +326,9 @@ const StepFour = ({
         Number(admissionDetails?.professional_fees || 0) +
         Number(admissionDetails?.All_Including_Package || 0) +
         Number(admissionDetails?.Consumables || 0) +
-        Number(admissionDetails?.OtherHospitalIfAny || 0);
+        Number(admissionDetails?.OtherHospitalIfAny || 0) +
+        Number(admissionDetails?.anesthetist || 0) +
+        Number(admissionDetails?.physicianCharge || 0);
       setTotalCost(totalSum);
       // setNewCaseData((pre: any) => ({
       //   ...pre,
@@ -342,8 +355,8 @@ const StepFour = ({
                     handleChange={handleChange}
                     name="dateOfAdmission"
                     value={
-                      admissionDetails?.dateOfAdmission ||
-                      new Date().toISOString().slice(0, 10)
+                      admissionDetails?.dateOfAdmission || ""
+                      // new Date().toISOString().slice(0, 10)
                     }
                   />
                 </div>
@@ -449,7 +462,7 @@ const StepFour = ({
             </div>
             <div className="mt-6">
               <Input
-                label="Expenses ( Nursing services, Patient diet)"
+                label="Nursing and services charge"
                 handleChange={handleChange}
                 name="expenses"
                 value={admissionDetails?.expenses || ""}
@@ -495,7 +508,29 @@ const StepFour = ({
             </div>
             <div className="mt-6">
               <Input
-                label="Professional fees (includes surgeon, anaesthetist, consultation)"
+                label="Consultation charge / Physician charge"
+                handleChange={handleChange}
+                name="physicianCharge"
+                value={admissionDetails?.physicianCharge || ""}
+                type="number"
+                style={inputStyle}
+                placeHolder="Please specify the amount"
+              />
+            </div>
+            <div className="mt-6">
+              <Input
+                label="Anesthetist fees charges"
+                handleChange={handleChange}
+                name="anesthetist"
+                value={admissionDetails?.anesthetist || ""}
+                type="number"
+                style={inputStyle}
+                placeHolder="Please specify the amount"
+              />
+            </div>
+            <div className="mt-6">
+              <Input
+                label="Professional fees surgeon"
                 handleChange={handleChange}
                 name="professional_fees"
                 value={admissionDetails?.professional_fees || ""}
@@ -506,7 +541,7 @@ const StepFour = ({
             </div>
             <div className="mt-6">
               <Input
-                label="Others (includes medicines, consumables & cont of implant)"
+                label="Medicine + cost of inplants (if applicable please specify)"
                 handleChange={handleChange}
                 name="others"
                 value={admissionDetails?.others || ""}
@@ -777,6 +812,16 @@ const StepFour = ({
                   value={admissionDetails?.HIV_STD_related_ailments_year || ""}
                 />
               </div>
+            </div>
+            <div className="mt-6">
+              <Input
+                label="Any Other Ailments Give Details"
+                handleChange={handleChange}
+                name="OtherAliments"
+                value={admissionDetails?.OtherAliments || ""}
+                style={inputStyle}
+                // placeHolder="Please specify the amount"
+              />
             </div>
           </div>
         </div>

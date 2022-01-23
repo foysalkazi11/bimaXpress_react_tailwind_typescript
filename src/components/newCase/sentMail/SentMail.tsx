@@ -509,7 +509,7 @@ const SentMail = ({
           >
             <FiPaperclip className="mr-2" />
             <p className="text-fborder-fontColor-darkGray-gray font-normal ">
-              Auth Form
+              Signed Pre Auth Form
             </p>
             <input
               type="file"
@@ -731,7 +731,7 @@ const SentMail = ({
           className="w-28 h-10 bg-primary-dark text-sm text-fontColor border-none outline-none rounded mr-3"
           onClick={uploadFile}
         >
-          Send
+          Send Mail
         </button>
         {/* <div className="relative w-8 h-8 cursor-pointer">
           <img

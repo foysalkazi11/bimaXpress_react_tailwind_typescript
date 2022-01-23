@@ -157,12 +157,16 @@ const StepThree = ({
         diagnosisDetails?.firstConsultation
       );
     // diagnosisDetails?.surgeryName && formData?.append("doctor_CauseofAilment", diagnosisDetails?.gender);
-    diagnosisDetails?.historyOfPresentAilmentDis &&
+    diagnosisDetails?.historyOfPresentAilment &&
       formData?.append(
         "doctor_PastHistoryOfPresentAlignment",
-        diagnosisDetails?.historyOfPresentAilmentDis
+        diagnosisDetails?.historyOfPresentAilment
       );
-    // diagnosisDetails?.surgeryName && formData?.append("doctor_provisionalDiagnosis", diagnosisDetails?.gender);
+    diagnosisDetails?.Provision_Diagnosis &&
+      formData?.append(
+        "doctor_provisionalDiagnosis",
+        diagnosisDetails?.Provision_Diagnosis
+      );
     diagnosisDetails?.ICDCode &&
       formData?.append("doctor_icdCode", diagnosisDetails?.ICDCode);
 
@@ -236,10 +240,10 @@ const StepThree = ({
         "doctor_injuryorDiseaseCausedDueToSubstance",
         diagnosisDetails?.Injury_Disease_Caused_Due_To_Substance_Abuse_Alcohol_Consumption_
       );
-    diagnosisDetails?.doctor_testAlcohol &&
+    diagnosisDetails?.testConductedOrNot &&
       formData?.append(
         "doctor_testAlcohol",
-        diagnosisDetails?.doctor_testAlcohol
+        diagnosisDetails?.testConductedOrNot
       );
     diagnosisDetails?.FIR_Number &&
       formData?.append("doctor_firNo", diagnosisDetails?.FIR_Number);

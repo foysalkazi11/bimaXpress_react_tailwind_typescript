@@ -6,8 +6,9 @@ import NewCaseSelect from "../../theme/select/newCaseSelect/NewCaseSelect";
 import axiosConfig from "../../../config/axiosConfig";
 import notification from "../../theme/utility/notification";
 import {
-  setAllCompaniesList,
   setEmpanelledCompaniesListList,
+  setEmpanelledInsurnaceCompanies,
+  setEmpanelledTpaCompanies,
 } from "../../../redux/slices/empanelledCompaniesSlice";
 import styles from "./stepOne.module.css";
 import { useNavigate } from "react-router-dom";
@@ -20,34 +21,8 @@ type StepOneProps = {
   reteList?: string;
   toggleDocumentsModal?: () => void;
   toggleViewDocumentsModal?: () => void;
+  setRateList?: any;
 };
-
-const TPA = [
-  {
-    label: "Health_insurance_TPA_of_India_Limited",
-    value: "Health_insurance_TPA_of_India_Limited",
-  },
-  {
-    label: "Medsave_Health_Insurance_TPA_Limited",
-    value: "Medsave_Health_Insurance_TPA_Limited",
-  },
-  {
-    label: "Paramount_Health_Services_&_Insurance_TPA_private_Limited",
-    value: "Paramount_Health_Services_&_Insurance_TPA_private_Limited",
-  },
-  {
-    label: "MDIndia_Health_Insurance_TPA_Private_Limited",
-    value: "MDIndia_Health_Insurance_TPA_Private_Limited",
-  },
-  {
-    label: "Health_India_Insurance_TPA_Services_Privalte_Limited",
-    value: "Health_India_Insurance_TPA_Services_Privalte_Limited",
-  },
-  {
-    label: "Medi_Assist_Insurance_TPA_Private_Limited",
-    value: "Medi_Assist_Insurance_TPA_Private_Limited",
-  },
-];
 
 const StepOne = ({
   newCaseData,
@@ -58,28 +33,38 @@ const StepOne = ({
   reteList,
   toggleDocumentsModal,
   toggleViewDocumentsModal,
+  setRateList,
 }: StepOneProps) => {
   const [insuranceCompany, setInsuranceCompany] = useState<any>([]);
+  const [tpaCompany, setTpaCompany] = useState<any>([]);
   const { detailsOfTPA } = newCaseData;
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state?.user);
   const { newCaseNum } = useAppSelector((state) => state?.case);
-  const { empanelledCompaniesList, allCompaniesList } = useAppSelector(
-    (state) => state?.empanelledCompanies
-  );
+  const {
+    empanelledCompaniesList,
+    empanelledInsurnaceCompanies,
+    empanelledTpaCompanies,
+  } = useAppSelector((state) => state?.empanelledCompanies);
   const navigate = useNavigate();
 
   const fetchEmpanelledCompanies = async () => {
     const URL = `/empanelcompany?email=${user}`;
-    const URLALLCOMPANY = `/allcompany`;
+    const TPACOMPANY = `/empanelledtpacompany?email=${user}`;
+    const INSURANCECOMPANY = `/empanelledinsurancecompany?email=${user}`;
+    // const URLALLCOMPANY = `/allcompany`;
     dispatch(setLoading(true));
     try {
       const { data } = await axiosConfig.get(URL);
-      const { data: allCompanyData } = await axiosConfig.get(URLALLCOMPANY);
+      const { data: tpaCompany } = await axiosConfig.get(TPACOMPANY);
+      const { data: insurnceCompany } = await axiosConfig.get(INSURANCECOMPANY);
 
       dispatch(setLoading(false));
       dispatch(setEmpanelledCompaniesListList(data?.data));
-      dispatch(setAllCompaniesList(allCompanyData?.data));
+      dispatch(setEmpanelledTpaCompanies(tpaCompany?.data));
+      dispatch(setEmpanelledInsurnaceCompanies(insurnceCompany?.data));
+
+      // dispatch(setAllCompaniesList(allCompanyData?.data));
     } catch (error) {
       dispatch(setLoading(false));
       //@ts-ignore
@@ -88,30 +73,43 @@ const StepOne = ({
   };
 
   useEffect(() => {
-    if (
-      !Object.entries(empanelledCompaniesList)?.length &&
-      !Object.entries(allCompaniesList)?.length
-    ) {
+    if (!Object.entries(empanelledCompaniesList)?.length) {
       fetchEmpanelledCompanies();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (Object.entries(empanelledCompaniesList)?.length) {
-      const res = Object.entries(empanelledCompaniesList)?.map(
+    if (empanelledInsurnaceCompanies?.length) {
+      const res = empanelledInsurnaceCompanies?.map(
         (
           //@ts-ignore
-          [key, value]
+          value
         ) => ({
-          label: key,
-          value: key,
+          label: value,
+          value: value,
         })
       );
       setInsuranceCompany(res);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [empanelledCompaniesList]);
+  }, [empanelledInsurnaceCompanies]);
+
+  useEffect(() => {
+    if (empanelledTpaCompanies?.length) {
+      const res = empanelledTpaCompanies?.map(
+        (
+          //@ts-ignore
+          value
+        ) => ({
+          label: value,
+          value: value,
+        })
+      );
+      setTpaCompany(res);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [empanelledTpaCompanies]);
   const saveDataToDb = async () => {
     const POST_URL = `/preauthdata?email=${user}&casenumber=${newCaseNum}`;
 
@@ -158,7 +156,7 @@ const StepOne = ({
         </div>
         <div className="col-span-1 mb-8">
           <NewCaseSelect
-            options={TPA}
+            options={tpaCompany}
             name="TPA"
             handleChange={handleChange}
             defaultOption="Select TPA"
