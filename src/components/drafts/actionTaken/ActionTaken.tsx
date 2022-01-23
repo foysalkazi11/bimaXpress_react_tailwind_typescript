@@ -3,8 +3,8 @@ import FormButton from "../../theme/button/FormButton";
 import { IoDocumentsOutline } from "react-icons/io5";
 import { Row, useTable } from "react-table";
 import styles from "./ActionTaken.module.css";
-import scrollbar from '../../../scrollbar.module.css';
-import { format } from "date-fns";
+import scrollbar from "../../../scrollbar.module.css";
+// import { format } from "date-fns";
 
 interface ColumnDetails {
   [key: string]: any;
@@ -51,15 +51,15 @@ const ActionTaken = ({
     []
   );
 
-  const showDoc = (doc: any) => {
-    console.log(doc);
+  // const showDoc = (doc: any) => {
+  //   console.log(doc);
 
-    if (!doc || doc === "N/A") {
-    } else {
-      // eslint-disable-next-line jsx-a11y/anchor-has-content
-      return <a href={`${doc}`} target="_blank" rel="noopener noreferrer"></a>;
-    }
-  };
+  //   if (!doc || doc === "N/A") {
+  //   } else {
+  //     // eslint-disable-next-line jsx-a11y/anchor-has-content
+  //     return <a href={`${doc}`} target="_blank" rel="noopener noreferrer"></a>;
+  //   }
+  // };
   useEffect(() => {
     let array: any[] = [];
     if (audit_trail?.length) {
@@ -73,18 +73,16 @@ const ActionTaken = ({
 
     const res = array?.map((item, index) => ({
       actionTaken: item[0],
-      last_action_date: format(new Date(item[1]), "do MMMM Y"),
+      last_action_date: item[1]?.slice(0, 16),
+      // last_action_date: format(new Date(item[1]), "do MMMM Y"),
       summery: item[2],
       amount: item[3],
+
       documents: (
-        <a
-          href={`${item[4] ? (item[4] === "N/A" ? "#" : item[4]) : "#"}`}
-          target={`${item[4] ? (item[4] === "N/A" ? "#" : "_blank") : "#"}`}
-          rel="noreferrer"
-        >
+        <a href={`${item[4]}`} target={`${"_blank"}`} rel="noreferrer">
           <IoDocumentsOutline
             className="mr-2 text-2xl cursor-pointer"
-            onClick={() => showDoc(item[4])}
+            // onClick={() => showDoc(item[4])}
           />
         </a>
       ),
@@ -111,7 +109,10 @@ const ActionTaken = ({
       </div>
 
       <div>
-        <table {...getTableProps()} className={`w-full mt-8 overflow-x-scroll ${scrollbar.scrollBarDesign}`}>
+        <table
+          {...getTableProps()}
+          className={`w-full mt-8 overflow-x-scroll ${scrollbar.scrollBarDesign}`}
+        >
           <thead>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>

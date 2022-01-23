@@ -25,7 +25,7 @@ import NewAction from "./newAction/NewAction";
 import SentMail from "./sentMail/SentMail";
 import ApproveModal from "./approveModal/ApproveModal";
 import EnchanceAndFciModal from "./enhanceAndFci/EnchanceAndFci";
-import scrollbar from '../../scrollbar.module.css';
+import scrollbar from "../../scrollbar.module.css";
 
 const insuranceCompany = [
   { label: "Health India Insurance", value: "health_india_insurance" },
@@ -138,27 +138,39 @@ const Drafts = () => {
         [
           key,
           {
-            patient_details: { Name, Phone, Policy_Id },
-            Tpa_Company,
+            patient_details: { Name, Phone, Policy_Id, Insurance_Company },
+            // Tpa_Company,
             hospital_details: { total, Date_of_Admission },
+            claimno,
+            audit_trail,
+            formstatus,
           },
         ]
-      ) => ({
-        name: Name,
-        phone: Phone,
-        claimNumber: Policy_Id,
-        admissionDate: Date_of_Admission,
-        claimAmount: total,
-        insuranceTPA: Tpa_Company,
-        action: (
-          <img
-            src={download}
-            alt="icon"
-            onClick={() => showDetails(key)}
-            className="cursor-pointer"
-          />
-        ),
-      })
+      ) => {
+        let lestAction = "";
+        if (audit_trail?.length) {
+          const lastEntry = audit_trail[audit_trail?.length - 1];
+          const res = JSON.parse(JSON.stringify(lastEntry)).split("+");
+          lestAction = res[2];
+        }
+        return {
+          name: Name,
+          phone: Phone,
+          formStatus: formstatus,
+          claimNumber: claimno,
+          admissionDate: Date_of_Admission,
+          lastaction: lestAction,
+          insuranceTPA: Insurance_Company,
+          action: (
+            <img
+              src={download}
+              alt="icon"
+              onClick={() => showDetails(key)}
+              className="cursor-pointer"
+            />
+          ),
+        };
+      }
     );
     setTableRow(res);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -177,20 +189,25 @@ const Drafts = () => {
         accessor: "phone",
       },
       {
-        Header: "Claim number",
-        accessor: "claimNumber",
+        Header: "Form Status",
+        accessor: "formStatus",
       },
+
       {
         Header: "Admission date",
         accessor: "admissionDate",
       },
       {
-        Header: "Claim amount",
-        accessor: "claimAmount",
+        Header: "Lastaction",
+        accessor: "lastaction",
       },
       {
         Header: "Insurance TPA",
         accessor: "insuranceTPA",
+      },
+      {
+        Header: "Claim number",
+        accessor: "claimNumber",
       },
 
       {

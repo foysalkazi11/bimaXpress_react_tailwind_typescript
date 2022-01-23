@@ -6,7 +6,8 @@ type DetailsProps = {
 
 const Details = ({ summeryData }: DetailsProps) => {
   //@ts-ignore
-  const { patient_details, caseNumber, hospital_details, status } = summeryData;
+  const { patient_details, caseNumber, hospital_details, formstatus, claimno } =
+    summeryData;
   return (
     <div className="grid grid-cols-2 gap-x-8 gap-y-4 mt-6">
       <div className="sm:col-span-1 col-span-2 ">
@@ -69,7 +70,7 @@ const Details = ({ summeryData }: DetailsProps) => {
         <p
           className={`border-b-2 border-fontColor-darkGray py-1 w-full text-base text-fontColor-deepGray `}
         >
-          {patient_details?.Health_Id}
+          {claimno}
         </p>
       </div>
       <div className="sm:col-span-1 col-span-2 ">
@@ -95,9 +96,7 @@ const Details = ({ summeryData }: DetailsProps) => {
         </p>
       </div>
       <div className="sm:col-span-1 col-span-2 ">
-        <p className="pb-4 text-sm text-fontColor font-thin">
-          Insurance company
-        </p>
+        <p className="pb-4 text-sm text-fontColor font-thin">TPA/ Insure</p>
 
         <p
           className={`border-b-2 border-fontColor-darkGray py-1 w-full text-base text-fontColor-deepGray `}
@@ -106,7 +105,7 @@ const Details = ({ summeryData }: DetailsProps) => {
         </p>
       </div>
       <div className="sm:col-span-1 col-span-2 ">
-        <p className="pb-4 text-sm text-fontColor font-thin">TPA company</p>
+        <p className="pb-4 text-sm text-fontColor font-thin">Tpa Company</p>
 
         <p
           className={`border-b-2 border-fontColor-darkGray py-1 w-full text-base text-fontColor-deepGray `}
@@ -115,12 +114,12 @@ const Details = ({ summeryData }: DetailsProps) => {
         </p>
       </div>
       <div className="sm:col-span-1 col-span-2 ">
-        <p className="pb-4 text-sm text-fontColor font-thin">Status</p>
+        <p className="pb-4 text-sm text-fontColor font-thin">Current Status</p>
 
         <p
           className={`border-b-2 border-fontColor-darkGray py-1 w-full text-base text-fontColor-deepGray `}
         >
-          {status}
+          {formstatus}
         </p>
       </div>
     </div>

@@ -119,6 +119,7 @@ const NewCase = () => {
       dispatch(setNewCaseNum(param?.case));
       //@ts-ignore
       const obj = caseData[param?.case] || {};
+      console.log(obj);
 
       const {
         Aadhar_card_Front,
