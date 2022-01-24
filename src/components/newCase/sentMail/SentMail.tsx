@@ -17,6 +17,7 @@ import ReactHtmlParser from "react-html-parser";
 import { useNavigate } from "react-router-dom";
 // import paperclip from "../../../assets/icon/paperclip.svg";
 import { FiPaperclip } from "react-icons/fi";
+import { setAllCompaniesList } from "../../../redux/slices/empanelledCompaniesSlice";
 const emailRegex = /^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/;
 
 type ComposeModalProps = {
@@ -63,9 +64,8 @@ const SentMail = ({
     UrluploadSignedPreAuth: [],
     UrlotherDocuments: [],
   });
-
+  const [reciver, setReciver] = useState("");
   const navigate = useNavigate();
-
   const { user } = useAppSelector((state) => state?.user);
   const { allCompaniesList } = useAppSelector(
     (state) => state?.empanelledCompanies
@@ -73,11 +73,21 @@ const SentMail = ({
   const { newCaseNum } = useAppSelector((state) => state?.case);
   const dispatch = useAppDispatch();
 
-  const companyInfo =
-    //@ts-ignore
-    allCompaniesList[newCaseData?.detailsOfTPA?.insuranceCompany];
-
   const bodyRef = useRef(null);
+
+  const fetchEmpanelledCompanies = async () => {
+    const URLALLCOMPANY = `/allcompany`;
+    dispatch(setLoading(true));
+    try {
+      const { data: allCompanyData } = await axiosConfig.get(URLALLCOMPANY);
+      dispatch(setLoading(false));
+      dispatch(setAllCompaniesList(allCompanyData?.data));
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
 
   const imageUpload = async () => {
     const IMAGEUPLOAD = `/imageupload?email=${user}&casenumber=${newCaseNum}`;
@@ -178,10 +188,6 @@ const SentMail = ({
   };
 
   const uploadFile = async () => {
-    //@ts-ignore
-    const email = JSON.parse(companyInfo?.replace(/'/g, '"'))?.email;
-    console.log(email);
-
     dispatch(setLoading(true));
 
     const URL = `/sendEmail?email=${user}`;
@@ -205,7 +211,7 @@ const SentMail = ({
     formNewStatus?.append("newformstatus", "Unprocessed");
 
     const formData = new FormData();
-    formData?.append("reciever", email ? email : "");
+    formData?.append("reciever", reciver);
     mail?.ccList?.length
       ? mail?.ccList?.forEach((mail) => {
           formData.append("Cc", mail);
@@ -218,7 +224,8 @@ const SentMail = ({
       : formData.append("Bcc", "");
     formData?.append("sub", mail?.sub);
     //@ts-ignore
-    formData?.append("sender_msg", bodyRef?.current?.innerText);
+    formData?.append("sender_msg", bodyRef?.current?.innerHTML);
+    // formData?.append("sender_msg", bodyRef?.current?.innerText);
     try {
       if (
         mail?.Urlidproof?.length ||
@@ -313,11 +320,6 @@ const SentMail = ({
     }
   };
 
-  useEffect(() => {
-    //@ts-ignore
-    console.log(mail);
-  }, [mail]);
-
   const handleKeypress = (
     e: React.KeyboardEvent,
     name: string,
@@ -347,6 +349,22 @@ const SentMail = ({
   const checkValidEmail = (val: string) => {
     return emailRegex?.test(val);
   };
+
+  useEffect(() => {
+    if (!Object.entries(allCompaniesList)?.length) {
+      fetchEmpanelledCompanies();
+    } else {
+      const companyInfo =
+        //@ts-ignore
+        allCompaniesList[newCaseData?.detailsOfTPA?.insuranceCompany];
+      if (companyInfo) {
+        const email = JSON.parse(companyInfo?.replace(/'/g, '"'))?.email;
+        setReciver(email);
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allCompaniesList]);
 
   useEffect(() => {
     setMail((pre) => ({

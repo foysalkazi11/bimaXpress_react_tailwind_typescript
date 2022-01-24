@@ -510,18 +510,6 @@ const StepTwo = ({
                   style={{ height: "40px" }}
                 />
               </div>
-              <div className="mt-6">
-                <Input
-                  handleChange={handleChange}
-                  name="PhysicianYesPhysicianCurrentAddress"
-                  value={
-                    patientDetails?.PhysicianYesPhysicianCurrentAddress || ""
-                  }
-                  label="Current Address"
-                  labelStyle={{ paddingBottom: "12px" }}
-                  style={{ height: "40px" }}
-                />
-              </div>
             </>
           ) : null}
 
@@ -564,6 +552,17 @@ const StepTwo = ({
               </div>
             </div>
           </div> */}
+
+          <div className="mt-6">
+            <Input
+              handleChange={handleChange}
+              name="PhysicianYesPhysicianCurrentAddress"
+              value={patientDetails?.PhysicianYesPhysicianCurrentAddress || ""}
+              label="Current Address"
+              labelStyle={{ paddingBottom: "12px" }}
+              style={{ height: "40px" }}
+            />
+          </div>
 
           <div className="mt-6">
             <Input

@@ -134,7 +134,7 @@ const SentMail = ({
       : formData.append("Bcc", "");
     formData?.append("sub", mail?.sub);
     //@ts-ignore
-    formData?.append("sender_msg", bodyRef?.current?.innerText);
+    formData?.append("sender_msg", bodyRef?.current?.innerHTML);
     try {
       if (mail?.file?.length) {
         const image = await imageUpload();

@@ -374,6 +374,7 @@ const Drafts = () => {
         closeModal={toggleSummeryModal}
         isOpen={openSummeryModal}
         toggleNewActionModal={toggleNewActionModal}
+        setSummeryData={setSummeryData}
       />
 
       <NewAction

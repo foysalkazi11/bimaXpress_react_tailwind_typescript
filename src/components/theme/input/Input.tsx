@@ -14,6 +14,7 @@ type InputProps = {
   placeHolder?: string | undefined;
   isPassword?: boolean;
   labelStyle?: object;
+  handleKeyPress?: any;
 };
 
 const Input = ({
@@ -28,6 +29,7 @@ const Input = ({
   placeHolder = "",
   isPassword = false,
   labelStyle = {},
+  handleKeyPress,
 }: InputProps) => {
   const [showInput, setShowInput] = useState(false);
   if (!isEdit) {
@@ -62,6 +64,7 @@ const Input = ({
           style={style}
           ref={inputRef ? inputRef : null}
           placeholder={placeHolder}
+          onKeyPress={(e) => handleKeyPress(e)}
         />
         {isPassword ? (
           showInput ? (

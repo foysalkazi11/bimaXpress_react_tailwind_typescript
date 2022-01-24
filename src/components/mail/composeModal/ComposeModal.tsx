@@ -77,7 +77,7 @@ const ComposeModal = ({
     });
     formData?.append("sub", mail?.sub);
     //@ts-ignore
-    formData?.append("sender_msg", bodyRef?.current?.innerText);
+    formData?.append("sender_msg", bodyRef?.current?.innerHTML);
     try {
       if (mail?.file?.length) {
         mail?.file.forEach((img) => {

@@ -10,6 +10,7 @@ type SummeryModalProps = {
   closeModal: () => void;
   summeryData: object;
   toggleNewActionModal: () => void;
+  setSummeryData?: any;
 };
 
 const SummeryModal = ({
@@ -17,6 +18,7 @@ const SummeryModal = ({
   isOpen,
   summeryData,
   toggleNewActionModal,
+  setSummeryData,
 }: SummeryModalProps) => {
   const [activeMenu, setActiveMenu] = useState(0);
 
@@ -53,7 +55,7 @@ const SummeryModal = ({
           </p>
         </div>
         {activeMenu === 0 ? (
-          <Details summeryData={summeryData} />
+          <Details summeryData={summeryData} setSummeryData={setSummeryData} />
         ) : (
           <ActionTaken
             //@ts-ignore

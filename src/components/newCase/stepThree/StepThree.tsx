@@ -66,10 +66,11 @@ const StepThree = ({
       const res = Object.entries(doctorList)?.map(
         (
           //@ts-ignore
-          [key, { name }]
+          [key, { name, phone }]
         ) => ({
           label: name,
           value: name,
+          phone,
         })
       );
       setDoctorsList(res);
@@ -308,8 +309,23 @@ const StepThree = ({
   };
 
   useEffect(() => {
-    console.log(newCaseData);
-  }, [newCaseData]);
+    if (diagnosisDetails?.doctorsName) {
+      const doctorInfo = doctorsList?.find(
+        (doctor: { name: any }) =>
+          //@ts-ignore
+          doctor?.value === diagnosisDetails?.doctorsName
+      );
+
+      setNewCaseData((pre: any) => ({
+        ...pre,
+        diagnosisDetails: {
+          ...pre?.diagnosisDetails,
+          contractNumber: doctorInfo?.phone,
+        },
+      }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [diagnosisDetails?.doctorsName]);
 
   return (
     <div className="mb-8">
@@ -319,7 +335,7 @@ const StepThree = ({
             options={doctorsList}
             name="doctorsName"
             handleChange={handleChange}
-            defaultOption="Select Insurance Company"
+            defaultOption="Select doctor"
             label="Doctor's Name"
             value={diagnosisDetails?.doctorsName || ""}
           />
@@ -341,6 +357,7 @@ const StepThree = ({
               label="Contract number"
               style={{ height: "40px" }}
               labelStyle={{ paddingBottom: "12px" }}
+              type="number"
             />
           </div>
           <div className="mt-6">
