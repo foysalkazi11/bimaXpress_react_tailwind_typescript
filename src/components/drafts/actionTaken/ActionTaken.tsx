@@ -71,24 +71,48 @@ const ActionTaken = ({
 
     // setAditTrailData(array);
 
-    const res = array?.map((item, index) => ({
-      actionTaken: item[0],
-      last_action_date: item[1]?.slice(0, 16),
-      // last_action_date: format(new Date(item[1]), "do MMMM Y"),
-      summery: item[2],
-      amount: item[3],
+    const res = array?.map((item, index) => {
+      return item[4]
+        ? item[4] === "N/A"
+          ? {
+              actionTaken: item[0],
+              last_action_date: item[1]?.slice(0, 16),
+              // last_action_date: format(new Date(item[1]), "do MMMM Y"),
+              summery: item[2],
+              amount: item[3],
 
-      documents: (
-        <a href={`${item[4]}`} target={`${"_blank"}`} rel="noreferrer">
-          <IoDocumentsOutline
-            className="mr-2 text-2xl cursor-pointer"
-            // onClick={() => showDoc(item[4])}
-          />
-        </a>
-      ),
-      doc: item[4],
-      index: index,
-    }));
+              doc: item[4],
+              index: index,
+            }
+          : {
+              actionTaken: item[0],
+              last_action_date: item[1]?.slice(0, 16),
+              // last_action_date: format(new Date(item[1]), "do MMMM Y"),
+              summery: item[2],
+              amount: item[3],
+
+              documents: (
+                <a href={`${item[4]}`} target={`${"_blank"}`} rel="noreferrer">
+                  <IoDocumentsOutline
+                    className="mr-2 text-2xl cursor-pointer"
+                    // onClick={() => showDoc(item[4])}
+                  />
+                </a>
+              ),
+              doc: item[4],
+              index: index,
+            }
+        : {
+            actionTaken: item[0],
+            last_action_date: item[1]?.slice(0, 16),
+            // last_action_date: format(new Date(item[1]), "do MMMM Y"),
+            summery: item[2],
+            amount: item[3],
+
+            doc: item[4],
+            index: index,
+          };
+    });
     setTableRow(res);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

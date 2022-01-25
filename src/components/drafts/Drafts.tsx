@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   useTable,
   useGlobalFilter,
@@ -26,24 +26,25 @@ import SentMail from "./sentMail/SentMail";
 import ApproveModal from "./approveModal/ApproveModal";
 import EnchanceAndFciModal from "./enhanceAndFci/EnchanceAndFci";
 import scrollbar from "../../scrollbar.module.css";
+import { setEmpanelledInsurnaceCompanies } from "../../redux/slices/empanelledCompaniesSlice";
 
-const insuranceCompany = [
-  { label: "Health India Insurance", value: "health_india_insurance" },
-  { label: "Reliance General Insurance", value: "reliance_general_nsurance" },
-  { label: "Futura General Insurance", value: "futura_general_insurance" },
-  { label: "Medsave Health Insurance", value: "medsave_health_insurance" },
-  {
-    label: "Bajaj Allianz Life Insurance",
-    value: "bajaj_allianz_life_insurance",
-  },
-];
+// const insuranceCompany = [
+//   { label: "Health India Insurance", value: "health_india_insurance" },
+//   { label: "Reliance General Insurance", value: "reliance_general_nsurance" },
+//   { label: "Futura General Insurance", value: "futura_general_insurance" },
+//   { label: "Medsave Health Insurance", value: "medsave_health_insurance" },
+//   {
+//     label: "Bajaj Allianz Life Insurance",
+//     value: "bajaj_allianz_life_insurance",
+//   },
+// ];
 
 const dateRange = [
-  { label: "Last day", value: "last_day" },
-  { label: "Last 15 days", value: "last_15_days" },
-  { label: "Last month", value: "last_month" },
-  { label: "Last quarter", value: "last_quarter" },
-  { label: "Last year", value: "last_year" },
+  { label: "Last day", value: 1 },
+  { label: "Last 15 days", value: 15 },
+  { label: "Last month", value: 30 },
+  { label: "Last quarter", value: 90 },
+  { label: "Last year", value: 365 },
 ];
 
 interface ColumnDetails {
@@ -56,10 +57,15 @@ const Drafts = () => {
   const [inputValue, setInputValue] = useState("");
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state?.user);
-  const { caseData } = useAppSelector((state) => state?.home);
+  const { caseData, currentBucket } = useAppSelector((state) => state?.home);
   const navigate = useNavigate();
   const [summeryData, setSummeryData] = useState({});
   const [action, setAction] = useState("");
+  const { empanelledInsurnaceCompanies } = useAppSelector(
+    (state) => state?.empanelledCompanies
+  );
+  const [insuranceCompany, setInsuranceCompany] = useState<any>([]);
+  const isMounted = useRef(false);
 
   const [openSummeryModal, setOpenSummeryModal] = useState<boolean>(false);
   const toggleSummeryModal = () => {
@@ -218,6 +224,40 @@ const Drafts = () => {
     []
   );
 
+  const fetchEmpanelledCompanies = async () => {
+    const INSURANCECOMPANY = `/empanelledinsurancecompany?email=${user}`;
+    // const URLALLCOMPANY = `/allcompany`;
+    dispatch(setLoading(true));
+    try {
+      const { data: insurnceCompany } = await axiosConfig.get(INSURANCECOMPANY);
+      dispatch(setLoading(false));
+      dispatch(setEmpanelledInsurnaceCompanies(insurnceCompany?.data));
+      // dispatch(setAllCompaniesList(allCompanyData?.data));
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
+
+  useEffect(() => {
+    if (empanelledInsurnaceCompanies?.length) {
+      const res = empanelledInsurnaceCompanies?.map(
+        (
+          //@ts-ignore
+          value
+        ) => ({
+          label: value,
+          value: value,
+        })
+      );
+      setInsuranceCompany(res);
+    } else {
+      fetchEmpanelledCompanies();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [empanelledInsurnaceCompanies]);
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -288,6 +328,44 @@ const Drafts = () => {
   useEffect(() => {
     setPageSize(5);
   }, [setPageSize]);
+
+  const filterCompanies = async () => {
+    // const INSURANCECOMPANY = `/empanelledinsurancecompany?email=${user}`;
+    const FILTERURL = `/insurancecompanyfilter?email=${user}&insurancecompany=${
+      options?.insuranceTPA
+    }&days=${options?.dateRange || 365}&formstatus=${currentBucket}`;
+    // const URLALLCOMPANY = `/allcompany`;
+    dispatch(setLoading(true));
+    try {
+      const { data } = await axiosConfig.get(FILTERURL);
+      dispatch(setLoading(false));
+      dispatch(setCaseData(data?.data));
+      // dispatch(setAllCompaniesList(allCompanyData?.data));
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
+
+  useEffect(() => {
+    if (isMounted?.current) {
+      if (options?.dateRange || options?.insuranceTPA) {
+        filterCompanies();
+      } else {
+        fetchAnalyst();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [options]);
+
+  useEffect(() => {
+    isMounted.current = true;
+
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   return (
     <div

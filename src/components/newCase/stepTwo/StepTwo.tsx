@@ -574,7 +574,7 @@ const StepTwo = ({
               style={{ height: "40px" }}
             />
           </div>
-          <div className="mt-6">
+          <div className="my-6">
             <Input
               handleChange={handleChange}
               name="occupation"

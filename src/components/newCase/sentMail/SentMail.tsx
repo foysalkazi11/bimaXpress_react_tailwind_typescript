@@ -261,7 +261,7 @@ const SentMail = ({
         );
       } else {
         formData.append("files", "");
-        formCreationAuditForm?.append("imgurl", "#");
+        formCreationAuditForm?.append("imgurl", "N/A");
         await axiosConfig.post(URL, formData);
         await axiosConfig.post(URLINCEMENT, formStatus);
         await axiosConfig.post(URLCHANGESTATUS, formNewStatus);

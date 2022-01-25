@@ -16,6 +16,7 @@ import notification from "../../theme/utility/notification";
 import { setLoading } from "../../../redux/slices/utilitySlice";
 import ReactHtmlParser from "react-html-parser";
 import { useNavigate } from "react-router-dom";
+import { setAllCompaniesList } from "../../../redux/slices/empanelledCompaniesSlice";
 const emailRegex = /^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$/;
 
 type ComposeModalProps = {
@@ -75,7 +76,6 @@ const SentMail = ({
     mail?.file.forEach((img) => {
       //@ts-ignore
       name.push(img?.name);
-
       imageFormData.append("image", img);
     });
     //@ts-ignore
@@ -95,6 +95,8 @@ const SentMail = ({
   };
 
   const uploadFile = async () => {
+    console.log(reciverEmail);
+
     dispatch(setLoading(true));
 
     const URL = `/sendEmail?email=${user}`;
@@ -120,7 +122,7 @@ const SentMail = ({
     formNewStatus?.append("newformstatus", action);
 
     const formData = new FormData();
-    formData?.append("reciever", reciverEmail ? reciverEmail : "");
+    formData?.append("reciever", reciverEmail);
     mail?.ccList?.length
       ? mail?.ccList?.forEach((mail) => {
           formData.append("Cc", mail);
@@ -242,22 +244,46 @@ const SentMail = ({
       bcc: "",
       ccList: [],
       bccList: [],
-      sub: `Query Reply for  ${newCaseData?.patient_details?.Name} claim no: ${newCaseData?.patient_details?.Policy_Id}`,
+      sub: `Query Reply for  ${newCaseData?.patient_details?.Name} claim no: ${newCaseData?.claimno}`,
       file: [],
       toList: [],
-      body: ` <div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dear Sir/Ma'am,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find pre auth request for ${newCaseData?.patient_details?.Name} admitted on  ${newCaseData?.hospital_details?.Date_of_Admission}.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Also find details of patient below:</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Patient name: ${newCaseData?.patient_details?.Name}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Date of admission : ${newCaseData?.hospital_details?.Date_of_Admission}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Health-id card no : ${newCaseData?.patient_details?.Policy_Id}</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find the attached preauth documents below.</div>`,
-    }));
+      body: ` <div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dear Sir/Ma'am,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find details of patient below:</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Patient name: ${newCaseData?.patient_details?.Name}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; claim no: ${newCaseData?.claimno}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Date of admission : ${newCaseData?.hospital_details?.Date_of_Admission}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Health-id card no : ${newCaseData?.patient_details?.Policy_Id}</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find the attached documents below following to the raised query</div>`,
 
-    const companyInfo =
-      //@ts-ignore
-      allCompaniesList[newCaseData?.patient_details?.Insurance_Company];
-    if (companyInfo) {
-      const email = JSON.parse(companyInfo?.replace(/'/g, '"'))?.email;
-      setReciverEmail(email);
-    }
+      // body: ` <div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dear Sir/Ma'am,</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find pre auth request for ${newCaseData?.patient_details?.Name} admitted on  ${newCaseData?.hospital_details?.Date_of_Admission}.</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Also find details of patient below:</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Patient name: ${newCaseData?.patient_details?.Name}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Date of admission : ${newCaseData?.hospital_details?.Date_of_Admission}</div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Health-id card no : ${newCaseData?.patient_details?.Policy_Id}</div><div><br></div><div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Please find the attached preauth documents below.</div>`,
+    }));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newCaseData]);
+
+  const fetchEmpanelledCompanies = async () => {
+    const URLALLCOMPANY = `/allcompany`;
+    dispatch(setLoading(true));
+    try {
+      const { data: allCompanyData } = await axiosConfig.get(URLALLCOMPANY);
+      dispatch(setLoading(false));
+      dispatch(setAllCompaniesList(allCompanyData?.data));
+    } catch (error) {
+      dispatch(setLoading(false));
+      //@ts-ignore
+      notification("error", error?.message);
+    }
+  };
+
+  useEffect(() => {
+    if (!Object.entries(allCompaniesList)?.length) {
+      fetchEmpanelledCompanies();
+    } else {
+      const companyInfo =
+        //@ts-ignore
+        allCompaniesList[newCaseData?.patient_details?.Insurance_Company];
+      if (companyInfo) {
+        const email = JSON.parse(companyInfo?.replace(/'/g, '"'))?.email;
+
+        setReciverEmail(email);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allCompaniesList]);
 
   return (
     <Modal

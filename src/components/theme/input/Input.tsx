@@ -29,7 +29,7 @@ const Input = ({
   placeHolder = "",
   isPassword = false,
   labelStyle = {},
-  handleKeyPress,
+  handleKeyPress = () => {},
 }: InputProps) => {
   const [showInput, setShowInput] = useState(false);
   if (!isEdit) {

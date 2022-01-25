@@ -127,7 +127,7 @@ const StepThree = ({
         diagnosisDetails?.surgeryName
       );
     diagnosisDetails?.contractNumber &&
-      formData?.append("doctor_name_email", diagnosisDetails?.contractNumber);
+      formData?.append("Contact_number", diagnosisDetails?.contractNumber);
     diagnosisDetails?.doctorsName &&
       formData?.append("doctor_name", diagnosisDetails?.doctorsName);
     diagnosisDetails?.ICD &&

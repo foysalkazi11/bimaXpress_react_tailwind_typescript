@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./NewCaseSelect.module.css";
 
 type SelectProps = {
-  options: { label: string; value: string }[];
+  options: { label: string; value: string | number }[];
   value?: string | number;
   name: string;
   handleChange: (
