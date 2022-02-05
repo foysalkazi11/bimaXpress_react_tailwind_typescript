@@ -22,50 +22,50 @@ const menuList = [
     name: "Unprocessed",
     icon: process,
     amount: 10,
-    pageLink: "#",
+    pageLink: "/drafts",
   },
   {
     name: "Queries",
     icon: query,
     amount: 2,
-    pageLink: "#",
+    pageLink: "/drafts",
   },
   {
     name: "Approved",
     icon: approved,
     amount: 10,
-    pageLink: "#",
+    pageLink: "/drafts",
   },
   {
     name: "Rejected",
     icon: reject,
     amount: 1,
-    pageLink: "#",
+    pageLink: "/drafts",
   },
   {
     name: "Enhance",
     icon: enhance,
     amount: 20,
-    pageLink: "#",
+    pageLink: "/drafts",
   },
   {
     name: "FCI",
     icon: fci,
     amount: 10,
-    pageLink: "#",
+    pageLink: "/drafts",
   },
 
   {
     name: "Discharge Approved",
     icon: dischargedApproved,
     amount: 20,
-    pageLink: "#",
+    pageLink: "/drafts",
   },
   {
     name: "Settle",
     icon: approved,
     amount: 50,
-    pageLink: "#",
+    pageLink: "/drafts",
   },
 ];
 
