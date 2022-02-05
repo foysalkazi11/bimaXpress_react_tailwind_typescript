@@ -64,7 +64,7 @@ const menuList = [
   {
     name: "Settle",
     icon: approved,
-    amount: 50,
+    amount: 5,
     pageLink: "/drafts",
   },
 ];
